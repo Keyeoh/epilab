@@ -14,6 +14,9 @@ Description: Compilation of data, functions and other stuff intended to be used
 Depends:
     FDb.InfiniumMethylation.hg19,
     BSgenome.Hsapiens.UCSC.hg19,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    org.Hs.eg.db,
+    functional,
     methods
 License: Artistic-2.0
 Collate:

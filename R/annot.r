@@ -138,8 +138,6 @@ gapCommand <- function(colName) {
 #' GapCommand implementation of execute
 #'
 .executeGapCommand <- function(object, ranges) {
-    suppressPackageStartupMessages(require(rtracklayer))
-
     .distance <- function(x) {
       as.data.frame(x)[[3]]
     }
