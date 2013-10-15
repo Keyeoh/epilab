@@ -79,7 +79,8 @@ CPGICommand <- function(colName, discardDirection=FALSE) {
 #' CPGICommand implementation of execute
 #'
 .executeCPGICommand <- function(object, ranges) {
-  data(hg19.islands)
+  data(hg19.islands, envir=environment())
+  hg19.islands <- get('hg19.islands', envir=environment())
 
   # Region definition
   # NOTE: The ordering of the regions is important, as there are overlapping
@@ -99,7 +100,7 @@ CPGICommand <- function(colName, discardDirection=FALSE) {
     return(cpgi) 
   }
   add.region.indices <- Curry(local.add.region.indices,
-                              ranged.annot=ranged.annot)
+                              ranged.annot=ranges)
 
   cpgiStatus <- Reduce(add.region.indices, cpgi.region.kv, NA)
   cpgiStatus[is.na(cpgiStatus)] <- 'Non-CGI'
