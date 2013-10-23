@@ -22,13 +22,22 @@ setGeneric('execute', function(object, ranges) standardGeneric('execute'))
 #' 
 #' This AnnotationCommand adds a column for the density of CpG around a given
 #' genomic region
-#'
 #' 
 setClass('DensCpGCommand',
          representation(windowSize='numeric'),
          prototype(windowSize=2000),
          contains='AnnotationCommand')
 
+#'
+#' DensCpGCommand validity check
+#'
+#' This function checks for the validity of a DensCpGCommand object.
+#'
+setValidity('DensCpGCommand',
+            function(object) {
+              return(object@windowSize >= 2)
+            })
+            
 #'
 #' DensCpG constructor
 #'
@@ -131,7 +140,7 @@ setClass('GapCommand',
 #' 
 #' This function builds a GapCommand with a given column name
 #'
-gapCommand <- function(colName) {
+GapCommand <- function(colName) {
   return(new('GapCommand', colName=colName))
 } 
 

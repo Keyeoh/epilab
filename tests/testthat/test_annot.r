@@ -1,25 +1,8 @@
 context('AnnotationCommand tests')
 
-test_that('DensCpGCommand gets its slots right', {
-          foo <- DensCpGCommand('bar', 2032)
-          expect_equal(foo@colName, 'bar')
-          expect_equal(foo@windowSize, 2032)
-})
-
-test_that('DensCpGCommand refuses wrong data types', {
-          expect_error(DensCpGCommand(2032, 2032))
-          expect_error(DensCpGCommand('bar', 'foo'))
-})
-
-test_that('DensCpGCommand refuses invalid windowSize', {
-          expect_error(DensCpGCommand('foo', -1))
-          expect_error(DensCpGCommand('foo', 0))
-          expect_error(DensCpGCommand('foo', 1))
-          expect_error(DensCpGCommand('foo', NA))
-          expect_error(DensCpGCommand('foo', NaN))
-})
-
-cmd <- DensCpGCommand('foo', 2000)
+#
+# Mock objects for testing
+#
 emptyRanges <- GRanges()
 seqlengths <- c(249250621, 243199373, 198022430, 191154276, 180915260, 
                 171115067, 159138663, 146364022, 141213431, 135534747, 
@@ -43,6 +26,29 @@ names(mockRanges) <- c("cg13299743", "cg14341289", "cg07634195", "cg25020279",
                        "cg19797536", "cg20250426", "cg12778938", "cg16762794", 
                        "cg26609550", "cg18502099")
 
+#
+# DensCpGCommand tests
+#
+test_that('DensCpGCommand gets its slots right', {
+          foo <- DensCpGCommand('bar', 2032)
+          expect_equal(foo@colName, 'bar')
+          expect_equal(foo@windowSize, 2032)
+})
+
+test_that('DensCpGCommand refuses wrong data types', {
+          expect_error(DensCpGCommand(2032, 2032))
+          expect_error(DensCpGCommand('bar', 'foo'))
+})
+
+test_that('DensCpGCommand refuses invalid windowSize', {
+          expect_error(DensCpGCommand('foo', -1))
+          expect_error(DensCpGCommand('foo', 0))
+          expect_error(DensCpGCommand('foo', 1))
+          expect_error(DensCpGCommand('foo', NA))
+          expect_error(DensCpGCommand('foo', NaN))
+})
+
+cmd <- DensCpGCommand('foo', 2000)
 test_that('DensCpGCommand execution breaks on wrong data types', {
           expect_error(execute(mockRanges, cmd))
 })
@@ -51,6 +57,68 @@ test_that('DensCpGCommand execution works correctly on example', {
           bar <- execute(cmd, mockRanges)
           expect_equal(bar$foo, c(0.083, 0.102, 0.085, 0.158, 0.011, 0.063, 
                                   0.013, 0.065, 0.112, 0.056))
+})
+
+#
+# CPGICommand tests
+#
+test_that('CPGICommand gets its slots right', {
+          foo <- CPGICommand('bar', TRUE)
+          expect_equal(foo@colName, 'bar')
+          expect_equal(foo@discardDirection, TRUE)
+})
+
+test_that('CPGICommand refuses wrong data types', {
+          expect_error(CPGICommand(2032, TRUE))
+          expect_error(CPGICommand('bar', 'foo'))
+          expect_error(CPGICommand(-9, 666))
+})
+
+cmdFalse <- CPGICommand('foo', FALSE)
+cmdTrue <- CPGICommand('foo', TRUE)
+
+test_that('CPGICommand execution breaks on wrong data types', {
+          expect_error(execute(mockRanges, cmdTrue))
+          expect_error(execute(mockRanges, cmdFalse))
+})
+
+test_that('CPGICommand execution works correctly on example', {
+          bar <- execute(cmdTrue, mockRanges)
+          expect_equal(bar$foo, c('CGI', 'CGI-Shore', 'CGI', 'CGI', 'Non-CGI',
+                                  'CGI-Shore', 'Non-CGI', 'CGI', 'CGI',
+                                  'CGI-Shore'))
+          bar <- execute(cmdFalse, mockRanges)
+          expect_equal(bar$foo, c('CGI', 'CGI-N-Shore', 'CGI', 'CGI', 'Non-CGI',
+                                  'CGI-S-Shore', 'Non-CGI', 'CGI', 'CGI',
+                                  'CGI-N-Shore'))
+})
+
+#
+# GapCommand tests
+#
+test_that('GapCommand gets its slots right', {
+          foo <- GapCommand('bar')
+          expect_equal(foo@colName, 'bar')
+})
+
+test_that('GapCommand refuses wrong data types', {
+          expect_error(CPGICommand(2032))
+})
+
+cmd <- GapCommand('foo')
+
+test_that('GapCommand execution breaks on wrong data types', {
+          expect_error(execute(mockRanges, cmd))
+})
+
+test_that('GapCommand execution works correctly on example', {
+          bar <- execute(cmd, mockRanges)
+          expect_equal(bar$fooCent, c(57306413, 57842104, 50331638, 7331516, 
+                                      30854911, 35600773, 7140723, 36434009, 
+                                      10664471, 52570488))
+          expect_equal(bar$fooTelo, c(1513750, 32993645, 1302564, 39064122, 
+                                      67219418, 62473556, 26130723, 7394875, 
+                                      14007308, NA))
 })
 
           
