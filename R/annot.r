@@ -17,6 +17,21 @@ setClass('AnnotationCommand',
 #'
 setGeneric('execute', function(object, ranges) standardGeneric('execute'))
 
+#'
+#' AnnotationCommand base implementation of execute
+#'
+#' Implementation of the logic that is common to all AnnotationCommands. For 
+#' example, error management and input control.
+#'
+setMethod('execute', c('AnnotationCommand', 'GRanges'),
+          function(object, ranges) {
+            if(length(ranges) == 0) {
+              stop('Cannot execute annotation command on empty GRanges object.')
+            } else {
+              return(ranges)
+            }
+          })
+
 #' 
 #' Density of CpG AnnotationCommand
 #' 
@@ -55,6 +70,7 @@ DensCpGCommand <- function(colName, windowSize=2000) {
 #'
 setMethod('execute', c('DensCpGCommand', 'GRanges'),
           function(object, ranges) {
+            ranges <- callNextMethod()
             rois <- resize(ranges, object@windowSize, fix='center')
             seqs <- getSeq(BSgenome.Hsapiens.UCSC.hg19, rois)
             counts <- vcountPattern('CG', seqs)
@@ -88,6 +104,7 @@ CPGICommand <- function(colName, discardDirection=FALSE) {
 #' CPGICommand implementation of execute
 #'
 .executeCPGICommand <- function(object, ranges) {
+  ranges <- callNextMethod()
   data(hg19.islands, envir=environment())
   hg19.islands <- get('hg19.islands', envir=environment())
 
@@ -152,6 +169,8 @@ GapCommand <- function(colName) {
       as.data.frame(x)[[3]]
     }
 
+    ranges <- callNextMethod()
+
     # Get gap table
     s <- browserSession()
     track.name <- 'gap'
@@ -191,7 +210,7 @@ setClass('GenomicRegionCommand',
 #'
 #' This function builds a GenomicRegionCommand with a given column name
 #'
-genomicRegionCommand <- function(colName) {
+GenomicRegionCommand <- function(colName) {
     return(new('GenomicRegionCommand', colName=colName))
 }
 
@@ -199,6 +218,7 @@ genomicRegionCommand <- function(colName) {
 #' GenomicRegionCommand implementation of execute
 #'
 .executeGenomicRegionCommand <- function(object, ranges) {
+  ranges <- callNextMethod()
   futr <- 
     reduce(unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
   exons <- unlist(exonsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, by='tx'))
@@ -244,6 +264,7 @@ nearestGeneCommand <- function(colName) {
 #' NearestGeneCommand implementation of execute
 #'
 .executeNearestGeneCommand <- function(object, ranges) {
+  ranges <- callNextMethod()
   txs.i <- reduce(transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, 'gene'))
   txs <- unlist(txs.i)
   txs.wn <- txs.i
@@ -286,6 +307,7 @@ annotationCommandList <- function(...) {
 #' AnnotationCommandList implementation of execute
 #'
 .executeAnnotationCommandList <- function(object, ranges) {
+  ranges <- callNextMethod()
   newRanges <- Reduce(function(xx, yy) execute(yy, xx), object@commandList, 
                       ranges)
   return(newRanges)

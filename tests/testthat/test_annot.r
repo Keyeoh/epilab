@@ -59,6 +59,10 @@ test_that('DensCpGCommand execution works correctly on example', {
                                   0.013, 0.065, 0.112, 0.056))
 })
 
+test_that('DensCpGCommand execution fails on empty example', {
+          expect_error(execute(cmd, emptyRanges))
+})
+
 #
 # CPGICommand tests
 #
@@ -93,6 +97,10 @@ test_that('CPGICommand execution works correctly on example', {
                                   'CGI-N-Shore'))
 })
 
+test_that('CPGICommand execution fails on empty example', {
+          expect_error(execute(cmd, emptyRanges))
+})
+
 #
 # GapCommand tests
 #
@@ -102,7 +110,7 @@ test_that('GapCommand gets its slots right', {
 })
 
 test_that('GapCommand refuses wrong data types', {
-          expect_error(CPGICommand(2032))
+          expect_error(GapCommand(2032))
 })
 
 cmd <- GapCommand('foo')
@@ -121,6 +129,39 @@ test_that('GapCommand execution works correctly on example', {
                                       14007308, NA))
 })
 
-          
+test_that('GapCommand execution fails on empty example', {
+          expect_error(execute(cmd, emptyRanges))
+})
 
+#
+# GenomicRegionCommand tests
+#
+test_that('GenomicRegionCommand gets its slots right', {
+          foo <- GenomicRegionCommand('bar')
+          expect_equal(foo@colName, 'bar')
+})
+
+test_that('GenomicRegionCommand refuses wrong data types', {
+          expect_error(GenomicRegionCommand(2032))
+})
+
+cmd <- GenomicRegionCommand('foo')
+
+test_that('GenomicRegionCommand execution breaks on wrong data types', {
+          expect_error(execute(mockRanges, cmd))
+})
+
+test_that('GenomicRegionCommand execution works correctly on example', {
+          bar <- execute(cmd, mockRanges)
+          expect_equal(bar$fooProm, c(FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, 
+                                      TRUE, FALSE, TRUE, FALSE))
+          expect_equal(bar$fooIntra, c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, 
+                                       TRUE, FALSE, FALSE, FALSE))
+          expect_equal(bar$fooInter, c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 
+                                       FALSE, TRUE, FALSE, TRUE))
+})
+
+test_that('GenomicRegionCommand execution fails on empty example', {
+          expect_error(execute(cmd, emptyRanges))
+})
 
