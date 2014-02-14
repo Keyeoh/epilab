@@ -262,12 +262,14 @@ setClass('NearestGeneCommand',
 #'
 #' This function builds a NearestGeneCommand with a given column name
 #'
-nearestGeneCommand <- function(colName) {
+NearestGeneCommand <- function(colName) {
   return(new('NearestGeneCommand', colName=colName))
 }
 
 #'
 #' NearestGeneCommand implementation of execute
+#'
+#' @importFrom AnnotationDbi mget
 #'
 .executeNearestGeneCommand <- function(object, ranges) {
   ranges <- callNextMethod()
@@ -280,7 +282,7 @@ nearestGeneCommand <- function(colName) {
   mcols(ranges)[[paste0(object@colName, 'GeneSymbol')]] <- 
     names(txs.wn)[subjectHits(annot.gene)]
   mcols(ranges)[[paste0(object@colName, 'GeneId')]] <- 
-    names(txs)[subjectHits(annot.gene)]
+    as.numeric(names(txs)[subjectHits(annot.gene)])
   return(ranges)
 }
 

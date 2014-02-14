@@ -1,3 +1,4 @@
+importFrom(AnnotationDbi,mget)
 importFrom(GenomicFeatures,fiveUTRsByTranscript)
 importFrom(GenomicRanges,reduce)
 importFrom(IRanges,unlist)
