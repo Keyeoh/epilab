@@ -1,6 +1,6 @@
-Package: epilabIlluMeth
+Package: epilab
 Type: Package
-Title: EpiLab Functions for Illumina Methylation Microarrays
+Title: EpiLab Functions for workflow implementation
 Version: 0.1-1
 Date: 2013-09-30
 Authors@R: c(person('Gustavo', 'Fernandez Bayon', role=c('aut', 'cre'),
@@ -8,16 +8,23 @@ Authors@R: c(person('Gustavo', 'Fernandez Bayon', role=c('aut', 'cre'),
 Author: Gustavo Fernandez Bayon
 Maintainer: Gustavo Fernandez Bayon <fernandezgustavo@uniovi.es>
 Description: Compilation of data, functions and other stuff intended to be used
-    inside the EpiLab for upstream processing of Illumina Methylation arrays.
-    Currently, mostly of it is devoted to the Infinium 450k, but some of the
-    functions also deal with the previous 27k microarray.
-Depends:
-    FDb.InfiniumMethylation.hg19,
+    inside the EpiLab for the implementation of data processing workflows. Most
+    of the functions are related to the analysis of Illumina 450k microarrays.
+    For now, the number of functions and methods is so low that I have decide
+    to keep everything inside only one package. In the future, this package
+    might be splitted to take into account the different aspects of the lab
+    workflows.
+Imports:
     BSgenome.Hsapiens.UCSC.hg19,
-    TxDb.Hsapiens.UCSC.hg19.knownGene,
-    org.Hs.eg.db,
+    FDb.InfiniumMethylation.hg19,
     functional,
-    methods
+    GenomicFeatures,
+    GenomicRanges,
+    IRanges,
+    org.Hs.eg.db,
+    methods,
+    rtracklayer,
+    TxDb.Hsapiens.UCSC.hg19.knownGene
 License: Artistic-2.0
 Collate:
     'annot.r'

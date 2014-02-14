@@ -14,7 +14,7 @@ setClass('AnnotationCommand',
 #' Generic definition of the execute interface for AnnotationCommand objects
 #'
 #' @docType methods
-#'
+#' 
 setGeneric('execute', function(object, ranges) standardGeneric('execute'))
 
 #'
@@ -163,6 +163,7 @@ GapCommand <- function(colName) {
 
 #' 
 #' GapCommand implementation of execute
+#' @importFrom rtracklayer browserSession
 #'
 .executeGapCommand <- function(object, ranges) {
     .distance <- function(x) {
@@ -216,6 +217,10 @@ GenomicRegionCommand <- function(colName) {
 
 #' 
 #' GenomicRegionCommand implementation of execute
+#' 
+#' @importFrom GenomicRanges reduce
+#' @importFrom GenomicFeatures fiveUTRsByTranscript
+#' @importFrom IRanges unlist
 #'
 .executeGenomicRegionCommand <- function(object, ranges) {
   ranges <- callNextMethod()
@@ -234,8 +239,9 @@ GenomicRegionCommand <- function(colName) {
   mcols(ranges)[[paste0(object@colName, 'Intra')]] <- 
     (countOverlaps(ranges, exons.no1) > 0 |
      countOverlaps(ranges, introns) > 0)
-  mcols(ranges)[[paste0(object@colName, 'Inter')]] <- !(ranges$intra.reg | 
-                                                        ranges$prom.reg)
+  mcols(ranges)[[paste0(object@colName, 'Inter')]] <- 
+    !(mcols(ranges)[[paste0(object@colName, 'Intra')]] | 
+      mcols(ranges)[[paste0(object@colName, 'Prom')]])
   return(ranges) 
 }
 

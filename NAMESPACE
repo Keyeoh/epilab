@@ -1,0 +1,4 @@
+importFrom(GenomicFeatures,fiveUTRsByTranscript)
+importFrom(GenomicRanges,reduce)
+importFrom(IRanges,unlist)
+importFrom(rtracklayer,browserSession)

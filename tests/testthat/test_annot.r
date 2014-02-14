@@ -153,12 +153,12 @@ test_that('GenomicRegionCommand execution breaks on wrong data types', {
 
 test_that('GenomicRegionCommand execution works correctly on example', {
           bar <- execute(cmd, mockRanges)
-          expect_equal(bar$fooProm, c(FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, 
-                                      TRUE, FALSE, TRUE, FALSE))
-          expect_equal(bar$fooIntra, c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, 
-                                       TRUE, FALSE, FALSE, FALSE))
-          expect_equal(bar$fooInter, c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, 
-                                       FALSE, TRUE, FALSE, TRUE))
+          expect_equivalent(bar$fooProm, 
+                            c(FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE))
+          expect_equivalent(bar$fooIntra, 
+                            c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE))
+          expect_equivalent(bar$fooInter, 
+                       c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE))
 })
 
 test_that('GenomicRegionCommand execution fails on empty example', {
