@@ -67,6 +67,9 @@ DensCpGCommand <- function(colName, windowSize=2000) {
 
 #'
 #' DensCpG implementation of execute
+#f
+#' @importFrom Biostrings getSeq vcountPattern
+#' @importFrom BSgenome.Hsapiens.UCSC.hg19 BSgenome.Hsapiens.UCSC.hg19
 #'
 setMethod('execute', c('DensCpGCommand', 'GRanges'),
           function(object, ranges) {
@@ -103,9 +106,11 @@ CPGICommand <- function(colName, discardDirection=FALSE) {
 #'
 #' CPGICommand implementation of execute
 #'
+#' @importFrom functional Curry
+#'
 .executeCPGICommand <- function(object, ranges) {
   ranges <- callNextMethod()
-  data(hg19.islands, envir=environment())
+  data(hg19.islands, envir=environment(), package='FDb.InfiniumMethylation.hg19')
   hg19.islands <- get('hg19.islands', envir=environment())
 
   # Region definition
@@ -163,7 +168,8 @@ GapCommand <- function(colName) {
 
 #' 
 #' GapCommand implementation of execute
-#' @importFrom rtracklayer browserSession
+#' 
+#' @importFrom rtracklayer browserSession ucscTableQuery getTable
 #'
 .executeGapCommand <- function(object, ranges) {
     .distance <- function(x) {
@@ -181,7 +187,9 @@ GapCommand <- function(colName) {
 
     # Build GRanges object
     raw.table <- getTable(q)
-    gr <- with(raw.table, GRanges(chrom, IRanges(chromStart, chromEnd),
+
+    # Be careful with the 0-based data!
+    gr <- with(raw.table, GRanges(chrom, IRanges(chromStart + 1, chromEnd),
                                   type=type))
     telomeres <- gr[gr$type == 'telomere']
     centromeres <- gr[gr$type == 'centromere']
@@ -270,6 +278,8 @@ NearestGeneCommand <- function(colName) {
 #' NearestGeneCommand implementation of execute
 #'
 #' @importFrom AnnotationDbi mget
+#' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @importFrom org.Hs.eg.db org.Hs.egSYMBOL
 #'
 .executeNearestGeneCommand <- function(object, ranges) {
   ranges <- callNextMethod()
@@ -298,7 +308,17 @@ setMethod('execute', c('NearestGeneCommand', 'GRanges'),
 setClass('AnnotationCommandList',
          representation(commandList='list'),
          prototype(commandList=list()),
-         contains='AnnotationCommand')
+         contains='AnnotationCommand',
+         validity=function(object) {
+           if (!is.list(object@commandList)) {
+             stop('commandList slot must be a list.')
+           } else if (!all(sapply(object@commandList, function(xx) is(xx, 'AnnotationCommand')))) {
+             stop('All of commandList members must be AnnotationCommand objects.')
+           } else {
+             return(TRUE)
+           }
+         }
+         )
 
 #'
 #' AnnotationCommandList constructor

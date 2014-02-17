@@ -121,11 +121,11 @@ test_that('GapCommand execution breaks on wrong data types', {
 
 test_that('GapCommand execution works correctly on example', {
           bar <- execute(cmd, mockRanges)
-          expect_equal(bar$fooCent, c(57306413, 57842104, 50331638, 7331516, 
-                                      30854911, 35600773, 7140723, 36434009, 
-                                      10664471, 52570488))
-          expect_equal(bar$fooTelo, c(1513750, 32993645, 1302564, 39064122, 
-                                      67219418, 62473556, 26130723, 7394875, 
+          expect_equal(bar$fooCent, c(57306414, 57842104, 50331639, 7331517, 
+                                      30854911, 35600773, 7140723, 36434010, 
+                                      10664472, 52570488))
+          expect_equal(bar$fooTelo, c(1513750, 32993646, 1302564, 39064122, 
+                                      67219419, 62473557, 26130723, 7394875, 
                                       14007308, NA))
 })
 
@@ -194,4 +194,57 @@ test_that('NearestGeneCommand execution works correctly on example', {
 test_that('NearestGeneCommand execution fails on empty example', {
           expect_error(execute(cmd, emptyRanges))
 })
+
+#
+# AnnotationCommandList tests
+#
+cmdList <- list(NearestGeneCommand('foo1'), NearestGeneCommand('foo2'))
+
+test_that('AnnotationCommandList gets its slots right', {
+          foo <- annotationCommandList(cmdList[[1]], cmdList[[2]])
+          expect_equal(foo@colName, '')
+          expect_equal(foo@commandList, cmdList)
+})
+
+test_that('AnnotationCommandList refuses wrong data types', {
+          expect_error(annotationCommandList(2032))
+})
+
+cmd <- annotationCommandList(DensCpGCommand('dcpg'),
+                             CPGICommand('cpgi'),
+                             GapCommand('gap'),
+                             GenomicRegionCommand('genreg'),
+                             NearestGeneCommand('ng')
+                             )
+
+test_that('AnnotationCommandList execution breaks on wrong data types', {
+          expect_error(execute(mockRanges, cmd))
+})
+
+test_that('AnnotationCommandList execution works correctly on example', {
+          bar <- execute(cmd, mockRanges)
+          expect_equal(bar$dcpg, c(0.083, 0.102, 0.085, 0.158, 0.011, 0.063, 0.013, 0.065, 0.112, 
+                                  0.056))
+          expect_equal(bar$cpgi, c('CGI', 'CGI-N-Shore', 'CGI', 'CGI', 'Non-CGI', 'CGI-S-Shore', 
+                                  'Non-CGI', 'CGI', 'CGI', 'CGI-N-Shore'))
+          expect_equal(bar$gapCent, c(57306414, 57842104, 50331639, 7331517, 30854911, 35600773, 
+                                      7140723, 36434010, 10664472, 52570488))
+          expect_equal(bar$gapTelo, c(1513750, 32993646, 1302564, 39064122, 67219419, 62473557, 
+                                      26130723, 7394875, 14007308, NA))
+          expect_equivalent(bar$genregProm, c(FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, 
+                                           TRUE, FALSE))
+          expect_equivalent(bar$genregIntra, c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, 
+                                            FALSE, FALSE))
+          expect_equivalent(bar$genregInter, c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, 
+                                            FALSE, TRUE))
+          expect_equivalent(bar$ngGeneSymbol, c('FOXC1', 'FSD1L', 'TOLLIP', 'RICTOR', 'ANKIB1', 
+                                                 'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX4'))
+          expect_equivalent(bar$ngGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761, 441317, 
+                                            54862, 8535))
+})
+
+test_that('AnnotationCommandList execution fails on empty example', {
+          expect_error(execute(cmd, emptyRanges))
+})
+
 
