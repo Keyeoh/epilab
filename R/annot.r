@@ -61,7 +61,7 @@ setValidity('DensCpGCommand',
 #' @param windowSize Size of the window centered on the input genomic 
 #'  region
 #'
-DensCpGCommand <- function(colName, windowSize=2000) {
+densCpGCommand <- function(colName, windowSize=2000) {
   return(new('DensCpGCommand', colName=colName, windowSize=windowSize))
 }
 
@@ -99,7 +99,7 @@ setClass('CPGICommand',
 #' @param discardDirection Boolean switch indicating if we should distinguish 
 #' between North and South Shelves and Shores
 #'
-CPGICommand <- function(colName, discardDirection=FALSE) {
+cpgiCommand <- function(colName, discardDirection=FALSE) {
   return(new('CPGICommand', colName=colName, discardDirection=discardDirection))
 }
 
@@ -162,7 +162,7 @@ setClass('GapCommand',
 #' 
 #' This function builds a GapCommand with a given column name
 #'
-GapCommand <- function(colName) {
+gapCommand <- function(colName) {
   return(new('GapCommand', colName=colName))
 } 
 
@@ -219,7 +219,7 @@ setClass('GenomicRegionCommand',
 #'
 #' This function builds a GenomicRegionCommand with a given column name
 #'
-GenomicRegionCommand <- function(colName) {
+genomicRegionCommand <- function(colName) {
     return(new('GenomicRegionCommand', colName=colName))
 }
 
@@ -270,7 +270,7 @@ setClass('NearestGeneCommand',
 #'
 #' This function builds a NearestGeneCommand with a given column name
 #'
-NearestGeneCommand <- function(colName) {
+nearestGeneCommand <- function(colName) {
   return(new('NearestGeneCommand', colName=colName))
 }
 

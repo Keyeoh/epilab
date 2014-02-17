@@ -30,25 +30,25 @@ names(mockRanges) <- c("cg13299743", "cg14341289", "cg07634195", "cg25020279",
 # DensCpGCommand tests
 #
 test_that('DensCpGCommand gets its slots right', {
-          foo <- DensCpGCommand('bar', 2032)
+          foo <- densCpGCommand('bar', 2032)
           expect_equal(foo@colName, 'bar')
           expect_equal(foo@windowSize, 2032)
 })
 
 test_that('DensCpGCommand refuses wrong data types', {
-          expect_error(DensCpGCommand(2032, 2032))
-          expect_error(DensCpGCommand('bar', 'foo'))
+          expect_error(densCpGCommand(2032, 2032))
+          expect_error(densCpGCommand('bar', 'foo'))
 })
 
 test_that('DensCpGCommand refuses invalid windowSize', {
-          expect_error(DensCpGCommand('foo', -1))
-          expect_error(DensCpGCommand('foo', 0))
-          expect_error(DensCpGCommand('foo', 1))
-          expect_error(DensCpGCommand('foo', NA))
-          expect_error(DensCpGCommand('foo', NaN))
+          expect_error(densCpGCommand('foo', -1))
+          expect_error(densCpGCommand('foo', 0))
+          expect_error(densCpGCommand('foo', 1))
+          expect_error(densCpGCommand('foo', NA))
+          expect_error(densCpGCommand('foo', NaN))
 })
 
-cmd <- DensCpGCommand('foo', 2000)
+cmd <- densCpGCommand('foo', 2000)
 test_that('DensCpGCommand execution breaks on wrong data types', {
           expect_error(execute(mockRanges, cmd))
 })
@@ -67,19 +67,19 @@ test_that('DensCpGCommand execution fails on empty example', {
 # CPGICommand tests
 #
 test_that('CPGICommand gets its slots right', {
-          foo <- CPGICommand('bar', TRUE)
+          foo <- cpgiCommand('bar', TRUE)
           expect_equal(foo@colName, 'bar')
           expect_equal(foo@discardDirection, TRUE)
 })
 
 test_that('CPGICommand refuses wrong data types', {
-          expect_error(CPGICommand(2032, TRUE))
-          expect_error(CPGICommand('bar', 'foo'))
-          expect_error(CPGICommand(-9, 666))
+          expect_error(cpgiCommand(2032, TRUE))
+          expect_error(cpgiCommand('bar', 'foo'))
+          expect_error(cpgiCommand(-9, 666))
 })
 
-cmdFalse <- CPGICommand('foo', FALSE)
-cmdTrue <- CPGICommand('foo', TRUE)
+cmdFalse <- cpgiCommand('foo', FALSE)
+cmdTrue <- cpgiCommand('foo', TRUE)
 
 test_that('CPGICommand execution breaks on wrong data types', {
           expect_error(execute(mockRanges, cmdTrue))
@@ -105,15 +105,15 @@ test_that('CPGICommand execution fails on empty example', {
 # GapCommand tests
 #
 test_that('GapCommand gets its slots right', {
-          foo <- GapCommand('bar')
+          foo <- gapCommand('bar')
           expect_equal(foo@colName, 'bar')
 })
 
 test_that('GapCommand refuses wrong data types', {
-          expect_error(GapCommand(2032))
+          expect_error(gapCommand(2032))
 })
 
-cmd <- GapCommand('foo')
+cmd <- gapCommand('foo')
 
 test_that('GapCommand execution breaks on wrong data types', {
           expect_error(execute(mockRanges, cmd))
@@ -137,15 +137,15 @@ test_that('GapCommand execution fails on empty example', {
 # GenomicRegionCommand tests
 #
 test_that('GenomicRegionCommand gets its slots right', {
-          foo <- GenomicRegionCommand('bar')
+          foo <- genomicRegionCommand('bar')
           expect_equal(foo@colName, 'bar')
 })
 
 test_that('GenomicRegionCommand refuses wrong data types', {
-          expect_error(GenomicRegionCommand(2032))
+          expect_error(genomicRegionCommand(2032))
 })
 
-cmd <- GenomicRegionCommand('foo')
+cmd <- genomicRegionCommand('foo')
 
 test_that('GenomicRegionCommand execution breaks on wrong data types', {
           expect_error(execute(mockRanges, cmd))
@@ -169,15 +169,15 @@ test_that('GenomicRegionCommand execution fails on empty example', {
 # NearestGeneCommand tests
 #
 test_that('NearestGeneCommand gets its slots right', {
-          foo <- NearestGeneCommand('bar')
+          foo <- nearestGeneCommand('bar')
           expect_equal(foo@colName, 'bar')
 })
 
 test_that('NearestGeneCommand refuses wrong data types', {
-          expect_error(NearestGeneCommand(2032))
+          expect_error(nearestGeneCommand(2032))
 })
 
-cmd <- NearestGeneCommand('foo')
+cmd <- nearestGeneCommand('foo')
 
 test_that('NearestGeneCommand execution breaks on wrong data types', {
           expect_error(execute(mockRanges, cmd))
@@ -198,7 +198,7 @@ test_that('NearestGeneCommand execution fails on empty example', {
 #
 # AnnotationCommandList tests
 #
-cmdList <- list(NearestGeneCommand('foo1'), NearestGeneCommand('foo2'))
+cmdList <- list(nearestGeneCommand('foo1'), nearestGeneCommand('foo2'))
 
 test_that('AnnotationCommandList gets its slots right', {
           foo <- annotationCommandList(cmdList[[1]], cmdList[[2]])
@@ -210,11 +210,11 @@ test_that('AnnotationCommandList refuses wrong data types', {
           expect_error(annotationCommandList(2032))
 })
 
-cmd <- annotationCommandList(DensCpGCommand('dcpg'),
-                             CPGICommand('cpgi'),
-                             GapCommand('gap'),
-                             GenomicRegionCommand('genreg'),
-                             NearestGeneCommand('ng')
+cmd <- annotationCommandList(densCpGCommand('dcpg'),
+                             cpgiCommand('cpgi'),
+                             gapCommand('gap'),
+                             genomicRegionCommand('genreg'),
+                             nearestGeneCommand('ng')
                              )
 
 test_that('AnnotationCommandList execution breaks on wrong data types', {
