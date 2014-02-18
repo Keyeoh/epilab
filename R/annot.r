@@ -15,6 +15,8 @@ setClass('AnnotationCommand',
 #'
 #' @docType methods
 #' 
+#' @export
+#' 
 setGeneric('execute', function(object, ranges) standardGeneric('execute'))
 
 #'
@@ -38,21 +40,17 @@ setMethod('execute', c('AnnotationCommand', 'GRanges'),
 #' This AnnotationCommand adds a column for the density of CpG around a given
 #' genomic region
 #' 
+#' @export
+#' 
 setClass('DensCpGCommand',
          representation(windowSize='numeric'),
          prototype(windowSize=2000),
-         contains='AnnotationCommand')
+         contains='AnnotationCommand',
+         validity=function(object) {
+           return(object@windowSize >= 2)
+         } 
+         )
 
-#'
-#' DensCpGCommand validity check
-#'
-#' This function checks for the validity of a DensCpGCommand object.
-#'
-setValidity('DensCpGCommand',
-            function(object) {
-              return(object@windowSize >= 2)
-            })
-            
 #'
 #' DensCpG constructor
 #'
@@ -61,6 +59,9 @@ setValidity('DensCpGCommand',
 #' @param windowSize Size of the window centered on the input genomic 
 #'  region
 #'
+#' @export
+#' @rdname DensCpGCommand
+#' 
 densCpGCommand <- function(colName, windowSize=2000) {
   return(new('DensCpGCommand', colName=colName, windowSize=windowSize))
 }
@@ -86,6 +87,8 @@ setMethod('execute', c('DensCpGCommand', 'GRanges'),
 #' 
 #' This AnnotationCommand adds a column for the CpG Island status
 #' 
+#' @export
+#' 
 setClass('CPGICommand',
          representation(discardDirection='logical'),
          prototype(discardDirection=FALSE),
@@ -99,6 +102,9 @@ setClass('CPGICommand',
 #' @param discardDirection Boolean switch indicating if we should distinguish 
 #' between North and South Shelves and Shores
 #'
+#' @export
+#' @rdname CPGICommand
+#' 
 cpgiCommand <- function(colName, discardDirection=FALSE) {
   return(new('CPGICommand', colName=colName, discardDirection=discardDirection))
 }
@@ -154,6 +160,8 @@ setMethod('execute', c('CPGICommand', 'GRanges'), .executeCPGICommand)
 #' This AnnotationCommand adds a column for the distances to centromeres and
 #' telomeres
 #'
+#' @export
+#' 
 setClass('GapCommand',
          contains='AnnotationCommand')
 
@@ -162,6 +170,9 @@ setClass('GapCommand',
 #' 
 #' This function builds a GapCommand with a given column name
 #'
+#' @export
+#' @rdname GapCommand
+#' 
 gapCommand <- function(colName) {
   return(new('GapCommand', colName=colName))
 } 
@@ -211,6 +222,8 @@ setMethod('execute', c('GapCommand', 'GRanges'), .executeGapCommand)
 #' This AnnotationCommand adds a column containing the genomic region for 
 #' a given probe location
 #'
+#' @export
+#' 
 setClass('GenomicRegionCommand',
          contains='AnnotationCommand')
 
@@ -219,6 +232,9 @@ setClass('GenomicRegionCommand',
 #'
 #' This function builds a GenomicRegionCommand with a given column name
 #'
+#' @export
+#' @rdname GenomicRegionCommand
+#' 
 genomicRegionCommand <- function(colName) {
     return(new('GenomicRegionCommand', colName=colName))
 }
@@ -262,6 +278,8 @@ setMethod('execute', c('GenomicRegionCommand', 'GRanges'),
 #' This AnnotationCommand adds three columns with information regarding 
 #' the nearest TSS and gene
 #'
+#' @export
+#' 
 setClass('NearestGeneCommand',
          contains='AnnotationCommand')
 
@@ -270,6 +288,9 @@ setClass('NearestGeneCommand',
 #'
 #' This function builds a NearestGeneCommand with a given column name
 #'
+#' @export
+#' @rdname NearestGeneCommand
+#' 
 nearestGeneCommand <- function(colName) {
   return(new('NearestGeneCommand', colName=colName))
 }
@@ -305,6 +326,8 @@ setMethod('execute', c('NearestGeneCommand', 'GRanges'),
 #' This AnnotationCommand contains a list of several AnnotationCommands, and 
 #' executes them in order
 #' 
+#' @export
+#' 
 setClass('AnnotationCommandList',
          representation(commandList='list'),
          prototype(commandList=list()),
@@ -325,6 +348,9 @@ setClass('AnnotationCommandList',
 #'
 #' This function builds an AnnotationCommandList from a list of 
 #' AnnotationCommand objects
+#'
+#' @export
+#' @rdname AnnotationCommandList
 #'
 annotationCommandList <- function(...) {
   commandList <- list(...)

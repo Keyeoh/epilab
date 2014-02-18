@@ -1,4 +1,4 @@
 
 library(testthat)
-test_check('epilabIlluMeth')
+test_check('epilab')
 

@@ -49,6 +49,7 @@ test_that('DensCpGCommand refuses invalid windowSize', {
 })
 
 cmd <- densCpGCommand('foo', 2000)
+
 test_that('DensCpGCommand execution breaks on wrong data types', {
           expect_error(execute(mockRanges, cmd))
 })
