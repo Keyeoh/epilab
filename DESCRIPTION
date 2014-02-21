@@ -18,18 +18,11 @@ Imports:
     AnnotationDbi,
     Biostrings,
     BSgenome.Hsapiens.UCSC.hg19,
-    FDb.InfiniumMethylation.hg19,
     functional,
     GenomicFeatures,
     GenomicRanges,
     IRanges,
     org.Hs.eg.db,
-    methods,
     rtracklayer,
-    testthat,
     TxDb.Hsapiens.UCSC.hg19.knownGene
 License: Artistic-2.0
-Collate:
-    'annot.r'
-    'epilabIlluMeth-internal.R'
-    'epilabIlluMeth-package.r'

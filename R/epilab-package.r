@@ -1,8 +1,8 @@
 #'
-#' @name epilabIlluMeth
+#' @name epilab
 #' @title EpiLab - Illumina Methylation Microrray
 #' @docType package
-#' @rdname epilabIlluMeth-package
+#' @rdname epilab-package
 #'
 NULL
 
