@@ -1,0 +1,10 @@
+Changes for R-package epilab
+
+Version 0.2-0 (February 24th, 2014)
+  - First version of package with some functionality.
+  - It should be possible now to use the package for the annotation generation in most of our
+    current 450k pipelines.
+  - A hierarchy of Command objects is implemented for the annotation of GenomicRanges objects.
+  - All commands are currently being tested.
+  - Some setters are not implemented (low priority).
+
