@@ -1,7 +1,7 @@
 Package: epilab
 Type: Package
 Title: EpiLab Functions for workflow implementation
-Version: 0.2-0
+Version: 0.2-1
 Date: 2013-09-30
 Authors@R: c(person('Gustavo', 'Fernandez Bayon', role=c('aut', 'cre'),
     email='fernandezgustavo@uniovi.es'))

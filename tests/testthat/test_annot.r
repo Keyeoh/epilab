@@ -207,6 +207,8 @@ test_that('NearestGeneCommand execution works correctly on example',
                                                    'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX4'))
             expect_equivalent(bar$fooGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761, 
                                                441317, 54862, 8535))
+            expect_equivalent(bar$fooDTSS, c(-86928, -529, 18325, 376, 33694, -961, 194514, 27042, 
+                                             352, -20281))
           })
 
 test_that('NearestGeneCommand execution fails on empty example', 
@@ -269,6 +271,8 @@ test_that('AnnotationCommandList execution works correctly on example',
                                                   'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX4'))
             expect_equivalent(bar$ngGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761, 
                                               441317, 54862, 8535))
+            expect_equivalent(bar$ngDTSS, c(-86928, -529, 18325, 376, 33694, -961, 194514, 27042, 
+                                             352, -20281))
           })
 
 test_that('AnnotationCommandList execution fails on empty example', 

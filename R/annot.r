@@ -429,15 +429,25 @@ nearestGeneCommand <- function(colName) {
 #
 .executeNearestGeneCommand <- function(command, object) {
   object <- callNextMethod()
-  txs.i <- reduce(transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, 'gene'))
-  txs <- unlist(txs.i)
-  txs.wn <- txs.i
-  names(txs.wn) <- mget(names(txs.i), org.Hs.egSYMBOL, ifnotfound=NA)
-  txs.wn <- unlist(txs.wn)
-  annot.gene <- distanceToNearest(object, resize(txs, 1), keep.sign=TRUE)
-  mcols(object)[[paste0(command@colName, 'GeneSymbol')]] <- names(txs.wn)[subjectHits(annot.gene)]
+  
+  rawTranscriptList <- reduce(transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, 'gene'))
+  transcriptsWithoutNames <- unlist(rawTranscriptList)
+  transcriptsWithNames <- rawTranscriptList
+  names(transcriptsWithNames) <- mget(names(rawTranscriptList), org.Hs.egSYMBOL, ifnotfound=NA)
+  transcriptsWithNames <- unlist(transcriptsWithNames)
+  
+  overlapDistances <- distanceToNearest(object, resize(transcriptsWithoutNames, 1), keep.sign=TRUE)
+  absoluteDistanceToTSS <- elementMetadata(overlapDistances)$distance
+  prec <- precede(object, resize(transcriptsWithoutNames, 1))
+  foll <- follow(object, resize(transcriptsWithoutNames, 1))
+  
+  mcols(object)[[paste0(command@colName, 'DTSS')]] <- 
+    ifelse(subjectHits(overlapDistances) == foll, absoluteDistanceToTSS, -absoluteDistanceToTSS)
+  mcols(object)[[paste0(command@colName, 'GeneSymbol')]] <- 
+    names(transcriptsWithNames)[subjectHits(overlapDistances)]
   mcols(object)[[paste0(command@colName, 'GeneId')]] <- 
-    as.numeric(names(txs)[subjectHits(annot.gene)])
+    as.numeric(names(transcriptsWithoutNames)[subjectHits(overlapDistances)])
+
   return(object)
 }
 
