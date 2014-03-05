@@ -24,3 +24,20 @@ setMethod('execute', c('FilterCommand', 'ANY'),
             }
           })
 
+#'
+#' AtomicFilterCommand
+#'
+#' Abstract class that serves as interface for all the filtering commands that are not lists. Allows
+#' to define the filtering direction.
+#'
+#' @slot byRow 
+#'
+setClass('AtomicFilterCommand',
+         representation(byRow='logical'),
+         prototype(byRow=TRUE),
+         contains='FilterCommand',
+         validity=function(object) {
+           return(length(object@byRow) == 1)
+         }
+         )
+
