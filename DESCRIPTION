@@ -28,5 +28,6 @@ Imports:
     rtracklayer,
     TxDb.Hsapiens.UCSC.hg19.knownGene
 Suggests:
-    testthat
+    testthat,
+    minfi
 License: Artistic-2.0

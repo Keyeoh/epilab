@@ -18,7 +18,7 @@ setClass('FilterCommand')
 setMethod('execute', c('FilterCommand', 'ANY'),
           function(command, object) {
             if(is.null(object) || nrow(object) == 0 || ncol(object) == 0) {
-              stop('Cannot execute annotation command on empty object.')
+              stop('Cannot execute filter command on empty object.')
             } else {
               return(object)
             }
@@ -151,4 +151,182 @@ setReplaceMethod('setDetectionP', 'DetPFilterCommand',
             return(object)
           })
 
+#'
+#' KOverADetPFilterCommand filter command.
+#'
+#' This FilterCommand filters out the rows/columns of the input object when there are at least K
+#' elements over a value A in a given row/column. It is equivalent to the kOverA filter function in
+#' the package genefilter.
+#'
+#' @export
+#' 
+setClass('KOverADetPFilterCommand',
+         representation(k='numeric', a='numeric'),
+         prototype(k=2, a=0.01),
+         contains='DetPFilterCommand',
+         validity=function(object) {
+           return(length(object@k) == 1 && 
+                  length(object@a) == 1 && 
+                  object@k > 0 &&
+                  (!object@byRow || object@k <= ncol(object@detectionP)) &&
+                  (object@byRow || object@k <= nrow(object@detectionP)) &&
+                  object@a >= 0 &&
+                  object@a <= 1
+                  )
+         })
+
+#'
+#' getK generic
+#'
+#' Generic definition of the getK getter methods.
+#'
+#' @param object An object that contains a k slot.
+#'
+setGeneric('getK', function(object) standardGeneric('getK'))
+
+#'
+#' KOverADetPFilterCommand base implementation of getK
+#'
+#' Getter method for k slot for all KOverADetPFilterCommand objects.
+#'
+#' @param object An KOverADetPFilterCommand object.
+#'
+setMethod('getK', 'KOverADetPFilterCommand',
+          function(object) {
+            return(object@k)
+          })
+
+#' 
+#' setK generic
+#'
+#' Generic definition of the setK setter methods.
+#'
+#' @param object An object that contains a k slot.
+#' @param value The new k value.
+#'
+setGeneric('setK<-', function(object, value) standardGeneric('setK<-'))
+
+#' 
+#' KOverADetPFilterCommand base implementation of setK
+#'
+#' Getter method for k slot for all KOverADetPFilterCommand objects.
+#'
+#' @param object An KOverADetPFilterCommand object.
+#' @param value The new k value.
+#' @name setK
+#'
+setReplaceMethod('setK', 'KOverADetPFilterCommand',
+          function(object, value) {
+            object@k <- value
+            validObject(object)
+            return(object)
+          })
+
+#'
+#' getA generic
+#'
+#' Generic definition of the getA getter methods.
+#'
+#' @param object An object that contains an a slot.
+#'
+setGeneric('getA', function(object) standardGeneric('getA'))
+
+#'
+#' KOverADetPFilterCommand base implementation of getA
+#'
+#' Getter method for a slot for all KOverADetPFilterCommand objects.
+#'
+#' @param object A KOverADetPFilterCommand object.
+#'
+setMethod('getA', 'KOverADetPFilterCommand',
+          function(object) {
+            return(object@a)
+          })
+
+#' 
+#' setA generic
+#'
+#' Generic definition of the setA setter methods.
+#'
+#' @param object An object that contains a a slot.
+#' @param value The new a value.
+#'
+setGeneric('setA<-', function(object, value) standardGeneric('setA<-'))
+
+#' 
+#' KOverADetPFilterCommand base implementation of setA
+#'
+#' Getter method for a slot for all KOverADetPFilterCommand objects.
+#'
+#' @param object A KOverADetPFilterCommand object.
+#' @param value The new a value.
+#' @name setA
+#'
+setReplaceMethod('setA', 'KOverADetPFilterCommand',
+          function(object, value) {
+            object@a <- value
+            validObject(object)
+            return(object)
+          })
+
+#'
+#' KOverADetPFilterCommand constructor
+#'
+#' This function builds a KOverADetPFilterCommand from parameters k and a.
+#'
+#' @param detectionP A matrix of detection p-values used for filtering.
+#' @param byRow A logical indicating the direction of filtering.
+#' @param k The minimum number of elements to label a row/column as invalid.
+#' @param a The p-value threshold.
+#' @export
+#' 
+kOverADetPFilterCommand <- function(detectionP, byRow=TRUE, k=ifelse(byRow, 5, 5000), a=0.01) {
+  return(new('KOverADetPFilterCommand', detectionP=detectionP, k=k, a=a, byRow=byRow))
+}
+
+#'
+#' KOverADetPFilterCommand percentage constructor
+#'
+#' This function builds a KOverADetPFilterCommand from parameter a and a percentage of rows/columns.
+#'
+#' @param detectionP A matrix of detection p-values used for filtering.
+#' @param byRow A logical indicating the direction of filtering.
+#' @param fraction The minimum percentage of elements to label a row/column as invalid.
+#' @param a The p-value threshold.
+#' @export
+#' 
+kOverADetPFilterCommandFromFraction <- function(detectionP, byRow=TRUE, fraction=0.1, a=0.01) {
+  kFromFraction <- ceiling(ifelse(byRow, ncol(detectionP), nrow(detectionP)) * fraction)
+  return(new('KOverADetPFilterCommand', detectionP=detectionP, k=kFromFraction, a=a, byRow=byRow))
+}
+
+#'
+#' KOverADetPFilterCommand implementation of execute for eSet
+#'
+#' KOverADetPFilterCommand discards rows or columns from the input object according to the 
+#' internal detection p-values matrix of the command. It is equivalent to the kOverA function in the
+#' genefilter package. A row/column is discarded if k or more elements have a detection p-value over
+#' the parameter a. Direction of filtering is controlled by the byRow parameter. 
+#' 
+#' @param command A KOverADetPFilterCommand command.
+#' @param object An eSet object.
+#'
+setMethod('execute', c('KOverADetPFilterCommand', 'eSet'),
+          function(command, object) {
+            object <- callNextMethod()
+
+            if (command@byRow) {
+              badSums <- rowSums(command@detectionP > command@a)
+            } else {
+              badSums <- colSums(command@detectionP > command@a)
+            }
+
+            badElements <- badSums >= command@k
+
+            if (command@byRow) {
+              return(object[!badElements, ])
+            } else {
+              return(object[, !badElements])
+            }
+          })
 
