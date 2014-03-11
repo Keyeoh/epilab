@@ -1,4 +1,121 @@
 #'
+#' FilterCommandIndices
+#'
+#' Class for storing logical indices over rows and columns at the same time. Used by FilterCommand
+#' objects to represent their output.
+#'
+setClass('FilterCommandIndices',
+         representation(rows='logical', cols='logical')
+         )
+
+#' 
+#' getRows generic
+#'
+#' Generic definition of the getRows getter methods
+#'
+#' @param object An object that contains a rows slot.
+#'
+setGeneric('getRows', function(object) standardGeneric('getRows'))
+
+#'
+#' FilterCommandIndices implementation of getRows
+#'
+#' Getter method for rows slot for all FilterCommandIndices objects.
+#'
+#' @param object A FilterCommandIndices object.
+#'
+setMethod('getRows', 'FilterCommandIndices',
+          function(object) {
+            return(object@rows)
+          })
+
+#' 
+#' setRows generic
+#'
+#' Generic definition of the setRows setter methods
+#'
+#' @param object An object that contains a rows slot.
+#' @param value the new rows value
+#'
+setGeneric('setRows<-', function(object, value) standardGeneric('setRows<-'))
+
+#'
+#' FilterCommandIndices implementation of setRows
+#'
+#' Setter method for rows slot for all FilterCommandIndices objects.
+#'
+#' @param object A FilterCommandIndices object.
+#' @param value the new rows value
+#' @name setRows
+#'
+setReplaceMethod('setRows', 'FilterCommandIndices',
+          function(object, value) {
+            object@rows <- value
+            validObject(object)
+            return(object)
+          })
+
+#' 
+#' getCols generic
+#'
+#' Generic definition of the getCols getter methods
+#'
+#' @param object An object that contains a cols slot.
+#'
+setGeneric('getCols', function(object) standardGeneric('getCols'))
+
+#'
+#' FilterCommandIndices implementation of getCols
+#'
+#' Getter method for cols slot for all FilterCommandIndices objects.
+#'
+#' @param object A FilterCommandIndices object.
+#'
+setMethod('getCols', 'FilterCommandIndices',
+          function(object) {
+            return(object@cols)
+          })
+
+#' 
+#' setCols generic
+#'
+#' Generic definition of the setCols setter methods
+#'
+#' @param object An object that contains a cols slot.
+#' @param value the new cols value
+#'
+setGeneric('setCols<-', function(object, value) standardGeneric('setCols<-'))
+
+#'
+#' FilterCommandIndices implementation of setCols
+#'
+#' Setter method for cols slot for all FilterCommandIndices objects.
+#'
+#' @param object A FilterCommandIndices object.
+#' @param value the new cols value
+#' @name setCols
+#'
+setReplaceMethod('setCols', 'FilterCommandIndices',
+          function(object, value) {
+            object@cols <- value
+            validObject(object)
+            return(object)
+          })
+
+#'
+#' FilterCommandIndices constructor
+#'
+#' This function builds a FilterCommandIndices object from parameters rows and cols.
+#'
+#' @param rows A logical vector indicating rows.
+#' @param cols A logical vector indicating cols.
+#' @export
+#' 
+filterCommandIndices <- function(rows, cols) {
+  return(new('FilterCommandIndices', rows=rows, cols=cols))
+}
+
+#'
 #' FilterCommand
 #'
 #' Abstract class that serves as interface for all the filtering commands.

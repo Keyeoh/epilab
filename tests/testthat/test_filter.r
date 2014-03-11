@@ -36,6 +36,29 @@ featureNames(mockMethylSetPlus) <- paste0('F', 1:5)
 sampleNames(mockMethylSetPlus) <- paste0('S', 1:6)
 
 #
+# FilterCommandIndices tests
+#
+mockRows <- c(TRUE, FALSE, TRUE, FALSE)
+mockCols <- c(FALSE, TRUE, TRUE, FALSE)
+
+test_that('FilterCommandIndices specific accessors work well',
+          {
+            foo <- filterCommandIndices(rows=mockRows, cols=mockCols)
+            expect_equal(getRows(foo), mockRows)
+            expect_equal(getCols(foo), mockCols)
+            setRows(foo) <- mockCols
+            setCols(foo) <- mockRows
+            expect_equal(getRows(foo), mockCols)
+            expect_equal(getCols(foo), mockRows)
+          })
+
+test_that('FilterCommandIndices refuses wrong data types',
+          {
+            expect_error(foo <- filterCommandIndices(rows=1:3, cols=mockCols))
+            expect_error(foo <- filterCommandIndices(rows=mockRows, cols=1:7))
+          })
+
+#
 # FilterCommand tests
 #
 test_that('FilterCommand derived classes refuse to run on empty objects',
@@ -171,7 +194,6 @@ test_that('KOverADetPFilterCommand fails on different dimension names',
 #
 # FilterCommandList tests
 #
-
 test_that('FilterCommandList gets its slots right', 
           {
             foo <- filterCommandList(cmd1, cmd2, cmd3, cmd4)
