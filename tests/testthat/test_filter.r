@@ -11,6 +11,8 @@ mockDetectionP <- matrix(c(1, 0, 0.1,   0, 1,
                            0, 0,   0,   0, 1,
                            0, 1,   0, 0.1, 0
                            ), nrow=5, ncol=5, byrow=TRUE)
+rownames(mockDetectionP) <- paste0('F', 1:5)
+colnames(mockDetectionP) <- paste0('S', 1:5)
 
 zeroDetectionP <- matrix(c(0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0,
@@ -18,6 +20,8 @@ zeroDetectionP <- matrix(c(0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0,
                            0, 0, 0, 0, 0
                            ), nrow=5, ncol=5, byrow=TRUE)
+rownames(zeroDetectionP) <- paste0('F', 1:5)
+colnames(zeroDetectionP) <- paste0('S', 1:5)
 
 emptyMethylSet <- MethylSet()
 
@@ -26,6 +30,11 @@ mockMethylSet <- MethylSet(Meth=matrix(1:5, nrow=5, ncol=5),
 featureNames(mockMethylSet) <- paste0('F', 1:5)
 sampleNames(mockMethylSet) <- paste0('S', 1:5)
 
+mockMethylSetPlus <- MethylSet(Meth=matrix(1:6, nrow=5, ncol=6), 
+                               Unmeth=matrix(1:6, nrow=5, ncol=6, byrow=TRUE))
+featureNames(mockMethylSetPlus) <- paste0('F', 1:5)
+sampleNames(mockMethylSetPlus) <- paste0('S', 1:6)
+
 #
 # FilterCommand tests
 #
@@ -33,6 +42,13 @@ test_that('FilterCommand derived classes refuse to run on empty objects',
           {
             foo <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
             expect_error(execute(foo, emptyMethylSet))
+          })
+          
+test_that('FilterCommand fails on objects without dimensions',
+          {
+            foo <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
+            expect_error(execute(foo, 'foobar'))
+            expect_error(execute(foo, list()))
           })
           
 #
@@ -144,5 +160,61 @@ test_that('KOverADetPFilterCommand execution works correctly on examples',
             expect_equal(sampleNames(bar4), character(0))
             expect_equal(nrow(bar4), c(Features=5))
             expect_equal(ncol(bar4), c(Samples=0))
+          })
+
+test_that('KOverADetPFilterCommand fails on different dimension names',
+          {
+            expect_error(execute(cmd1, mockMethylSetPlus),
+                         regexp='must be included in dimension names')
+          })
+
+#
+# FilterCommandList tests
+#
+
+test_that('FilterCommandList gets its slots right', 
+          {
+            foo <- filterCommandList(cmd1, cmd2, cmd3, cmd4)
+            cmdList <- list(cmd1, cmd2, cmd3, cmd4)
+            expect_equal(getCommandList(foo), cmdList)
+          })
+
+test_that('FilterCommandList refuses wrong data types', 
+          {
+            expect_error(filterCommandList(2032))
+          })
+
+cmdl1 <- filterCommandList(cmd1)
+cmdl2 <- filterCommandList(cmd1, cmd2)
+cmdl3 <- filterCommandList(cmd1, cmd2, cmd3)
+cmdl4 <- filterCommandList(cmd1, cmd2, cmd3, cmd4)
+
+test_that('FilterCommandList execution breaks on wrong data types', 
+          {
+            expect_error(execute(mockMethylSet, cmdl1))
+          })
+
+test_that('AnnotationCommandList execution works correctly on example', 
+          {
+            bar1 <- execute(cmdl1, mockMethylSet)
+            expect_equal(featureNames(bar1), c('F2', 'F3', 'F4', 'F5'))
+            expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
+            expect_equal(nrow(bar1), c(Features=4))
+            expect_equal(ncol(bar1), c(Samples=5))
+            bar2 <- execute(cmdl2, mockMethylSet)
+            expect_equal(featureNames(bar2), c('F2', 'F3', 'F4'))
+            expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
+            expect_equal(nrow(bar2), c(Features=3))
+            expect_equal(ncol(bar2), c(Samples=5))
+            bar3 <- execute(cmdl3, mockMethylSet)
+            expect_equal(featureNames(bar3), c('F2', 'F3', 'F4'))
+            expect_equal(sampleNames(bar3), c('S1', 'S3', 'S4'))
+            expect_equal(nrow(bar3), c(Features=3))
+            expect_equal(ncol(bar3), c(Samples=3))
+            bar4 <- execute(cmdl4, mockMethylSet)
+            expect_equal(featureNames(bar4), c('F2', 'F3', 'F4'))
+            expect_equal(sampleNames(bar4), c('S1', 'S3', 'S4'))
+            expect_equal(nrow(bar4), c(Features=3))
+            expect_equal(ncol(bar4), c(Samples=3))
           })
 

@@ -17,7 +17,9 @@ setClass('FilterCommand')
 #'
 setMethod('execute', c('FilterCommand', 'ANY'),
           function(command, object) {
-            if(is.null(object) || nrow(object) == 0 || ncol(object) == 0) {
+            if (is.null(dim(object))) {
+              stop('Cannot execute filter command on object without dimensions.')
+            } else if(is.null(object) || nrow(object) == 0 || ncol(object) == 0) {
               stop('Cannot execute filter command on empty object.')
             } else {
               return(object)
@@ -149,6 +151,31 @@ setReplaceMethod('setDetectionP', 'DetPFilterCommand',
             object@detectionP <- value
             validObject(object)
             return(object)
+          })
+
+#'
+#' DetPFilterCommand implementation of execute for ANY
+#'
+#' This base implementation of execute just checks if the dimensions of the object to be filtered
+#' are compatible with those from the detection p-value matrix. 
+#'
+#' Dimensions do not have to be the same, but the row and column names of the input object should be 
+#' included into row and column names of the detectionP matrix.
+#'
+#' @param command A KOverADetPFilterCommand command.
+#' @param object An eSet object.
+#'
+setMethod('execute', c('DetPFilterCommand', 'ANY'),
+          function(command, object) {
+            object <- callNextMethod()
+
+            if (!all(rownames(object) %in% rownames(command@detectionP)) ||
+                !all(colnames(object) %in% colnames(command@detectionP))) {
+              stop("Dimension names from input object must be included in dimension names of \
+                   detection p-values matrix.")
+            } else {
+              return(object)
+            }
           })
 
 #'
@@ -307,6 +334,9 @@ kOverADetPFilterCommandFromFraction <- function(detectionP, byRow=TRUE, fraction
 #' internal detection p-values matrix of the command. It is equivalent to the kOverA function in the
 #' genefilter package. A row/column is discarded if k or more elements have a detection p-value over
 #' the parameter a. Direction of filtering is controlled by the byRow parameter. 
+#'
+#' In order to properly chain a list of commands (see FilterCommandList), the detection p-value
+#' matrix is projected according to the row and column names of the object which is being filtered.
 #' 
 #' @param command A KOverADetPFilterCommand command.
 #' @param object An eSet object.
@@ -315,10 +345,12 @@ setMethod('execute', c('KOverADetPFilterCommand', 'eSet'),
           function(command, object) {
             object <- callNextMethod()
 
+            detectionPView <- command@detectionP[rownames(object), colnames(object)]
+
             if (command@byRow) {
-              badSums <- rowSums(command@detectionP > command@a)
+              badSums <- rowSums(detectionPView > command@a)
             } else {
-              badSums <- colSums(command@detectionP > command@a)
+              badSums <- colSums(detectionPView > command@a)
             }
 
             badElements <- badSums >= command@k
@@ -329,4 +361,83 @@ setMethod('execute', c('KOverADetPFilterCommand', 'eSet'),
               return(object[, !badElements])
             }
           })
+
+#'
+#' SimpleFilterCommand
+#'
+#' Abstract class that serves as interface for all the simple filtering commands that only use 
+#' information from the object to be filtered.
+#'
+setClass('SimpleFilterCommand', contains='AtomicFilterCommand')
+
+#'
+#' FilterCommandList
+#'
+#' This FilterCommand contains a list of several AtomicFilterCommands and executes them in order.
+#'
+#' @export
+#' @slot commandList A list containing AtomicFilterCommand objects.
+#'
+setClass('FilterCommandList',
+         representation(commandList='list'),
+         prototype(commandList=list()),
+         contains='FilterCommand',
+         validity=function(object) {
+           if (!is.list(object@commandList)) {
+             stop('commandList slot must be a list.')
+           } else if (!all(sapply(object@commandList, 
+                                  function(xx) is(xx, 'AtomicFilterCommand')))) {
+             stop('All of commandList members must be AtomicFilterCommand objects.')
+           } else {
+             return(TRUE)
+           }
+         }
+         )
+
+#'
+#' FilterCommandList constructor.
+#'
+#' This function builds a FilterCommandList from a list of AtomicFilterCommands.
+#'
+#' @export
+#' @param ... AtomicFilterCommand objects in the order to be processed.
+#'
+filterCommandList <- function(...) {
+  commandList <- list(...)
+  return(new('FilterCommandList', commandList=commandList))
+}
+
+#'
+#' FilterCommandList base implementation of getCommandList generic.
+#'
+#' Getter method for commandList slot for all FilterCommandList objects.
+#'
+#' @param object A FilterCommandList object.
+#'
+setMethod('getCommandList', 'FilterCommandList',
+          function(object) {
+            return(object@commandList)
+          })
+
+#
+# FilterCommandList internal implementation
+#
+.executeFilterCommandList <- function(command, object) {
+  object <- callNextMethod()
+  newObject <- Reduce(function(xx, yy) execute(yy, xx), command@commandList, object)
+  return(newObject)
+}
+
+#'
+#' FilterCommandList implementation of execute
+#'
+#' A FilterCommandList is just a container for several AtomicFilterCommand objects. When 
+#' executed, the objects in the internal list are executed in the same order they were provided to
+#' the constructor.
+#'
+#' @param command A FilterCommandList.
+#' @param object An object to be filtered.
+#'
+setMethod('execute', c('FilterCommandList', 'ANY'), .executeFilterCommandList)
+
 
