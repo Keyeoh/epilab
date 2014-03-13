@@ -163,22 +163,22 @@ test_that('KOverADetPFilterCommand fails on empty example',
 
 test_that('KOverADetPFilterCommand execution works correctly on examples',
           {
-            bar1 <- execute(cmd1, mockMethylSet)
+            bar1 <- mockMethylSet[execute(cmd1, mockMethylSet)]
             expect_equal(featureNames(bar1), c('F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar1), c(Features=4))
             expect_equal(ncol(bar1), c(Samples=5))
-            bar2 <- execute(cmd2, mockMethylSet)
+            bar2 <- mockMethylSet[execute(cmd2, mockMethylSet)]
             expect_equal(featureNames(bar2), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar2), c(Features=3))
             expect_equal(ncol(bar2), c(Samples=5))
-            bar3 <- execute(cmd3, mockMethylSet)
+            bar3 <- mockMethylSet[execute(cmd3, mockMethylSet)]
             expect_equal(featureNames(bar3), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar3), c('S3', 'S4'))
             expect_equal(nrow(bar3), c(Features=5))
             expect_equal(ncol(bar3), c(Samples=2))
-            bar4 <- execute(cmd4, mockMethylSet)
+            bar4 <- mockMethylSet[execute(cmd4, mockMethylSet)]
             expect_equal(featureNames(bar4), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar4), character(0))
             expect_equal(nrow(bar4), c(Features=5))
@@ -189,6 +189,32 @@ test_that('KOverADetPFilterCommand fails on different dimension names',
           {
             expect_error(execute(cmd1, mockMethylSetPlus),
                          regexp='must be included in dimension names')
+          })
+
+#
+# FilterCommandIndices tests
+#
+test_that('FilterCommandIndices accessors work well',
+          {
+            foo <- filterCommandIndices(rows=c(TRUE, TRUE, FALSE, FALSE), 
+                                        cols=c(TRUE, FALSE, TRUE, FALSE))
+            expect_equal(getRows(foo), c(TRUE, TRUE, FALSE, FALSE))
+            expect_equal(getCols(foo), c(TRUE, FALSE, TRUE, FALSE))          
+          })
+
+test_that('FilterCommandIndices refuses wrong data types', 
+          {
+            expect_error(filterCommandIndices(2032))
+            expect_error(filterCommandIndices(rows=c(TRUE, FALSE), cols=letters[1:7]))
+          })
+
+test_that('FilterCommandIndices execution works correctly on example', 
+          {
+            foo <- filterCommandIndices(rows=c(TRUE, TRUE, TRUE, FALSE, FALSE),
+                                        cols=c(FALSE, FALSE, TRUE, FALSE, FALSE))
+            bar <- mockMethylSet[foo]
+            expect_equal(featureNames(bar), c('F1', 'F2', 'F3'))
+            expect_equal(sampleNames(bar), c('S3'))
           })
 
 #
@@ -216,24 +242,24 @@ test_that('FilterCommandList execution breaks on wrong data types',
             expect_error(execute(mockMethylSet, cmdl1))
           })
 
-test_that('AnnotationCommandList execution works correctly on example', 
+test_that('FilterCommandList execution works correctly on example', 
           {
-            bar1 <- execute(cmdl1, mockMethylSet)
+            bar1 <- mockMethylSet[execute(cmdl1, mockMethylSet)]
             expect_equal(featureNames(bar1), c('F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar1), c(Features=4))
             expect_equal(ncol(bar1), c(Samples=5))
-            bar2 <- execute(cmdl2, mockMethylSet)
+            bar2 <- mockMethylSet[execute(cmdl2, mockMethylSet)]
             expect_equal(featureNames(bar2), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar2), c(Features=3))
             expect_equal(ncol(bar2), c(Samples=5))
-            bar3 <- execute(cmdl3, mockMethylSet)
+            bar3 <- mockMethylSet[execute(cmdl3, mockMethylSet)]
             expect_equal(featureNames(bar3), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar3), c('S1', 'S3', 'S4'))
             expect_equal(nrow(bar3), c(Features=3))
             expect_equal(ncol(bar3), c(Samples=3))
-            bar4 <- execute(cmdl4, mockMethylSet)
+            bar4 <- mockMethylSet[execute(cmdl4, mockMethylSet)]
             expect_equal(featureNames(bar4), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar4), c('S1', 'S3', 'S4'))
             expect_equal(nrow(bar4), c(Features=3))

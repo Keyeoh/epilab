@@ -116,6 +116,25 @@ filterCommandIndices <- function(rows, cols) {
 }
 
 #'
+#' FilterCommandIndices subscripting
+#'
+#' Overloading the subscript operator in order to slice objects using FilterCommandIndices.
+#'
+#' @param x Any subscriptable object.
+#' @param i A FilterCommandIndices object indicating rows and columns to be preserved.
+#' @param j Missing. Not important for this implementation.
+#' @param ... Not used.
+#'
+setMethod('[', c(x='ANY', i='FilterCommandIndices', j='missing'),
+          function(x, i, j, ..., drop=TRUE) {
+            if (nrow(x) != length(getRows(i)) || ncol(x) != length(getCols(i))) {
+              stop('Incorrect number of dimensions')
+            } else {
+              return(x[getRows(i), getCols(i)])
+            }
+          })
+
+#'
 #' FilterCommand
 #'
 #' Abstract class that serves as interface for all the filtering commands.
@@ -139,7 +158,8 @@ setMethod('execute', c('FilterCommand', 'ANY'),
             } else if(is.null(object) || nrow(object) == 0 || ncol(object) == 0) {
               stop('Cannot execute filter command on empty object.')
             } else {
-              return(object)
+              return(filterCommandIndices(rows=rep_len(TRUE, nrow(object)), 
+                                          cols=rep_len(TRUE, ncol(object))))
             }
           })
 
@@ -284,14 +304,15 @@ setReplaceMethod('setDetectionP', 'DetPFilterCommand',
 #'
 setMethod('execute', c('DetPFilterCommand', 'ANY'),
           function(command, object) {
-            object <- callNextMethod()
+            fcIndices <- callNextMethod()
 
             if (!all(rownames(object) %in% rownames(command@detectionP)) ||
                 !all(colnames(object) %in% colnames(command@detectionP))) {
               stop("Dimension names from input object must be included in dimension names of \
                    detection p-values matrix.")
             } else {
-              return(object)
+              return(filterCommandIndices(rows=rep_len(TRUE, nrow(object)),
+                                          cols=rep_len(TRUE, ncol(object))))
             }
           })
 
@@ -460,7 +481,7 @@ kOverADetPFilterCommandFromFraction <- function(detectionP, byRow=TRUE, fraction
 #'
 setMethod('execute', c('KOverADetPFilterCommand', 'eSet'),
           function(command, object) {
-            object <- callNextMethod()
+            fcIndices <- callNextMethod()
 
             detectionPView <- command@detectionP[rownames(object), colnames(object)]
 
@@ -473,9 +494,11 @@ setMethod('execute', c('KOverADetPFilterCommand', 'eSet'),
             badElements <- badSums >= command@k
 
             if (command@byRow) {
-              return(object[!badElements, ])
+              setRows(fcIndices) <- as.logical(!badElements)
+              return(fcIndices)
             } else {
-              return(object[, !badElements])
+              setCols(fcIndices) <- as.logical(!badElements)
+              return(fcIndices)
             }
           })
 
@@ -539,10 +562,30 @@ setMethod('getCommandList', 'FilterCommandList',
 #
 # FilterCommandList internal implementation
 #
+# TODO: Improve the efficiency of this implementation.
+#
 .executeFilterCommandList <- function(command, object) {
-  object <- callNextMethod()
-  newObject <- Reduce(function(xx, yy) execute(yy, xx), command@commandList, object)
-  return(newObject)
+  
+  resultIndices <- callNextMethod()
+
+  rowIndices <- 1:nrow(object)
+  colIndices <- 1:ncol(object)
+
+  tmpObject <- object
+
+  for (cmd in command@commandList) {
+    fcIndices <- execute(cmd, tmpObject)
+
+    rowIndices <- rowIndices[getRows(fcIndices)]
+    colIndices <- colIndices[getCols(fcIndices)]
+
+    tmpObject <- tmpObject[fcIndices]     
+  }
+
+  setRows(resultIndices) <- 1:nrow(object) %in% rowIndices
+  setCols(resultIndices) <- 1:ncol(object) %in% colIndices
+
+  return(resultIndices)
 }
 
 #'
