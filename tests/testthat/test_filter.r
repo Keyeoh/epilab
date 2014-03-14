@@ -35,41 +35,20 @@ mockMethylSetPlus <- MethylSet(Meth=matrix(1:6, nrow=5, ncol=6),
 featureNames(mockMethylSetPlus) <- paste0('F', 1:5)
 sampleNames(mockMethylSetPlus) <- paste0('S', 1:6)
 
-#
-# FilterCommandIndices tests
-#
-mockRows <- c(TRUE, FALSE, TRUE, FALSE)
-mockCols <- c(FALSE, TRUE, TRUE, FALSE)
-
-test_that('FilterCommandIndices specific accessors work well',
-          {
-            foo <- filterCommandIndices(rows=mockRows, cols=mockCols)
-            expect_equal(getRows(foo), mockRows)
-            expect_equal(getCols(foo), mockCols)
-            setRows(foo) <- mockCols
-            setCols(foo) <- mockRows
-            expect_equal(getRows(foo), mockCols)
-            expect_equal(getCols(foo), mockRows)
-          })
-
-test_that('FilterCommandIndices refuses wrong data types',
-          {
-            expect_error(foo <- filterCommandIndices(rows=1:3, cols=mockCols))
-            expect_error(foo <- filterCommandIndices(rows=mockRows, cols=1:7))
-          })
+mockBeta <- getBeta(mockMethylSet)
 
 #
 # FilterCommand tests
 #
 test_that('FilterCommand derived classes refuse to run on empty objects',
           {
-            foo <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
+            foo <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
             expect_error(execute(foo, emptyMethylSet))
           })
           
 test_that('FilterCommand fails on objects without dimensions',
           {
-            foo <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
+            foo <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
             expect_error(execute(foo, 'foobar'))
             expect_error(execute(foo, list()))
           })
@@ -79,7 +58,7 @@ test_that('FilterCommand fails on objects without dimensions',
 #
 test_that('AtomicFilterCommand accessors work well on derived classes',
           {
-            foo <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
+            foo <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
             expect_equal(getByRow(foo), TRUE)
             setByRow(foo) <- FALSE
             expect_equal(getByRow(foo), FALSE)
@@ -89,26 +68,26 @@ test_that('AtomicFilterCommand accessors work well on derived classes',
           })
 
 #
-# DetPFilterCommand tests
+# MatrixFilterCommand tests
 #
-test_that('DetPFilterCommand accessors work well on derived classes',
+test_that('MatrixFilterCommand accessors work well on derived classes',
           {
-            foo <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
-            expect_equal(getDetectionP(foo), mockDetectionP)
-            setDetectionP(foo) <- zeroDetectionP
-            expect_equal(getDetectionP(foo), zeroDetectionP)
-            expect_error(setDetectionP(foo) <- emptyMethylSet)
-            expect_error(setDetectionP(foo) <- 42)
-            expect_error(setDetectionP(foo) <- 'foobar')
-            expect_error(setDetectionP(foo) <- TRUE)
+            foo <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
+            expect_equal(getMatrix(foo), mockDetectionP)
+            setMatrix(foo) <- zeroDetectionP
+            expect_equal(getMatrix(foo), zeroDetectionP)
+            expect_error(setMatrix(foo) <- emptyMethylSet)
+            expect_error(setMatrix(foo) <- 42)
+            expect_error(setMatrix(foo) <- 'foobar')
+            expect_error(setMatrix(foo) <- TRUE)
           })
 
 #
-# KOverADetPFilterCommand tests
+# KOverAFilterCommand tests
 #
-test_that('KOverADetPFilterCommand specific accessors work well',
+test_that('KOverAFilterCommand specific accessors work well',
           {
-            foo <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
+            foo <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
             expect_equal(getK(foo), 2)
             expect_equal(getA(foo), 0.07)
             setK(foo) <- 3
@@ -125,96 +104,131 @@ test_that('KOverADetPFilterCommand specific accessors work well',
             expect_error(setA(foo) <- NA)
           })
 
-test_that('KOverADetPfilterCommand percentage constructor works as expected',
+test_that('KOverAfilterCommand percentage constructor works as expected',
           {
-            foo <- kOverADetPFilterCommandFromFraction(mockDetectionP, byRow=TRUE, fraction=0.4, 
+            foo <- kOverAFilterCommandFromFraction(mockDetectionP, byRow=TRUE, fraction=0.4, 
                                                        a=0.07)
             expect_equal(getK(foo), 2)
             expect_equal(getA(foo), 0.07)
-            expect_error(foo <- kOverADetPFilterCommandFromFraction(mockDetectionP, byRow=TRUE, 
+            expect_error(foo <- kOverAFilterCommandFromFraction(mockDetectionP, byRow=TRUE, 
                                                                     fraction=-0.01, a=0.07))
-            expect_error(foo <- kOverADetPFilterCommandFromFraction(mockDetectionP, byRow=TRUE, 
+            expect_error(foo <- kOverAFilterCommandFromFraction(mockDetectionP, byRow=TRUE, 
                                                                     fraction=1.01, a=0.07))
-            expect_error(foo <- kOverADetPFilterCommandFromFraction(mockDetectionP, byRow=TRUE, 
+            expect_error(foo <- kOverAFilterCommandFromFraction(mockDetectionP, byRow=TRUE, 
                                                                     fraction=c(0.5, 0.7), a=0.07))
 
           })
 
-cmd1 <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.5)
-cmd2 <- kOverADetPFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.01)
-cmd3 <- kOverADetPFilterCommand(mockDetectionP, byRow=FALSE, k=1, a=0.5)
-cmd4 <- kOverADetPFilterCommand(mockDetectionP, byRow=FALSE, k=1, a=0.01)
+koveracmd1 <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.5)
+koveracmd2 <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.01)
+koveracmd3 <- kOverAFilterCommand(mockDetectionP, byRow=FALSE, k=1, a=0.5)
+koveracmd4 <- kOverAFilterCommand(mockDetectionP, byRow=FALSE, k=1, a=0.01)
 
-test_that('KOverADetPFilterCommand execution breaks on wrong data types',
+test_that('KOverAFilterCommand execution breaks on wrong data types',
           {
-            expect_error(execute(mockMethylSet, cmd1))
-            expect_error(execute(mockMethylSet, cmd2))
-            expect_error(execute(mockMethylSet, cmd3))
-            expect_error(execute(mockMethylSet, cmd4))
+            expect_error(execute(mockMethylSet, koveracmd1))
+            expect_error(execute(mockMethylSet, koveracmd2))
+            expect_error(execute(mockMethylSet, koveracmd3))
+            expect_error(execute(mockMethylSet, koveracmd4))
           })
 
-test_that('KOverADetPFilterCommand fails on empty example',
+test_that('KOverAFilterCommand fails on empty example',
           {
-            expect_error(execute(cmd1, emptyMethylSet))
-            expect_error(execute(cmd2, emptyMethylSet))
-            expect_error(execute(cmd3, emptyMethylSet))
-            expect_error(execute(cmd4, emptyMethylSet))
+            expect_error(execute(koveracmd1, emptyMethylSet))
+            expect_error(execute(koveracmd2, emptyMethylSet))
+            expect_error(execute(koveracmd3, emptyMethylSet))
+            expect_error(execute(koveracmd4, emptyMethylSet))
           })
 
-test_that('KOverADetPFilterCommand execution works correctly on examples',
+test_that('KOverAFilterCommand execution works correctly on examples',
           {
-            bar1 <- mockMethylSet[execute(cmd1, mockMethylSet)]
+            bar1 <- execute(koveracmd1, mockMethylSet)
             expect_equal(featureNames(bar1), c('F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar1), c(Features=4))
             expect_equal(ncol(bar1), c(Samples=5))
-            bar2 <- mockMethylSet[execute(cmd2, mockMethylSet)]
+            bar2 <- execute(koveracmd2, mockMethylSet)
             expect_equal(featureNames(bar2), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar2), c(Features=3))
             expect_equal(ncol(bar2), c(Samples=5))
-            bar3 <- mockMethylSet[execute(cmd3, mockMethylSet)]
+            bar3 <- execute(koveracmd3, mockMethylSet)
             expect_equal(featureNames(bar3), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar3), c('S3', 'S4'))
             expect_equal(nrow(bar3), c(Features=5))
             expect_equal(ncol(bar3), c(Samples=2))
-            bar4 <- mockMethylSet[execute(cmd4, mockMethylSet)]
+            bar4 <- execute(koveracmd4, mockMethylSet)
             expect_equal(featureNames(bar4), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar4), character(0))
             expect_equal(nrow(bar4), c(Features=5))
             expect_equal(ncol(bar4), c(Samples=0))
           })
 
-test_that('KOverADetPFilterCommand fails on different dimension names',
+test_that('KOverAFilterCommand fails on different dimension names',
           {
-            expect_error(execute(cmd1, mockMethylSetPlus),
+            expect_error(execute(koveracmd1, mockMethylSetPlus),
                          regexp='must be included in dimension names')
           })
 
 #
-# FilterCommandIndices tests
+# VarFilterCommand tests
 #
-test_that('FilterCommandIndices accessors work well',
+test_that('VarFilterCommand specific accessors work well',
           {
-            foo <- filterCommandIndices(rows=c(TRUE, TRUE, FALSE, FALSE), 
-                                        cols=c(TRUE, FALSE, TRUE, FALSE))
-            expect_equal(getRows(foo), c(TRUE, TRUE, FALSE, FALSE))
-            expect_equal(getCols(foo), c(TRUE, FALSE, TRUE, FALSE))          
+            foo <- varFilterCommand(mockBeta, byRow=TRUE, type='quantile', threshold=0.25)
+            expect_equal(getType(foo), 'quantile')
+            expect_equal(getThreshold(foo), 0.25)
+            setType(foo) <- 'absolute'
+            expect_equal(getType(foo), 'absolute')
+            setThreshold(foo) <- 0.00007
+            expect_equal(getThreshold(foo), 0.00007)
+            expect_error(setType(foo) <- -1)
+            expect_error(setType(foo) <- 9999)
+            expect_error(setType(foo) <- c(4, 8, 15, 16, 23, 42))
+            expect_error(setType(foo) <- 'foobar')
+            expect_error(setThreshold(foo) <- -1)
+            setType(foo) <- 'quantile'
+            expect_error(setThreshold(foo) <- 9999)
+            expect_error(setThreshold(foo) <- c(4, 8, 15, 16, 23, 42))
+            expect_error(setThreshold(foo) <- 'foobar')
+            setType(foo) <- 'quantile'
+            expect_error(setThreshold(foo) <- -0.000001)
+            expect_error(setThreshold(foo) <- 1.0000001)
           })
 
-test_that('FilterCommandIndices refuses wrong data types', 
+varcmd1 <- varFilterCommand(mockBeta, byRow=TRUE, type='quantile', threshold=0.25)
+varcmd2 <- varFilterCommand(mockBeta, byRow=FALSE, type='absolute', threshold=0.019)
+
+test_that('VarFilterCommand execution breaks on wrong data types',
           {
-            expect_error(filterCommandIndices(2032))
-            expect_error(filterCommandIndices(rows=c(TRUE, FALSE), cols=letters[1:7]))
+            expect_error(execute(mockMethylSet, varcmd1))
+            expect_error(execute(mockMethylSet, varcmd2))
           })
 
-test_that('FilterCommandIndices execution works correctly on example', 
+test_that('VarFilterCommand fails on empty example',
           {
-            foo <- filterCommandIndices(rows=c(TRUE, TRUE, TRUE, FALSE, FALSE),
-                                        cols=c(FALSE, FALSE, TRUE, FALSE, FALSE))
-            bar <- mockMethylSet[foo]
-            expect_equal(featureNames(bar), c('F1', 'F2', 'F3'))
-            expect_equal(sampleNames(bar), c('S3'))
+            expect_error(execute(varcmd1, emptyMethylSet))
+            expect_error(execute(varcmd2, emptyMethylSet))
+          })
+
+test_that('VarFilterCommand execution works correctly on examples',
+          {
+            bar1 <- execute(varcmd1, mockMethylSet)
+            expect_equal(featureNames(bar1), c('F1', 'F2', 'F3', 'F4'))
+            expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
+            expect_equal(nrow(bar1), c(Features=4))
+            expect_equal(ncol(bar1), c(Samples=5))
+            bar2 <- execute(varcmd2, mockMethylSet)
+            expect_equal(featureNames(bar2), c('F1', 'F2', 'F3', 'F4', 'F5'))
+            expect_equal(sampleNames(bar2), c('S2', 'S3', 'S4'))
+            expect_equal(nrow(bar2), c(Features=5))
+            expect_equal(ncol(bar2), c(Samples=3))
+          })
+
+test_that('VarFilterCommand fails on different dimension names',
+          {
+            expect_error(execute(varcmd1, mockMethylSetPlus),
+                         regexp='must be included in dimension names')
           })
 
 #
@@ -222,9 +236,9 @@ test_that('FilterCommandIndices execution works correctly on example',
 #
 test_that('FilterCommandList gets its slots right', 
           {
-            foo <- filterCommandList(cmd1, cmd2, cmd3, cmd4)
-            cmdList <- list(cmd1, cmd2, cmd3, cmd4)
-            expect_equal(getCommandList(foo), cmdList)
+            foo <- filterCommandList(koveracmd1, koveracmd2, koveracmd3, koveracmd4)
+            koveracmdList <- list(koveracmd1, koveracmd2, koveracmd3, koveracmd4)
+            expect_equal(getCommandList(foo), koveracmdList)
           })
 
 test_that('FilterCommandList refuses wrong data types', 
@@ -232,10 +246,10 @@ test_that('FilterCommandList refuses wrong data types',
             expect_error(filterCommandList(2032))
           })
 
-cmdl1 <- filterCommandList(cmd1)
-cmdl2 <- filterCommandList(cmd1, cmd2)
-cmdl3 <- filterCommandList(cmd1, cmd2, cmd3)
-cmdl4 <- filterCommandList(cmd1, cmd2, cmd3, cmd4)
+cmdl1 <- filterCommandList(koveracmd1)
+cmdl2 <- filterCommandList(koveracmd1, koveracmd2)
+cmdl3 <- filterCommandList(koveracmd1, koveracmd2, koveracmd3)
+cmdl4 <- filterCommandList(koveracmd1, koveracmd2, koveracmd3, koveracmd4)
 
 test_that('FilterCommandList execution breaks on wrong data types', 
           {
@@ -244,22 +258,22 @@ test_that('FilterCommandList execution breaks on wrong data types',
 
 test_that('FilterCommandList execution works correctly on example', 
           {
-            bar1 <- mockMethylSet[execute(cmdl1, mockMethylSet)]
+            bar1 <- execute(cmdl1, mockMethylSet)
             expect_equal(featureNames(bar1), c('F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar1), c(Features=4))
             expect_equal(ncol(bar1), c(Samples=5))
-            bar2 <- mockMethylSet[execute(cmdl2, mockMethylSet)]
+            bar2 <- execute(cmdl2, mockMethylSet)
             expect_equal(featureNames(bar2), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar2), c(Features=3))
             expect_equal(ncol(bar2), c(Samples=5))
-            bar3 <- mockMethylSet[execute(cmdl3, mockMethylSet)]
+            bar3 <- execute(cmdl3, mockMethylSet)
             expect_equal(featureNames(bar3), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar3), c('S1', 'S3', 'S4'))
             expect_equal(nrow(bar3), c(Features=3))
             expect_equal(ncol(bar3), c(Samples=3))
-            bar4 <- mockMethylSet[execute(cmdl4, mockMethylSet)]
+            bar4 <- execute(cmdl4, mockMethylSet)
             expect_equal(featureNames(bar4), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar4), c('S1', 'S3', 'S4'))
             expect_equal(nrow(bar4), c(Features=3))

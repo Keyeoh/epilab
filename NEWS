@@ -1,5 +1,11 @@
 Changes for R-package epilab
 
+Version 0.3-0 (March 14th, 2014)
+  - Added FilterCommand hierarchy for implementing chainable filtering mechanisms.
+  - Added two simple filters:
+    - A KOverA filter for removing bad samples according to their detection p-values.
+    - A Var filter for implementing non-specific filtering.
+
 Version 0.2-1 (March 3rd, 2014)
   - The distance to TSS calculation is now included in the NearestGene annotation command.
 

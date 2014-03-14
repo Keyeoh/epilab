@@ -1,140 +1,4 @@
 #'
-#' FilterCommandIndices
-#'
-#' Class for storing logical indices over rows and columns at the same time. Used by FilterCommand
-#' objects to represent their output.
-#'
-setClass('FilterCommandIndices',
-         representation(rows='logical', cols='logical')
-         )
-
-#' 
-#' getRows generic
-#'
-#' Generic definition of the getRows getter methods
-#'
-#' @param object An object that contains a rows slot.
-#'
-setGeneric('getRows', function(object) standardGeneric('getRows'))
-
-#'
-#' FilterCommandIndices implementation of getRows
-#'
-#' Getter method for rows slot for all FilterCommandIndices objects.
-#'
-#' @param object A FilterCommandIndices object.
-#'
-setMethod('getRows', 'FilterCommandIndices',
-          function(object) {
-            return(object@rows)
-          })
-
-#' 
-#' setRows generic
-#'
-#' Generic definition of the setRows setter methods
-#'
-#' @param object An object that contains a rows slot.
-#' @param value the new rows value
-#'
-setGeneric('setRows<-', function(object, value) standardGeneric('setRows<-'))
-
-#'
-#' FilterCommandIndices implementation of setRows
-#'
-#' Setter method for rows slot for all FilterCommandIndices objects.
-#'
-#' @param object A FilterCommandIndices object.
-#' @param value the new rows value
-#' @name setRows
-#'
-setReplaceMethod('setRows', 'FilterCommandIndices',
-          function(object, value) {
-            object@rows <- value
-            validObject(object)
-            return(object)
-          })
-
-#' 
-#' getCols generic
-#'
-#' Generic definition of the getCols getter methods
-#'
-#' @param object An object that contains a cols slot.
-#'
-setGeneric('getCols', function(object) standardGeneric('getCols'))
-
-#'
-#' FilterCommandIndices implementation of getCols
-#'
-#' Getter method for cols slot for all FilterCommandIndices objects.
-#'
-#' @param object A FilterCommandIndices object.
-#'
-setMethod('getCols', 'FilterCommandIndices',
-          function(object) {
-            return(object@cols)
-          })
-
-#' 
-#' setCols generic
-#'
-#' Generic definition of the setCols setter methods
-#'
-#' @param object An object that contains a cols slot.
-#' @param value the new cols value
-#'
-setGeneric('setCols<-', function(object, value) standardGeneric('setCols<-'))
-
-#'
-#' FilterCommandIndices implementation of setCols
-#'
-#' Setter method for cols slot for all FilterCommandIndices objects.
-#'
-#' @param object A FilterCommandIndices object.
-#' @param value the new cols value
-#' @name setCols
-#'
-setReplaceMethod('setCols', 'FilterCommandIndices',
-          function(object, value) {
-            object@cols <- value
-            validObject(object)
-            return(object)
-          })
-
-#'
-#' FilterCommandIndices constructor
-#'
-#' This function builds a FilterCommandIndices object from parameters rows and cols.
-#'
-#' @param rows A logical vector indicating rows.
-#' @param cols A logical vector indicating cols.
-#' @export
-#' 
-filterCommandIndices <- function(rows, cols) {
-  return(new('FilterCommandIndices', rows=rows, cols=cols))
-}
-
-#'
-#' FilterCommandIndices subscripting
-#'
-#' Overloading the subscript operator in order to slice objects using FilterCommandIndices.
-#'
-#' @param x Any subscriptable object.
-#' @param i A FilterCommandIndices object indicating rows and columns to be preserved.
-#' @param j Missing. Not important for this implementation.
-#' @param ... Not used.
-#'
-setMethod('[', c(x='ANY', i='FilterCommandIndices', j='missing'),
-          function(x, i, j, ..., drop=TRUE) {
-            if (nrow(x) != length(getRows(i)) || ncol(x) != length(getCols(i))) {
-              stop('Incorrect number of dimensions')
-            } else {
-              return(x[getRows(i), getCols(i)])
-            }
-          })
-
-#'
 #' FilterCommand
 #'
 #' Abstract class that serves as interface for all the filtering commands.
@@ -158,8 +22,7 @@ setMethod('execute', c('FilterCommand', 'ANY'),
             } else if(is.null(object) || nrow(object) == 0 || ncol(object) == 0) {
               stop('Cannot execute filter command on empty object.')
             } else {
-              return(filterCommandIndices(rows=rep_len(TRUE, nrow(object)), 
-                                          cols=rep_len(TRUE, ncol(object))))
+              return(object)
             }
           })
 
@@ -228,96 +91,95 @@ setReplaceMethod('setByRow', 'AtomicFilterCommand',
           })
 
 #'
-#' DetPFilterCommand
+#' MatrixFilterCommand
 #'
 #' Abstract class that serves as interface for all the filtering commands that use information from
 #' an additional matrix. In our case, this is usually a matrix of detection p-values, and it helps
 #' us to clean a set according to criteria defined over the input objec and the detection p-values
 #' matrix.
 #'
-#' @slot detectionP The additional matrix used in the filtering criterium.
+#' @slot m The additional matrix used in the filtering criterium.
 #'
-setClass('DetPFilterCommand',
-         representation(detectionP='matrix'),
-         prototype(detectionP=NULL),
+setClass('MatrixFilterCommand',
+         representation(m='matrix'),
+         prototype(m=NULL),
          contains='AtomicFilterCommand'
          )
 
 #'
-#' getDetectionP generic
+#' getMatrix generic
 #'
-#' Generic definition of the getDetectionP getter methods.
+#' Generic definition of the getMatrix getter methods.
 #'
-#' @param object An object that contains a detectionP slot.
+#' @param object An object that contains a m slot.
 #'
-setGeneric('getDetectionP', function(object) standardGeneric('getDetectionP'))
+setGeneric('getMatrix', function(object) standardGeneric('getMatrix'))
 
 #'
-#' DetPFilterCommand base implementation of getDetectionP
+#' MatrixFilterCommand base implementation of getMatrix
 #'
-#' Getter method for detectionP slot for all DetPFilterCommand objects.
+#' Getter method for m slot for all MatrixFilterCommand objects.
 #'
-#' @param object An DetPFilterCommand object.
+#' @param object A MatrixFilterCommand object.
 #'
-setMethod('getDetectionP', 'DetPFilterCommand',
+setMethod('getMatrix', 'MatrixFilterCommand',
           function(object) {
-            return(object@detectionP)
+            return(object@m)
           })
 
 #' 
-#' setDetectionP generic
+#' setMatrix generic
 #'
-#' Generic definition of the setDetectionP setter methods.
+#' Generic definition of the setMatrix setter methods.
 #'
-#' @param object An object that contains a detectionP slot.
-#' @param value The new detectionP value.
+#' @param object An object that contains a m slot.
+#' @param value The new m value.
 #'
-setGeneric('setDetectionP<-', function(object, value) standardGeneric('setDetectionP<-'))
+setGeneric('setMatrix<-', function(object, value) standardGeneric('setMatrix<-'))
 
 #' 
-#' DetPFilterCommand base implementation of setDetectionP
+#' MatrixFilterCommand base implementation of setMatrix
 #'
-#' Getter method for detectionP slot for all DetPFilterCommand objects.
+#' Getter method for m slot for all MatrixFilterCommand objects.
 #'
-#' @param object An DetPFilterCommand object.
-#' @param value The new detectionP value.
-#' @name setDetectionP
+#' @param object A MatrixFilterCommand object.
+#' @param value The new m value.
+#' @name setMatrix
 #'
-setReplaceMethod('setDetectionP', 'DetPFilterCommand',
+setReplaceMethod('setMatrix', 'MatrixFilterCommand',
           function(object, value) {
-            object@detectionP <- value
+            object@m <- value
             validObject(object)
             return(object)
           })
 
 #'
-#' DetPFilterCommand implementation of execute for ANY
+#' MatrixFilterCommand implementation of execute for ANY
 #'
 #' This base implementation of execute just checks if the dimensions of the object to be filtered
-#' are compatible with those from the detection p-value matrix. 
+#' are compatible with those from the additional matrix. 
 #'
 #' Dimensions do not have to be the same, but the row and column names of the input object should be 
-#' included into row and column names of the detectionP matrix.
+#' included into row and column names of the additional matrix.
 #'
-#' @param command A KOverADetPFilterCommand command.
-#' @param object An eSet object.
+#' @param command A MatrixFilterCommand command.
+#' @param object An object to be filtered.
 #'
-setMethod('execute', c('DetPFilterCommand', 'ANY'),
+setMethod('execute', c('MatrixFilterCommand', 'ANY'),
           function(command, object) {
-            fcIndices <- callNextMethod()
+            object <- callNextMethod()
 
-            if (!all(rownames(object) %in% rownames(command@detectionP)) ||
-                !all(colnames(object) %in% colnames(command@detectionP))) {
+            if (!all(rownames(object) %in% rownames(command@m)) ||
+                !all(colnames(object) %in% colnames(command@m))) {
               stop("Dimension names from input object must be included in dimension names of \
-                   detection p-values matrix.")
+                   additional matrix.")
             } else {
-              return(filterCommandIndices(rows=rep_len(TRUE, nrow(object)),
-                                          cols=rep_len(TRUE, ncol(object))))
+              return(object)
             }
           })
 
 #'
-#' KOverADetPFilterCommand filter command.
+#' KOverAFilterCommand filter command.
 #'
 #' This FilterCommand filters out the rows/columns of the input object when there are at least K
 #' elements over a value A in a given row/column. It is equivalent to the kOverA filter function in
@@ -325,16 +187,16 @@ setMethod('execute', c('DetPFilterCommand', 'ANY'),
 #'
 #' @export
 #' 
-setClass('KOverADetPFilterCommand',
+setClass('KOverAFilterCommand',
          representation(k='numeric', a='numeric'),
          prototype(k=2, a=0.01),
-         contains='DetPFilterCommand',
+         contains='MatrixFilterCommand',
          validity=function(object) {
            return(length(object@k) == 1 && 
                   length(object@a) == 1 && 
                   object@k > 0 &&
-                  (!object@byRow || object@k <= ncol(object@detectionP)) &&
-                  (object@byRow || object@k <= nrow(object@detectionP)) &&
+                  (!object@byRow || object@k <= ncol(object@m)) &&
+                  (object@byRow || object@k <= nrow(object@m)) &&
                   object@a >= 0 &&
                   object@a <= 1
                   )
@@ -350,13 +212,13 @@ setClass('KOverADetPFilterCommand',
 setGeneric('getK', function(object) standardGeneric('getK'))
 
 #'
-#' KOverADetPFilterCommand base implementation of getK
+#' KOverAFilterCommand base implementation of getK
 #'
-#' Getter method for k slot for all KOverADetPFilterCommand objects.
+#' Getter method for k slot for all KOverAFilterCommand objects.
 #'
-#' @param object An KOverADetPFilterCommand object.
+#' @param object An KOverAFilterCommand object.
 #'
-setMethod('getK', 'KOverADetPFilterCommand',
+setMethod('getK', 'KOverAFilterCommand',
           function(object) {
             return(object@k)
           })
@@ -372,15 +234,15 @@ setMethod('getK', 'KOverADetPFilterCommand',
 setGeneric('setK<-', function(object, value) standardGeneric('setK<-'))
 
 #' 
-#' KOverADetPFilterCommand base implementation of setK
+#' KOverAFilterCommand base implementation of setK
 #'
-#' Getter method for k slot for all KOverADetPFilterCommand objects.
+#' Getter method for k slot for all KOverAFilterCommand objects.
 #'
-#' @param object An KOverADetPFilterCommand object.
+#' @param object An KOverAFilterCommand object.
 #' @param value The new k value.
 #' @name setK
 #'
-setReplaceMethod('setK', 'KOverADetPFilterCommand',
+setReplaceMethod('setK', 'KOverAFilterCommand',
           function(object, value) {
             object@k <- value
             validObject(object)
@@ -397,13 +259,13 @@ setReplaceMethod('setK', 'KOverADetPFilterCommand',
 setGeneric('getA', function(object) standardGeneric('getA'))
 
 #'
-#' KOverADetPFilterCommand base implementation of getA
+#' KOverAFilterCommand base implementation of getA
 #'
-#' Getter method for a slot for all KOverADetPFilterCommand objects.
+#' Getter method for a slot for all KOverAFilterCommand objects.
 #'
-#' @param object A KOverADetPFilterCommand object.
+#' @param object A KOverAFilterCommand object.
 #'
-setMethod('getA', 'KOverADetPFilterCommand',
+setMethod('getA', 'KOverAFilterCommand',
           function(object) {
             return(object@a)
           })
@@ -419,15 +281,15 @@ setMethod('getA', 'KOverADetPFilterCommand',
 setGeneric('setA<-', function(object, value) standardGeneric('setA<-'))
 
 #' 
-#' KOverADetPFilterCommand base implementation of setA
+#' KOverAFilterCommand base implementation of setA
 #'
-#' Getter method for a slot for all KOverADetPFilterCommand objects.
+#' Getter method for a slot for all KOverAFilterCommand objects.
 #'
-#' @param object A KOverADetPFilterCommand object.
+#' @param object A KOverAFilterCommand object.
 #' @param value The new a value.
 #' @name setA
 #'
-setReplaceMethod('setA', 'KOverADetPFilterCommand',
+setReplaceMethod('setA', 'KOverAFilterCommand',
           function(object, value) {
             object@a <- value
             validObject(object)
@@ -435,40 +297,40 @@ setReplaceMethod('setA', 'KOverADetPFilterCommand',
           })
 
 #'
-#' KOverADetPFilterCommand constructor
+#' KOverAFilterCommand constructor
 #'
-#' This function builds a KOverADetPFilterCommand from parameters k and a.
+#' This function builds a KOverAFilterCommand from parameters k and a.
 #'
-#' @param detectionP A matrix of detection p-values used for filtering.
+#' @param m A matrix used for filtering.
 #' @param byRow A logical indicating the direction of filtering.
 #' @param k The minimum number of elements to label a row/column as invalid.
 #' @param a The p-value threshold.
 #' @export
 #' 
-kOverADetPFilterCommand <- function(detectionP, byRow=TRUE, k=ifelse(byRow, 5, 5000), a=0.01) {
-  return(new('KOverADetPFilterCommand', detectionP=detectionP, k=k, a=a, byRow=byRow))
+kOverAFilterCommand <- function(m, byRow=TRUE, k=ifelse(byRow, 5, 5000), a=0.01) {
+  return(new('KOverAFilterCommand', m=m, k=k, a=a, byRow=byRow))
 }
 
 #'
-#' KOverADetPFilterCommand percentage constructor
+#' KOverAFilterCommand percentage constructor
 #'
-#' This function builds a KOverADetPFilterCommand from parameter a and a percentage of rows/columns.
+#' This function builds a KOverAFilterCommand from parameter a and a percentage of rows/columns.
 #'
-#' @param detectionP A matrix of detection p-values used for filtering.
+#' @param m A matrix used for filtering.
 #' @param byRow A logical indicating the direction of filtering.
 #' @param fraction The minimum percentage of elements to label a row/column as invalid.
 #' @param a The p-value threshold.
 #' @export
 #' 
-kOverADetPFilterCommandFromFraction <- function(detectionP, byRow=TRUE, fraction=0.1, a=0.01) {
-  kFromFraction <- ceiling(ifelse(byRow, ncol(detectionP), nrow(detectionP)) * fraction)
-  return(new('KOverADetPFilterCommand', detectionP=detectionP, k=kFromFraction, a=a, byRow=byRow))
+kOverAFilterCommandFromFraction <- function(m, byRow=TRUE, fraction=0.1, a=0.01) {
+  kFromFraction <- ceiling(ifelse(byRow, ncol(m), nrow(m)) * fraction)
+  return(new('KOverAFilterCommand', m=m, k=kFromFraction, a=a, byRow=byRow))
 }
 
 #'
-#' KOverADetPFilterCommand implementation of execute for eSet
+#' KOverAFilterCommand implementation of execute for eSet
 #'
-#' KOverADetPFilterCommand discards rows or columns from the input object according to the 
+#' KOverAFilterCommand discards rows or columns from the input object according to the 
 #' internal detection p-values matrix of the command. It is equivalent to the kOverA function in the
 #' genefilter package. A row/column is discarded if k or more elements have a detection p-value over
 #' the parameter a. Direction of filtering is controlled by the byRow parameter. 
@@ -476,29 +338,27 @@ kOverADetPFilterCommandFromFraction <- function(detectionP, byRow=TRUE, fraction
 #' In order to properly chain a list of commands (see FilterCommandList), the detection p-value
 #' matrix is projected according to the row and column names of the object which is being filtered.
 #' 
-#' @param command A KOverADetPFilterCommand command.
+#' @param command A KOverAFilterCommand command.
 #' @param object An eSet object.
 #'
-setMethod('execute', c('KOverADetPFilterCommand', 'eSet'),
+setMethod('execute', c('KOverAFilterCommand', 'eSet'),
           function(command, object) {
-            fcIndices <- callNextMethod()
+            object <- callNextMethod()
 
-            detectionPView <- command@detectionP[rownames(object), colnames(object)]
+            mView <- command@m[rownames(object), colnames(object)]
 
             if (command@byRow) {
-              badSums <- rowSums(detectionPView > command@a)
+              badSums <- rowSums(mView > command@a)
             } else {
-              badSums <- colSums(detectionPView > command@a)
+              badSums <- colSums(mView > command@a)
             }
 
             badElements <- badSums >= command@k
 
             if (command@byRow) {
-              setRows(fcIndices) <- as.logical(!badElements)
-              return(fcIndices)
+              return(object[!badElements, ])
             } else {
-              setCols(fcIndices) <- as.logical(!badElements)
-              return(fcIndices)
+              return(object[, !badElements])
             }
           })
 
@@ -565,27 +425,9 @@ setMethod('getCommandList', 'FilterCommandList',
 # TODO: Improve the efficiency of this implementation.
 #
 .executeFilterCommandList <- function(command, object) {
-  
-  resultIndices <- callNextMethod()
-
-  rowIndices <- 1:nrow(object)
-  colIndices <- 1:ncol(object)
-
-  tmpObject <- object
-
-  for (cmd in command@commandList) {
-    fcIndices <- execute(cmd, tmpObject)
-
-    rowIndices <- rowIndices[getRows(fcIndices)]
-    colIndices <- colIndices[getCols(fcIndices)]
-
-    tmpObject <- tmpObject[fcIndices]     
-  }
-
-  setRows(resultIndices) <- 1:nrow(object) %in% rowIndices
-  setCols(resultIndices) <- 1:ncol(object) %in% colIndices
-
-  return(resultIndices)
+  object <- callNextMethod()
+  newObject <- Reduce(function(xx, yy) execute(yy, xx), command@commandList, object)
+  return(newObject)  
 }
 
 #'
@@ -600,4 +442,174 @@ setMethod('getCommandList', 'FilterCommandList',
 #'
 setMethod('execute', c('FilterCommandList', 'ANY'), .executeFilterCommandList)
 
+#'
+#' VarFilterCommand filter command
+#'
+#' This FilterCommand filters out the rows (or columns) of the input object where the variance meets
+#' a certain requirement. Two criteria are implemented at the moment: filter the rows (or columns)
+#' where the variance is under a given threshold, or filter the rows (or columns) where the variance
+#' is under a given quantile of all elements' variances.
+#'
+#' @slot type Indicates type of filtering. Should be one of 'quantile' or 'absolute'
+#' @slot threshold The numerical value of the threshold.
+#'
+setClass('VarFilterCommand',
+         representation(type='character', threshold='numeric'),
+         prototype(type='quantile', threshold=0.25),
+         contains='MatrixFilterCommand',
+         validity=function(object) {
+           if (!object@type %in% c('quantile', 'absolute')) {
+             return('Type of filtering can only be quantile or absolute.')
+           } else if (object@type == 'quantile' && (object@threshold < 0 || object@threshold > 1)) {
+             return('Quantile threshold should be in [0, 1].')
+           } else if (object@type == 'absolute' && object@threshold < 0) {
+             return('Absolute threshold should be a positive number.')
+           }  else {
+             return(TRUE)
+           }
+         })
 
+#'
+#' getType generic
+#'
+#' Generic definition of the getType getter methods.
+#'
+#' @param object An object that contains a type slot.
+#'
+setGeneric('getType', function(object) standardGeneric('getType'))
+
+#'
+#' VarFilterCommand base implementation of getType
+#'
+#' Getter method for type slot for all VarFilterCommand objects.
+#'
+#' @param object An VarFilterCommand object.
+#'
+setMethod('getType', 'VarFilterCommand',
+          function(object) {
+            return(object@type)
+          })
+
+#' 
+#' setType generic
+#'
+#' Generic definition of the setType setter methods.
+#'
+#' @param object An object that contains a type slot.
+#' @param value The new type value.
+#'
+setGeneric('setType<-', function(object, value) standardGeneric('setType<-'))
+
+#' 
+#' VarFilterCommand base implementation of setType
+#'
+#' Getter method for type slot for all VarFilterCommand objects.
+#'
+#' @param object An VarFilterCommand object.
+#' @param value The new type value.
+#' @name setType
+#'
+setReplaceMethod('setType', 'VarFilterCommand',
+          function(object, value) {
+            object@type <- value
+            validObject(object)
+            return(object)
+          })
+
+#'
+#' getThreshold generic
+#'
+#' Generic definition of the getThreshold getter methods.
+#'
+#' @param object An object that contains a threshold slot.
+#'
+setGeneric('getThreshold', function(object) standardGeneric('getThreshold'))
+
+#'
+#' VarFilterCommand base implementation of getThreshold
+#'
+#' Getter method for threshold slot for all VarFilterCommand objects.
+#'
+#' @param object An VarFilterCommand object.
+#'
+setMethod('getThreshold', 'VarFilterCommand',
+          function(object) {
+            return(object@threshold)
+          })
+
+#' 
+#' setThreshold generic
+#'
+#' Generic definition of the setThreshold setter methods.
+#'
+#' @param object An object that contains a threshold slot.
+#' @param value The new threshold value.
+#'
+setGeneric('setThreshold<-', function(object, value) standardGeneric('setThreshold<-'))
+
+#' 
+#' VarFilterCommand base implementation of setThreshold
+#'
+#' Getter method for threshold slot for all VarFilterCommand objects.
+#'
+#' @param object An VarFilterCommand object.
+#' @param value The new threshold value.
+#' @name setThreshold
+#'
+setReplaceMethod('setThreshold', 'VarFilterCommand',
+          function(object, value) {
+            object@threshold <- value
+            validObject(object)
+            return(object)
+          })
+
+#'
+#' VarFilterCommand constructor
+#'
+#' This function builds a VarFilterCommand from parameters type and threshold.
+#'
+#' @param m An additional matrix for evaluating the variance.
+#' @param byRow A logical indicating the direction of filtering.
+#' @param type Indicates type of filtering. Should be one of 'quantile' or 'absolute'
+#' @param threshold The numerical value of the threshold.
+#' @export
+#' 
+varFilterCommand <- function(m, byRow=TRUE, type='quantile', threshold=0.25) {
+  return(new('VarFilterCommand', m=m, byRow=byRow, type=type, threshold=threshold))
+}
+
+#'
+#' VarFilterCommand implementation of execute for MethylSet
+#'
+#' VarFilterCommand discards rows or columns according to their elements' variance. Depending on the
+#' type of filtering, the threshold used can be absolute or expressed as a quantile of the whole
+#' set of variances. This is a useful filter for the implementation of non-specific filtering.
+#'
+#' @param command A VarFilterCommand command.
+#' @param object An object to be filtered.
+#' @importFrom matrixStats rowVars colVars
+#'
+setMethod('execute', c('VarFilterCommand', 'ANY'),
+          function(command, object) {
+            object <- callNextMethod()
+
+            if (command@byRow) {
+              variances <- rowVars(command@m)
+            } else {
+              variances <- colVars(command@m)
+            }
+
+            if (command@type == 'absolute') {
+              badElements <- variances < command@threshold
+            } else if (command@type == 'quantile') {
+              badElements <- variances < quantile(variances, command@threshold)
+            } else {
+              stop('Should not arrive here!')
+            }
+
+            if (command@byRow) {
+              return(object[!badElements, ])
+            } else {
+              return(object[, !badElements])
+            }
+          })
