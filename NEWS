@@ -1,5 +1,11 @@
 Changes for R-package epilab
 
+Version 0.4-0 (March 17th, 2014)
+  - Added functions for the evaluation of overlap information between Illumin450k probes and genes.
+    - getProbeGeneRelationship() for finding overlaps.
+    - getGeneEntrezIds() for finding the set of genes represented by a set of probes.
+    - getSymbolsFromEntrezIds() for extracting the gene names from their Entrez ID.
+
 Version 0.3-0 (March 14th, 2014)
   - Added FilterCommand hierarchy for implementing chainable filtering mechanisms.
   - Added two simple filters:

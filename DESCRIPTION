@@ -1,8 +1,8 @@
 Package: epilab
 Type: Package
 Title: EpiLab Functions for workflow implementation
-Version: 0.3-0
-Date: 2014-03-14
+Version: 0.4-0
+Date: 2014-03-17
 Authors@R: c(person('Gustavo', 'Fernandez Bayon', role=c('aut', 'cre'),
     email='fernandezgustavo@uniovi.es'))
 Author: Gustavo Fernandez Bayon
@@ -20,9 +20,11 @@ Imports:
     AnnotationDbi,
     Biostrings,
     BSgenome.Hsapiens.UCSC.hg19,
+    FDb.InfiniumMethylation.hg19,
     functional,
     GenomicFeatures,
     GenomicRanges,
+    IlluminaHumanMethylation450k.db,
     IRanges,
     matrixStats,
     org.Hs.eg.db,
