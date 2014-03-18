@@ -327,8 +327,29 @@ kOverAFilterCommandFromFraction <- function(m, byRow=TRUE, fraction=0.1, a=0.01)
   return(new('KOverAFilterCommand', m=m, k=kFromFraction, a=a, byRow=byRow))
 }
 
+#
+# Common implementation of KOverAFilterCommand execute
+#
+.executeKOverAFilterCommand <- function(command, object) {
+  mView <- command@m[rownames(object), colnames(object)]
+
+  if (command@byRow) {
+    badSums <- rowSums(mView > command@a)
+  } else {
+    badSums <- colSums(mView > command@a)
+  }
+
+  badElements <- badSums >= command@k
+
+  if (command@byRow) {
+    return(object[!badElements, ])
+  } else {
+    return(object[, !badElements])
+  }
+}
+
 #'
-#' KOverAFilterCommand implementation of execute for eSet
+#' KOverAFilterCommand implementation of execute for ANY
 #'
 #' KOverAFilterCommand discards rows or columns from the input object according to the 
 #' internal detection p-values matrix of the command. It is equivalent to the kOverA function in the
@@ -341,25 +362,11 @@ kOverAFilterCommandFromFraction <- function(m, byRow=TRUE, fraction=0.1, a=0.01)
 #' @param command A KOverAFilterCommand command.
 #' @param object An eSet object.
 #'
-setMethod('execute', c('KOverAFilterCommand', 'eSet'),
+setMethod('execute', c('KOverAFilterCommand', 'ANY'),
           function(command, object) {
             object <- callNextMethod()
 
-            mView <- command@m[rownames(object), colnames(object)]
-
-            if (command@byRow) {
-              badSums <- rowSums(mView > command@a)
-            } else {
-              badSums <- colSums(mView > command@a)
-            }
-
-            badElements <- badSums >= command@k
-
-            if (command@byRow) {
-              return(object[!badElements, ])
-            } else {
-              return(object[, !badElements])
-            }
+            return(.executeKOverAFilterCommand(command, object))
           })
 
 #'
@@ -578,8 +585,33 @@ varFilterCommand <- function(m, byRow=TRUE, type='quantile', threshold=0.25) {
   return(new('VarFilterCommand', m=m, byRow=byRow, type=type, threshold=threshold))
 }
 
+# 
+# Common implementation for VarFilterCommand execute
+#
+.executeVarFilterCommand <- function(command, object) {
+  if (command@byRow) {
+    variances <- rowVars(command@m)
+  } else {
+    variances <- colVars(command@m)
+  }
+
+  if (command@type == 'absolute') {
+    badElements <- variances < command@threshold
+  } else if (command@type == 'quantile') {
+    badElements <- variances < quantile(variances, command@threshold)
+  } else {
+    stop('Should not arrive here!')
+  }
+
+  if (command@byRow) {
+    return(object[!badElements, ])
+  } else {
+    return(object[, !badElements])
+  }
+}
+
 #'
-#' VarFilterCommand implementation of execute for MethylSet
+#' VarFilterCommand implementation of execute for ANY
 #'
 #' VarFilterCommand discards rows or columns according to their elements' variance. Depending on the
 #' type of filtering, the threshold used can be absolute or expressed as a quantile of the whole
@@ -593,23 +625,6 @@ setMethod('execute', c('VarFilterCommand', 'ANY'),
           function(command, object) {
             object <- callNextMethod()
 
-            if (command@byRow) {
-              variances <- rowVars(command@m)
-            } else {
-              variances <- colVars(command@m)
-            }
-
-            if (command@type == 'absolute') {
-              badElements <- variances < command@threshold
-            } else if (command@type == 'quantile') {
-              badElements <- variances < quantile(variances, command@threshold)
-            } else {
-              stop('Should not arrive here!')
-            }
-
-            if (command@byRow) {
-              return(object[!badElements, ])
-            } else {
-              return(object[, !badElements])
-            }
+            return(.executeVarFilterCommand(command, object))
           })
+

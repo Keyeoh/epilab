@@ -1,5 +1,10 @@
 Changes for R-package epilab
 
+Version 0.4-1 (March 18th, 2014)
+  - Refactorization of FilterCommand execute() implementations, in order to make them work with
+    the ANY signature.
+  - Added some tests to see if the Filter hierarchy is working with GenomicMethylSet objects.
+
 Version 0.4-0 (March 17th, 2014)
   - Added functions for the evaluation of overlap information between Illumin450k probes and genes.
     - getProbeGeneRelationship() for finding overlaps.

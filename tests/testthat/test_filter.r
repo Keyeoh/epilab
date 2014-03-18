@@ -37,6 +37,21 @@ sampleNames(mockMethylSetPlus) <- paste0('S', 1:6)
 
 mockBeta <- getBeta(mockMethylSet)
 
+mockRanges <- GRanges(seqnames=c('chr1', 'chr7', 'chr3', 'chrX', 'chrY'),
+                      ranges=IRanges(start=c(4, 8, 15, 16, 23),
+                                     end=c(42, 50, 70, 32, 42)),
+                      strand=c('+', '+', '-', '+', '-')
+                      )
+seqlengths(mockRanges) <- c(1000, 2000, 3000, 4000, 5000)
+
+emptyGenomicSet <- GenomicMethylSet()
+
+mockGenomicSet <- GenomicMethylSet(mockRanges, getMeth(mockMethylSet), getUnmeth(mockMethylSet), 
+                                   pData(mockMethylSet), annotation(mockMethylSet), 
+                                   preprocessMethod(mockMethylSet))
+rownames(mockGenomicSet) <- paste0('F', 1:5)
+colnames(mockGenomicSet) <- paste0('S', 1:5)
+
 #
 # FilterCommand tests
 #
@@ -128,15 +143,15 @@ test_that('KOverAFilterCommand execution breaks on wrong data types',
           {
             expect_error(execute(mockMethylSet, koveracmd1))
             expect_error(execute(mockMethylSet, koveracmd2))
-            expect_error(execute(mockMethylSet, koveracmd3))
+            expect_error(execute(mockGenomicSet, koveracmd3))
             expect_error(execute(mockMethylSet, koveracmd4))
           })
 
 test_that('KOverAFilterCommand fails on empty example',
           {
-            expect_error(execute(koveracmd1, emptyMethylSet))
+            expect_error(execute(koveracmd1, emptyGenomicSet))
             expect_error(execute(koveracmd2, emptyMethylSet))
-            expect_error(execute(koveracmd3, emptyMethylSet))
+            expect_error(execute(koveracmd3, emptyGenomicSet))
             expect_error(execute(koveracmd4, emptyMethylSet))
           })
 
@@ -157,11 +172,11 @@ test_that('KOverAFilterCommand execution works correctly on examples',
             expect_equal(sampleNames(bar3), c('S3', 'S4'))
             expect_equal(nrow(bar3), c(Features=5))
             expect_equal(ncol(bar3), c(Samples=2))
-            bar4 <- execute(koveracmd4, mockMethylSet)
-            expect_equal(featureNames(bar4), c('F1', 'F2', 'F3', 'F4', 'F5'))
-            expect_equal(sampleNames(bar4), character(0))
-            expect_equal(nrow(bar4), c(Features=5))
-            expect_equal(ncol(bar4), c(Samples=0))
+            bar4 <- execute(koveracmd4, mockGenomicSet)
+            expect_equal(rownames(bar4), c('F1', 'F2', 'F3', 'F4', 'F5'))
+            expect_equal(colnames(bar4), character(0))
+            expect_equal(nrow(bar4), 5)
+            expect_equal(ncol(bar4), 0)
           })
 
 test_that('KOverAFilterCommand fails on different dimension names',
@@ -202,22 +217,22 @@ varcmd2 <- varFilterCommand(mockBeta, byRow=FALSE, type='absolute', threshold=0.
 test_that('VarFilterCommand execution breaks on wrong data types',
           {
             expect_error(execute(mockMethylSet, varcmd1))
-            expect_error(execute(mockMethylSet, varcmd2))
+            expect_error(execute(mockGenomicSet, varcmd2))
           })
 
 test_that('VarFilterCommand fails on empty example',
           {
             expect_error(execute(varcmd1, emptyMethylSet))
-            expect_error(execute(varcmd2, emptyMethylSet))
+            expect_error(execute(varcmd2, emptyGenomicSet))
           })
 
 test_that('VarFilterCommand execution works correctly on examples',
           {
-            bar1 <- execute(varcmd1, mockMethylSet)
-            expect_equal(featureNames(bar1), c('F1', 'F2', 'F3', 'F4'))
-            expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
-            expect_equal(nrow(bar1), c(Features=4))
-            expect_equal(ncol(bar1), c(Samples=5))
+            bar1 <- execute(varcmd1, mockGenomicSet)
+            expect_equal(rownames(bar1), c('F1', 'F2', 'F3', 'F4'))
+            expect_equal(colnames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
+            expect_equal(nrow(bar1), 4)
+            expect_equal(ncol(bar1), 5)
             bar2 <- execute(varcmd2, mockMethylSet)
             expect_equal(featureNames(bar2), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar2), c('S2', 'S3', 'S4'))
@@ -268,11 +283,11 @@ test_that('FilterCommandList execution works correctly on example',
             expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
             expect_equal(nrow(bar2), c(Features=3))
             expect_equal(ncol(bar2), c(Samples=5))
-            bar3 <- execute(cmdl3, mockMethylSet)
-            expect_equal(featureNames(bar3), c('F2', 'F3', 'F4'))
-            expect_equal(sampleNames(bar3), c('S1', 'S3', 'S4'))
-            expect_equal(nrow(bar3), c(Features=3))
-            expect_equal(ncol(bar3), c(Samples=3))
+            bar3 <- execute(cmdl3, mockGenomicSet)
+            expect_equal(rownames(bar3), c('F2', 'F3', 'F4'))
+            expect_equal(colnames(bar3), c('S1', 'S3', 'S4'))
+            expect_equal(nrow(bar3), 3)
+            expect_equal(ncol(bar3), 3)
             bar4 <- execute(cmdl4, mockMethylSet)
             expect_equal(featureNames(bar4), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar4), c('S1', 'S3', 'S4'))
