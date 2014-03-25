@@ -1,5 +1,13 @@
 Changes for R-package epilab
 
+Version 0.5-0 (March 25th, 2014)
+  - Added functions for computing different standardized effect size metrics.
+    - Cliff's Delta.
+    - Camblor's AC. This is a new implementation fixing some previous errors in the lab's code.
+    - Odds Ratio.
+    - Odds Ratio for a given level of a big contingency table.
+  - Added tests for the new functions.
+
 Version 0.4-1 (March 18th, 2014)
   - Refactorization of FilterCommand execute() implementations, in order to make them work with
     the ANY signature.
