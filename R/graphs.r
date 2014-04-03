@@ -10,6 +10,8 @@
 #' factor. All the groups are then concatenated and converted to factors before generating the 
 #' graph.
 #'
+#' @importFrom ggplot2 ggplot aes geom_bar theme_bw scale_fill_grey
+#'
 barGroupGraph <- function(dataList) {
   .bindNameData <- function(name, aList) {
     cbind(name, as.character(aList[[name]]))
@@ -39,6 +41,9 @@ barGroupGraph <- function(dataList) {
 #' 
 #' @param dataMatrix A matrix containing the bar group element counts. There is a colunn for each of
 #' the bars/groups and a row for each level of the factor being studied.
+#'
+#' @importFrom ggplot2 ggplot aes geom_bar theme_bw scale_fill_grey
+#' @importFrom reshape2 melt 
 #'
 barGroupGraphFromMatrix <- function(dataMatrix) {
 

@@ -28,7 +28,7 @@ test_that('barGroupGraph works correctly on a naive example',
             expect_equal(foo$data, mockDataFrame)
             expect_equal(as.character(foo$mapping$x), 'group')
             expect_equal(as.character(foo$mapping$fill), 'status')
-            expect_equal(p$scales$scales[[1]]$scale_name, 'grey')
+            expect_equal(foo$scales$scales[[1]]$scale_name, 'grey')
           })
 
 #
@@ -48,9 +48,10 @@ test_that('barGroupGraphFromMatrix works correctly on a naive example',
             mockDataMatrix <- matrix(c(1, 1, 1, 2, 0, 0, 0, 1, 1), ncol=3)
             rownames(mockDataMatrix) <- c('A', 'B', 'C')
             colnames(mockDataMatrix) <- c('g1', 'g2', 'g3')
-            mockDataFrame <- data.frame(status=c('A', 'B', 'C', 'A', 'B', 'C', 'A', 'B', 'C'),
-                                        group=c('g1', 'g1', 'g1', 'g2', 'g2', 'g2', 'g3', 'g3', 'g3'),
-                                        value=c(1, 1, 1, 2, 0, 0, 0, 1, 1))
+            mockDataFrame <- 
+              data.frame(status=c('A', 'B', 'C', 'A', 'B', 'C', 'A', 'B', 'C'),
+                         group=c('g1', 'g1', 'g1', 'g2', 'g2', 'g2', 'g3', 'g3', 'g3'),
+                         value=c(1, 1, 1, 2, 0, 0, 0, 1, 1))
             foo <- barGroupGraphFromMatrix(mockDataMatrix)
             expect_true(is(foo, 'ggplot'))
             expect_equal(length(names(foo)), 9)
@@ -59,6 +60,6 @@ test_that('barGroupGraphFromMatrix works correctly on a naive example',
             expect_equal(foo$data, mockDataFrame)
             expect_equal(as.character(foo$mapping$x), 'group')
             expect_equal(as.character(foo$mapping$fill), 'status')
-            expect_equal(p$scales$scales[[1]]$scale_name, 'grey')
+            expect_equal(foo$scales$scales[[1]]$scale_name, 'grey')
           })
 
