@@ -10,7 +10,7 @@
 #' factor. All the groups are then concatenated and converted to factors before generating the 
 #' graph.
 #'
-#' @importFrom ggplot2 ggplot aes geom_bar theme_bw scale_fill_grey
+#' @importFrom ggplot2 ggplot aes_string geom_bar theme_bw scale_fill_grey
 #'
 barGroupGraph <- function(dataList) {
   .bindNameData <- function(name, aList) {
@@ -25,7 +25,7 @@ barGroupGraph <- function(dataList) {
                                    lapply(names(dataList), .bindNameData, aList=dataList)))
   names(plotData) <- c('group', 'status')
 
-  return(ggplot(plotData, aes(x=group, fill=status)) +
+  return(ggplot(plotData, aes_string(x='group', fill='status')) +
          geom_bar(position='fill', color='black', width=0.6) +
          theme_bw() +
          scale_fill_grey())
@@ -42,7 +42,7 @@ barGroupGraph <- function(dataList) {
 #' @param dataMatrix A matrix containing the bar group element counts. There is a colunn for each of
 #' the bars/groups and a row for each level of the factor being studied.
 #'
-#' @importFrom ggplot2 ggplot aes geom_bar theme_bw scale_fill_grey
+#' @importFrom ggplot2 ggplot aes_string geom_bar theme_bw scale_fill_grey
 #' @importFrom reshape2 melt 
 #'
 barGroupGraphFromMatrix <- function(dataMatrix) {
@@ -53,7 +53,7 @@ barGroupGraphFromMatrix <- function(dataMatrix) {
 
   plotData <- melt(dataMatrix, varnames=c('status', 'group'))
 
-  return(ggplot(plotData, aes(x=group, y=value, fill=status)) +
+  return(ggplot(plotData, aes_string(x='group', y='value', fill='status')) +
          geom_bar(position='fill', color='black', width=0.6, stat='identity') +
          theme_bw() +
          scale_fill_grey())
