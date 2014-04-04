@@ -25,6 +25,7 @@
 #' graph.
 #'
 #' @importFrom ggplot2 ggplot aes_string geom_bar theme_bw scale_fill_grey
+#' @export
 #'
 barGroupGraph <- function(dataList) {
   if (!is.list(dataList)) {
@@ -61,6 +62,7 @@ barGroupGraph <- function(dataList) {
 #'
 #' @importFrom ggplot2 ggplot aes_string geom_bar theme_bw scale_fill_grey
 #' @importFrom reshape2 melt 
+#' @export
 #'
 barGroupGraphFromMatrix <- function(dataMatrix) {
 
@@ -87,6 +89,7 @@ barGroupGraphFromMatrix <- function(dataMatrix) {
 #' numeric. 
 #'
 #' @importFrom ggplot2 ggplot aes_string geom_violin theme_bw scale_fill_grey
+#' @export
 #'
 violinGroupGraph <- function(dataList) {
   if (!is.list(dataList)) {
@@ -106,6 +109,32 @@ violinGroupGraph <- function(dataList) {
   return(ggplot(plotData, aes_string(x='group', y='value', fill='group')) +
          geom_violin() +
          theme_bw() +
+         scale_fill_grey())
+}
+
+#'
+#' Simple Bar Graph
+#'
+#' This function builds a simple count bar plot from a named numeric vector. Each element of the
+#' vector represents the number of elements in a group (bar). The group is named after the name of
+#' the vector element.
+#' 
+#' @param dataVector A named vector containing the counts for each group.
+#'
+#' @importFrom ggplot2 ggplot aes_string geom_bar theme_bw scale_fill_grey
+#' @export
+#'
+simpleBarGraph <- function(dataVector) {
+
+  if (!is.numeric(dataVector) || is.null(names(dataVector))) {
+    stop('Input data must be a named numeric vector.')
+  }
+
+  plotData <- data.frame(group=names(dataVector), count=dataVector)
+
+  return(ggplot(plotData, aes_string(x='group', y='count', fill='group')) +
+         geom_bar(width=0.6, stat='identity', col='black') +
+         theme_bw() + 
          scale_fill_grey())
 }
 

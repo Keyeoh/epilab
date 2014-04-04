@@ -104,3 +104,33 @@ test_that('violinGroupGraph works correctly on a naive example',
             expect_equal(foo$scales$scales[[1]]$scale_name, 'grey')
           })
 
+#
+# simpleBarGraph tests
+#
+
+test_that('simpleBarGraph fails with wrong dataVector',
+          {
+            expect_error(simpleBarGraph('foo'))
+            expect_error(simpleBarGraph(TRUE))
+            expect_error(simpleBarGraph(matrix(1:10, ncol=2)))
+            wrongDataList <- list(g1=c('A', 'B', 'C'),
+                                  g2=factor(c('A', 'A')),
+                                  g3=c(4, 8, 15, 16, 23, 42))
+            expect_error(simpleBarGraph(wrongDataList))
+          })
+
+test_that('simpleBarGraph works correctly on a naive example',
+          {
+            mockDataVector <- c(4, 8, 15, 16, 23, 42)
+            names(mockDataVector) <- paste0('g', 1:6)
+            foo <- simpleBarGraph(mockDataVector)
+            expect_true(is(foo, 'gg'))
+            expect_true(is(foo, 'ggplot'))
+            expect_equal(length(names(foo)), 9)
+            expect_equal(names(foo), c('data', 'layers', 'scales', 'mapping', 'theme', 
+                                       'coordinates', 'facet', 'plot_env', 'labels'))
+            expect_equal(as.character(foo$mapping$x), 'group')
+            expect_equal(as.character(foo$mapping$fill), 'group')
+            expect_equal(foo$scales$scales[[1]]$scale_name, 'grey')
+          })
+
