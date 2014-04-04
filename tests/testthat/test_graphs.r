@@ -10,6 +10,10 @@ test_that('barGroupGraph fails with wrong dataList',
             expect_error(barGroupGraph(1:10))
             expect_error(barGroupGraph(TRUE))
             expect_error(barGroupGraph(matrix(1:10, ncol=2)))
+            wrongDataList <- list(g1=c('A', 'B', 'C'),
+                                  g2=factor(c('A', 'A')),
+                                  g3=c(4, 8, 15, 16, 23, 42))
+            expect_error(barGroupGraph(wrongDataList))
           })
 
 test_that('barGroupGraph works correctly on a naive example',
@@ -60,6 +64,43 @@ test_that('barGroupGraphFromMatrix works correctly on a naive example',
             expect_equal(foo$data, mockDataFrame)
             expect_equal(as.character(foo$mapping$x), 'group')
             expect_equal(as.character(foo$mapping$fill), 'status')
+            expect_equal(foo$scales$scales[[1]]$scale_name, 'grey')
+          })
+
+
+#
+# violinGroupGraph tests
+#
+
+test_that('violinGroupGraph fails with wrong dataList',
+          {
+            expect_error(violinGroupGraph('foo'))
+            expect_error(violinGroupGraph(1:10))
+            expect_error(violinGroupGraph(TRUE))
+            expect_error(violinGroupGraph(matrix(1:10, ncol=2)))
+            wrongDataList <- list(g1=c('A', 'B', 'C'),
+                                  g2=factor(c('A', 'A')),
+                                  g3=c(4, 8, 15, 16, 23, 42))
+            expect_error(violinGroupGraph(wrongDataList))
+          })
+
+test_that('violinGroupGraph works correctly on a naive example',
+          {
+            mockDataList <- list(g1=1:5,
+                                 g2=2:4,
+                                 g3=c(4, 8, 15))
+            mockDataFrame <- data.frame(group=c('g1', 'g1', 'g1', 'g1', 'g1', 'g2', 'g2', 'g2',
+                                                'g3', 'g3', 'g3'),
+                                        value=c(1, 2, 3, 4, 5, 2, 3, 4, 4, 8, 15))
+            foo <- violinGroupGraph(mockDataList)
+            expect_true(is(foo, 'gg'))
+            expect_true(is(foo, 'ggplot'))
+            expect_equal(length(names(foo)), 9)
+            expect_equal(names(foo), c('data', 'layers', 'scales', 'mapping', 'theme', 
+                                       'coordinates', 'facet', 'plot_env', 'labels'))
+            expect_equal(foo$data, mockDataFrame)
+            expect_equal(as.character(foo$mapping$x), 'group')
+            expect_equal(as.character(foo$mapping$fill), 'group')
             expect_equal(foo$scales$scales[[1]]$scale_name, 'grey')
           })
 
