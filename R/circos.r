@@ -20,14 +20,20 @@
 averagePerBin <- function(x, binsize, mcolnames=NULL)
 {
   if (!is(x, "GenomicRanges")) {
-    stop("'x' must be a GenomicRanges object")
+    stop('x must be a GenomicRanges object')
+  }
+  if (length(x) == 0) {
+    stop('x must be a non-empty object.')
   }
   if (any(is.na(seqlengths(x)))) {
-    stop("'seqlengths(x)' contains NAs")
+    stop('seqlengths(x) contains NAs.')
+  }
+  if (!is.character(mcolnames)) {
+    stop('mcolnames must be a character vector.')
   }
   bins <- IRangesList(lapply(seqlengths(x), 
                              function(seqlen) IRanges(breakInChunks(seqlen, binsize))))
-  ans <- as(bins, "GRanges")
+  ans <- as(bins, 'GRanges')
   seqinfo(ans) <- seqinfo(x)
   if (is.null(mcolnames)) {
     return(ans)
