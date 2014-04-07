@@ -19,6 +19,8 @@ names(mockRanges) <- c("cg13299743", "cg14341289", "cg07634195", "cg25020279", "
                        "cg20250426", "cg12778938", "cg16762794", "cg26609550", "cg18502099")
 mockRanges$dummy <- 1
 mockRanges$notDummy <- 1:10
+mockRangesWithoutSL <- mockRanges
+seqlengths(mockRangesWithoutSL) <- NA
 
 #
 # averagePerBin tests
@@ -31,6 +33,7 @@ test_that('averagePerBin fails with wrong values of x',
             expect_error(averagePerBin(c(TRUE, FALSE), 666))
             expect_error(averagePerBin(matrix(rnorm(9), ncol=3), 654))
             expect_error(averagePerBin(emptyRanges, 777))
+            expect_error(averagePerBin(mockRangesWithoutSL, 747))
           })
 
 test_that('averagePerBin fails with wrong values of binsize',
@@ -109,4 +112,60 @@ test_that('generateCircosFromRanges works correctly on a naive example',
             expect_equal(foo$end, c(1523752, 108209785, 1312566, 39074124))
             expect_equal(foo$values, 1:4)
           })    
+
+#
+# generateCircosDensityFromRanges tests
+#
+
+test_that('generateCircosDensityFromRanges fails with wrong values of x',
+          {
+            expect_error(generateCircosDensityFromRanges('foo', wsize=999))
+            expect_error(generateCircosDensityFromRanges(1:17, wsize=982))
+            expect_error(generateCircosDensityFromRanges(c(TRUE, FALSE), wsize=666))
+            expect_error(generateCircosDensityFromRanges(matrix(rnorm(9), ncol=3), wsize=654))
+            expect_error(generateCircosDensityFromRanges(emptyRanges, wsize=777))
+            expect_error(generateCircosDensityFromRanges(mockRangesWithoutSL, wsize=747))
+          })
+
+test_that('generateCircosDensityFromRanges fails with wrong values of binsize',
+          {
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=0))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=-1))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=-Inf))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=Inf))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=NA))
+          })
+
+test_that('generateCircosDensityFromRanges fails with wrong values of mcolname',
+          {
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=1e7, mcolname=NA))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=1e7, mcolname=1:10))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=1e7, 
+                                                         mcolname=c(TRUE, FALSE)))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=1e7, 
+                                                         mcolname='notSoDummy'))
+            expect_error(generateCircosDensityFromRanges(mockRanges, wsize=1e7, 
+                                                         mcolname=c('dummy', 'aintHere', 
+                                                                     'notDummy')))
+          })
+
+test_that('generateCircosDensityFromRanges works correctly on a naive example',
+          {
+            foo <- generateCircosDensityFromRanges(mockRanges, wsize=1e7, mcolname='dummy')
+            expect_equal(nrow(foo), 322)
+            bar <- aggregate(foo$dummy, list(foo$seqnames), length)
+            expect_equal(bar$x, c(25, 25, 20, 20, 19, 18, 16, 15, 15, 14, 14, 14, 12, 11, 11, 10, 9,
+                                  8, 6, 7, 5, 6, 16, 6))
+            bar <- aggregate(foo$dummy, list(foo$seqnames), sum)
+            expect_equal(bar$x, c(0, 0, 0, 0, 2e-07, 2e-07, 4e-07, 2e-07, 2e-07, 0, 2e-07, 0, 2e-07,
+                                  0, 0, 0, 2e-07, 0, 2e-07, 0, 0, 0, 0, 0))
+
+            foo <- generateCircosDensityFromRanges(mockRanges, wsize=1e7, mcolname='notDummy')
+            bar <- aggregate(foo$notDummy, list(foo$seqnames), length)
+            expect_equal(bar$x, c(25, 25, 20, 20, 19, 18, 16, 15, 15, 14, 14, 14, 12, 11, 11, 10, 9,
+                                  8, 6, 7, 5, 6, 16, 6))
+            bar <- aggregate(foo$notDummy, list(foo$seqnames), sum)
+            expect_equal(bar$x, c(0, 0, 0, 0, 8e-07, 2e-07, 2.2e-06, 1.6e-06, 4e-07, 0, 6e-07, 0, 
+                                  1.4e-06, 0, 0, 0, 2e-06, 0, 1.8e-06, 0, 0, 0, 0, 0))
+          })
 

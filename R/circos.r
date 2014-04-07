@@ -16,8 +16,9 @@
 #'
 #' @importFrom GenomicRanges seqlengths
 #' @export
+#' @encoding ISO-8859-2
 #'
-averagePerBin <- function(x, binsize, mcolnames=NULL)
+averagePerBin <- function(x, binsize, mcolnames)
 {
   if (!is(x, "GenomicRanges")) {
     stop('x must be a GenomicRanges object')
@@ -86,6 +87,71 @@ generateCircosFromRanges <- function(ranges, ids=names(ranges), values=NULL) {
   }
 
   return(selectedDf)
+}
+
+#'
+#' Fill sequence length information
+#'
+#' This function fills the seqlength field of a given GRanges object with information extracted 
+#' from several sources, mainly a BSgenome annotation package. This is just a convenience function
+#' for some of our workflows, and it currently supports only hg19 annotation package.
+#'
+#' @param ranges A GRanges input object.
+#' @param type Character value indicating the annotation to use.
+#' @return The same GRanges with the seqlengths field updated for the given annotation.
+#'
+#' @export
+#'
+updateSeqLengthsFromBSGenome <- function(ranges, type=c('hg19')) {
+  type <- match.arg(type)
+
+  if (type == 'hg19') {
+    sLengths <- seqlengths(BSgenome.Hsapiens.UCSC.hg19)
+  } else {
+    stop('BSgenome identifier not supported.')
+  }
+
+  chrs <- names(seqlengths(ranges))
+  seqlengths(ranges) <- sLengths[chrs]
+
+  return(ranges)
+}
+
+#'
+#' Generate CIRCOS density data from GRanges
+#'
+#' This function generates a data.frame in CIRCOS compatible format from an input GRanges object.
+#' In this case, an averaging step is performed in order to generate a windowed, averaged version
+#' of a given input variable associated with the elements of the input genomic regions. It is also
+#' possible to execute the function over a subset of element identifiers, and to specify one or
+#' more metadata columns for averaging. It is useful for the display of genome-wide scale Circos
+#' diagrams, when we want to see the information with a fixed zoom level.
+#'
+#' @param ranges An input GRanges object. It must have sequence length information.
+#' @param ids Character vector indicating the names of the elements to average over.
+#' @param wsize Numeric value indicating the size of the window used for averaging.
+#' @param mcolname Character vector indicating the name of the column for averaging.
+#' @return A data.frame with the averaged information in Circos friendly format.
+#'
+#' @export
+#'
+generateCircosDensityFromRanges <- function(ranges, ids=names(ranges), wsize=1e6, mcolname=NULL) {
+  if (is.null(mcolname)) {
+    mcols(ranges)$dummy <- 1
+    mcolname <- 'dummy'
+  }
+  if (is.null(ids)) {
+    selectedRanges <- ranges
+  } else {
+    selectedRanges <- ranges[ids]
+  }
+  result <- averagePerBin(selectedRanges, binsize=wsize, mcolnames=mcolname)
+
+  resultDf <- as(result, 'data.frame')[, c(1:3, 6)]
+
+  levels(resultDf$seqnames) <- gsub('chr', 'hs', levels(resultDf$seqnames))
+  
+  return(resultDf)
 }
 
 #'
