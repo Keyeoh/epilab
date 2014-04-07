@@ -70,3 +70,43 @@ test_that('averagePerBin works correctly on a naive example',
                                   1.4e-06, 0, 0, 0, 2e-06, 0, 1.8e-06, 0, 0, 0, 0, 0))
           })
 
+#
+# generateCircosFromRanges tests
+#
+
+test_that('generateCircosFromRanges fails on wrong ranges input',
+          {
+            expect_error(generateCircosFromRanges('foo'))
+            expect_error(generateCircosFromRanges(c(TRUE, FALSE)))
+            expect_error(generateCircosFromRanges(1:17))
+            expect_error(generateCircosFromRanges(matrix(rnorm(9), ncol=3)))
+            expect_error(generateCircosFromRanges(emptyRanges))
+          })
+
+test_that('generateCircosFromRanges fails on wrong ids input',
+          {
+            expect_error(generateCircosFromRanges(mockRanges, 'foo'))
+            expect_error(generateCircosFromRanges(mockRanges, c('cg13299743', 'foo')))
+            expect_error(generateCircosFromRanges(mockRanges, NA))
+            expect_error(generateCircosFromRanges(mockRanges, 7))
+          })
+
+test_that('generateCircosFromRanges fails on wrong values input',
+          {
+            expect_error(generateCircosFromRanges(mockRanges, values=letters[1:10]))
+            expect_error(generateCircosFromRanges(mockRanges, values=matrix(rnorm(9), ncol=3)))
+            expect_error(generateCircosFromRanges(mockRanges, values=1:11))
+            expect_error(generateCircosFromRanges(mockRanges, values=1:7))
+          })
+
+test_that('generateCircosFromRanges works correctly on a naive example',
+          {
+            mockIds <- c('cg13299743', 'cg14341289', 'cg07634195', 'cg25020279')
+            foo <- generateCircosFromRanges(mockRanges, ids=mockIds, values=1:4)
+            expect_equal(rownames(foo), c('cg13299743', 'cg14341289', 'cg07634195', 'cg25020279'))
+            expect_equal(foo$seqnames, c('hs6', 'hs9', 'hs11', 'hs5'))
+            expect_equal(foo$start, c(1523751, 108209784, 1312565, 39074123))
+            expect_equal(foo$end, c(1523752, 108209785, 1312566, 39074124))
+            expect_equal(foo$values, 1:4)
+          })    
+

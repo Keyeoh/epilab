@@ -53,3 +53,53 @@ averagePerBin <- function(x, binsize, mcolnames=NULL)
   unlist(viewMeans(views_list), use.names=FALSE)
 }
 
+#'
+#' Generate CIRCOS suitable data from a GRanges (or a subset)
+#'
+#' This function is just a wrapper in order to generate data in the format that CIRCOS accepts. It 
+#' allows to generate data from the whole GRanges object, or from a subset of it. It also accepts
+#' a numerical vector of values to use as scores of the generated track information.
+#'
+#' @param ranges The input GRanges object.
+#' @param ids Character vector indicating the names of the elements to be generated.
+#' @param values Numerical vector providing the corresponding elements' scores.
+#'
+#' @export
+#'
+generateCircosFromRanges <- function(ranges, ids=names(ranges), values=NULL) {
+
+  if (length(ranges) == 0) {
+    stop('Input ranges must be a non-empty object.')
+  }
+  if (!is.character(ids)) {
+    stop('Element ids must be of character type')
+  }
+  if (!is.numeric(values)) {
+    stop('Element values must be of numerical type')
+  }
+  selectedRanges <- ranges[ids]
+  selectedDf <- as(selectedRanges, 'data.frame')[, 1:3]
+  selectedDf$seqnames <- gsub('chr', 'hs', selectedDf$seqnames)
+  
+  if (!is.null(values)) {
+    selectedDf$values <- values
+  }
+
+  return(selectedDf)
+}
+
+#'
+#' Write CIRCOS data
+#'
+#' This is just a wrapper around write.table to ensure that CIRCOS data gets written to disk in good
+#' shape. Just a way of grouping the formatting options and isolating the side effects for testing.
+#'
+#' @param circosData A data.frame containing information in CIRCOS format.
+#' @param filename Name of the file to write the information to.
+#'
+#' @export
+#'
+writeCircos <- function(circosData, filename) {
+  write.table(circosData, file=filename, quote=FALSE, sep='\t', row.names=FALSE, col.names=FALSE)
+}
+
