@@ -75,7 +75,7 @@ generateCircosFromRanges <- function(ranges, ids=names(ranges), values=NULL) {
   if (!is.character(ids)) {
     stop('Element ids must be of character type')
   }
-  if (!is.numeric(values)) {
+  if (!is.null(values) && !is.numeric(values)) {
     stop('Element values must be of numerical type')
   }
   selectedRanges <- ranges[ids]

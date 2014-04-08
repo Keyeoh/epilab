@@ -111,6 +111,11 @@ test_that('generateCircosFromRanges works correctly on a naive example',
             expect_equal(foo$start, c(1523751, 108209784, 1312565, 39074123))
             expect_equal(foo$end, c(1523752, 108209785, 1312566, 39074124))
             expect_equal(foo$values, 1:4)
+            foo <- generateCircosFromRanges(mockRanges, ids=mockIds, values=NULL)
+            expect_equal(rownames(foo), c('cg13299743', 'cg14341289', 'cg07634195', 'cg25020279'))
+            expect_equal(foo$seqnames, c('hs6', 'hs9', 'hs11', 'hs5'))
+            expect_equal(foo$start, c(1523751, 108209784, 1312565, 39074123))
+            expect_equal(foo$end, c(1523752, 108209785, 1312566, 39074124))
           })    
 
 #
