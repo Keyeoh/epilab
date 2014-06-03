@@ -181,6 +181,8 @@ addAllKeys <- function(initData, keys, txtLines) {
 #' @param txtLines A character vector representation of the input file.
 #' @return A new data.frame with the new columns added.
 #'
+#' @export
+#'
 readBroadHistoneFile <- function(txtLines) {
   filesData <- createFilesData(txtLines)
   allKeys <- getAllKeys(txtLines)
