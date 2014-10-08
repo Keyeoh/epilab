@@ -70,6 +70,7 @@ camblorAC <- function(x, y, n=512) {
 #'
 #' @param x Input 2x2 matrix.
 #' @param changeRows boolean indicating if rows have to be exchanged prior to OR computation.
+#' @export
 #'
 oddsRatio <- function(x, changeRows=FALSE) {
 
