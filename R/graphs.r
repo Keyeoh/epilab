@@ -108,6 +108,7 @@ violinGroupGraph <- function(dataList) {
 
   return(ggplot(plotData, aes_string(x='group', y='value', fill='group')) +
          geom_violin() +
+         geom_boxplot(width=0.2) +
          theme_bw() +
          scale_fill_grey())
 }
