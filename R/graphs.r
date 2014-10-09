@@ -88,7 +88,7 @@ barGroupGraphFromMatrix <- function(dataMatrix) {
 #' @param dataList A list containing the violin groups. Each of the groups has to be of type 
 #' numeric. 
 #'
-#' @importFrom ggplot2 ggplot aes_string geom_violin theme_bw scale_fill_grey
+#' @importFrom ggplot2 ggplot aes_string geom_violin theme_bw scale_fill_grey geom_boxplot
 #' @export
 #'
 violinGroupGraph <- function(dataList) {

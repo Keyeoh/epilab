@@ -81,7 +81,6 @@ setGeneric('setByRow<-', function(object, value) standardGeneric('setByRow<-'))
 #'
 #' @param object An AtomicFilterCommand object.
 #' @param value The new byRow value.
-#' @name setByRow
 #'
 setReplaceMethod('setByRow', 'AtomicFilterCommand',
           function(object, value) {
@@ -144,7 +143,6 @@ setGeneric('setMatrix<-', function(object, value) standardGeneric('setMatrix<-')
 #'
 #' @param object A MatrixFilterCommand object.
 #' @param value The new m value.
-#' @name setMatrix
 #'
 setReplaceMethod('setMatrix', 'MatrixFilterCommand',
           function(object, value) {
@@ -240,7 +238,6 @@ setGeneric('setK<-', function(object, value) standardGeneric('setK<-'))
 #'
 #' @param object An KOverAFilterCommand object.
 #' @param value The new k value.
-#' @name setK
 #'
 setReplaceMethod('setK', 'KOverAFilterCommand',
           function(object, value) {
@@ -287,7 +284,6 @@ setGeneric('setA<-', function(object, value) standardGeneric('setA<-'))
 #'
 #' @param object A KOverAFilterCommand object.
 #' @param value The new a value.
-#' @name setA
 #'
 setReplaceMethod('setA', 'KOverAFilterCommand',
           function(object, value) {
@@ -514,7 +510,6 @@ setGeneric('setType<-', function(object, value) standardGeneric('setType<-'))
 #'
 #' @param object An VarFilterCommand object.
 #' @param value The new type value.
-#' @name setType
 #'
 setReplaceMethod('setType', 'VarFilterCommand',
           function(object, value) {
@@ -561,7 +556,6 @@ setGeneric('setThreshold<-', function(object, value) standardGeneric('setThresho
 #'
 #' @param object An VarFilterCommand object.
 #' @param value The new threshold value.
-#' @name setThreshold
 #'
 setReplaceMethod('setThreshold', 'VarFilterCommand',
           function(object, value) {

@@ -45,7 +45,6 @@ setGeneric('setColName<-', function(object, value) standardGeneric('setColName<-
 #'
 #' @param object An AnnotationCommand object.
 #' @param value The new column name.
-#' @name setColName
 #'
 setReplaceMethod('setColName', 'AnnotationCommand',
           function(object, value) {
