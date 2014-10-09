@@ -403,6 +403,71 @@ genomicRegionCommand <- function(colName) {
 setMethod('execute', c('GenomicRegionCommand', 'GRanges'), .executeGenomicRegionCommand)
 
 #'
+#' Disjoint Genomic Region AnnotationCommand
+#' 
+#' This AnnotationCommand adds a column containing the genomic region for a given probe location. It
+#' is different from the GenomicRegionCommand in that it generates disjoint categories and is more
+#' specific.
+#'
+#' @export
+#' 
+setClass('DGenomicRegionCommand', contains='AnnotationCommand')
+
+#'
+#' DGenomicRegionCommand constructor
+#'
+#' This function builds a DGenomicRegionCommand with a given column name.
+#'
+#' @export
+#' @param colName Prefix used in order to generate the column name for the annotation.
+#' 
+dGenomicRegionCommand <- function(colName) {
+    return(new('DGenomicRegionCommand', colName=colName))
+}
+
+#
+# Internal DGenomicRegionCommand implementation of execute
+#
+.executeDGenomicRegionCommand <- function(command, object) {
+  object <- callNextMethod()
+
+  futr <- reduce(unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
+  tutr <- reduce(unlist(threeUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
+  exons <- unlist(exonsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, by='tx'))
+  exons1 <- reduce(exons[exons$exon_rank == 1])
+  exons.no1 <- reduce(exons[exons$exon_rank != 1])
+  tss2000 <- flank(exons1, 2000)
+  introns <- reduce(unlist(intronsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
+
+  mcols(object)[[command@colName]] <- 'Intergenic' 
+  mcols(object)[[command@colName]][countOverlaps(object, introns) > 0] <- 'Intron'
+  mcols(object)[[command@colName]][countOverlaps(object, exons.no1) > 0] <- 'Exon'
+  mcols(object)[[command@colName]][countOverlaps(object, exons1) > 0] <- 'FirstExon'
+  mcols(object)[[command@colName]][countOverlaps(object, tutr) > 0] <- '3UTR'
+  mcols(object)[[command@colName]][countOverlaps(object, futr) > 0] <- '5UTR'
+  mcols(object)[[command@colName]][countOverlaps(object, tss2000) > 0] <- 'Promoter'
+
+  return(object) 
+}
+
+#' 
+#' DGenomicRegionCommand implementation of execute
+#'
+#' DGenomicRegionCommand tries to label the input genomic regions according to their relative
+#' position with respect to the TSS. Regions defined include the Promoter region (2kbp upstream the
+#' TSS), 5'UTR, First Exon, a different Exon, an Intron and the 3'UTR. Finally, Intergenic region is 
+#' assigned when neither of the former labels can be applied. This process is always executed at a 
+#' transcript level.
+#'
+#' @importFrom GenomicRanges reduce
+#' @importFrom GenomicFeatures fiveUTRsByTranscript
+#' @importFrom IRanges unlist
+#' @param command A GenomicRegionCommand.
+#' @param object A GRanges object containing the genomic regions to annotate.
+#'
+setMethod('execute', c('DGenomicRegionCommand', 'GRanges'), .executeDGenomicRegionCommand)
+
+#'
 #' Nearest gene AnnotationCommand
 #'
 #' This AnnotationCommand adds columns with information regarding the nearest TSS and gene.

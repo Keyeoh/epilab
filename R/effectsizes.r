@@ -100,6 +100,7 @@ oddsRatio <- function(x, changeRows=FALSE) {
 #'
 #' @param bigTable The nx2 input matrix.
 #' @param aLevel The level to be studied. It must be a valid rowname for the matrix.
+#' @export
 #'
 oddsRatioLevel <- function(bigTable, aLevel) {
 

@@ -180,6 +180,41 @@ test_that('GenomicRegionCommand execution fails on empty example',
           })
 
 #
+# DGenomicRegionCommand tests
+#
+test_that('DGenomicRegionCommand gets its slots right', 
+          {
+            foo <- dGenomicRegionCommand('bar')
+            expect_equal(getColName(foo), 'bar')
+          })
+
+test_that('DGenomicRegionCommand refuses wrong data types', 
+          {
+            expect_error(dGenomicRegionCommand(2032))
+          })
+
+cmd <- dGenomicRegionCommand('foo')
+
+test_that('DGenomicRegionCommand execution breaks on wrong data types', 
+          {
+            expect_error(execute(mockRanges, cmd))
+          })
+
+test_that('DGenomicRegionCommand execution works correctly on example', 
+          {
+            bar <- execute(cmd, mockRanges)
+
+            expectedValues <- c('Intergenic', 'Promoter', 'Intron', 'Intron', 'Intron', 'Promoter',
+                                'Promoter', 'Intergenic', 'Promoter', 'Intergenic')
+            expect_equivalent(bar$foo, expectedValues)
+          })
+
+test_that('DGenomicRegionCommand execution fails on empty example', 
+          {
+            expect_error(execute(cmd, emptyRanges))
+          })
+
+#
 # NearestGeneCommand tests
 #
 test_that('NearestGeneCommand gets its slots right', 
