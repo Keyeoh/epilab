@@ -16,7 +16,26 @@
 #' @export
 #'
 rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList) {
-  
+ 
+  if (!is(selectedRange, 'GenomicRanges')) {
+    stop('Selected range must be a GenomicRanges object')
+  }
+  if (!is(backgroundRange, 'GenomicRanges')) {
+    stop('Background range must be a GenomicRanges object')
+  }
+  if (!is(rangeList, 'GRangesList')) {
+    stop('Ranges list must be a GRangesList object')
+  }
+  if (length(rangeList) == 0) {
+    stop('Ranges list must contain at list a GRanges object')
+  }
+  if (unique(lapply(rangeList, class)) != 'GRanges') {
+    stop('Ranges list must contain only GRanges objects')
+  }
+  if (is.null(names(rangeList))) {
+    stop('Objects in ranges list must have names')
+  }
+
   testASingleElement <- function(elementName, selectedRange, backgroundRange, rangeList) {
     currentElement <- rangeList[[elementName]]
     currentElement <- reduce(currentElement)
@@ -58,3 +77,25 @@ rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList) {
 
   return(results)
 }
+
+#'
+#' Test Illumina450k target ids against a list of ranges.
+#'
+#' This function is a wrapper for the rangeTestAgainstList, specifically designed to handle
+#' Illumina450k Target IDs. It internally transforms the ids into both selected and background
+#' GRanges objects and then call the main workhorse function.
+#'
+#' @param targetIds A character vector containing the Illumina450k target identifiers.
+#' @param rangeList A GRangesList object containing the different subsets we are going to test 
+#' against.
+#' @return A data.frame containing the results from all the tests.
+#'
+#' @export
+#'
+tids450kTestAgainstList <- function(targetIds, rangeList) {
+  hm450 <- get450k()
+  query <- hm450[targetIds]
+  background <- hm450[setdiff(names(hm450), targetIds)]
+  return(rangeTestAgainstList(query, background, rangeList))
+}
+
