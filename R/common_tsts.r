@@ -37,6 +37,7 @@ rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList) {
   }
 
   testASingleElement <- function(elementName, selectedRange, backgroundRange, rangeList) {
+
     currentElement <- rangeList[[elementName]]
     currentElement <- reduce(currentElement)
 
@@ -46,7 +47,7 @@ rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList) {
     sigTable['mark', 'background'] <- sum(countOverlaps(backgroundRange, currentElement) > 0)
     sigTable['nomark', 'selected'] <- length(selectedRange) - sigTable['mark', 'selected']
     sigTable['nomark', 'background'] <- length(backgroundRange) - sigTable['mark', 'background']
-  
+ 
     currentTest <- fisher.test(sigTable)
 
     currentResult <- list(
