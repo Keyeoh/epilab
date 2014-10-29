@@ -107,4 +107,3 @@ test_that('tids450kTestAgainstList works correctly on example',
             expect_equal(foo['two', 'OR'], Inf)
           })
 
-

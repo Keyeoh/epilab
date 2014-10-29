@@ -11,11 +11,12 @@
 #' the selected subset.
 #' @param rangeList A GRangesList object containing the different subsets we are going to test 
 #' against.
+#' @param \dots Parameters to be passed down to mclapply.
 #' @return A data.frame containing the results from all the tests.
 #'
 #' @export
 #'
-rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList) {
+rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList, ...) {
  
   if (!is(selectedRange, 'GenomicRanges')) {
     stop('Selected range must be a GenomicRanges object')
@@ -70,7 +71,7 @@ rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList) {
   listOfResults <- mclapply(names(rangeList), testASingleElement, 
                             selectedRange=selectedRange,
                             backgroundRange=backgroundRange,
-                            rangeList=rangeList)
+                            rangeList=rangeList, ...)
 
   results <- do.call(rbind, lapply(listOfResults, 
                                    function(xx) as.data.frame(xx[setdiff(names(xx), 'Id')],
@@ -89,14 +90,14 @@ rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList) {
 #' @param targetIds A character vector containing the Illumina450k target identifiers.
 #' @param rangeList A GRangesList object containing the different subsets we are going to test 
 #' against.
+#' @param \dots Parameters to be passed down to rangeTestAgainstList.
 #' @return A data.frame containing the results from all the tests.
 #'
 #' @export
 #'
-tids450kTestAgainstList <- function(targetIds, rangeList) {
+tids450kTestAgainstList <- function(targetIds, rangeList, ...) {
   hm450 <- get450k()
   query <- hm450[targetIds]
   background <- hm450[setdiff(names(hm450), targetIds)]
-  return(rangeTestAgainstList(query, background, rangeList))
+  return(rangeTestAgainstList(query, background, rangeList, ...))
 }
-
