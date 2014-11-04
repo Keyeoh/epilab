@@ -101,3 +101,87 @@ tids450kTestAgainstList <- function(targetIds, rangeList, ...) {
   background <- hm450[setdiff(names(hm450), targetIds)]
   return(rangeTestAgainstList(query, background, rangeList, ...))
 }
+
+#'
+#' General categorical testing.
+#'
+#' This function is a general building block for the common practice of testing if a given subset
+#' of elements is differentially enriched or impovered with respect to a given factor. It builds
+#' a contingency matrix, performs a statistical test and returns information about the test results
+#' and effect sizes.
+#'
+#' @param targetFactor A factor or character vector (which is then converted to a factor) encoding 
+#' the universe for the test along with its labels.
+#' @param selectedIndices A numeric, logical or character vector indicating the elements of the 
+#' factor that resemble the subset currently being tested.
+#' @param testId A character element identifying the current test.
+#' @return A list containing information about the result.
+#'
+#' @export
+#'
+categoricalTest <- function(targetFactor, selectedIndices, testId=NULL) {
+ 
+  if (any(is.na(selectedIndices))) {
+    stop('Indices must not contain NA')
+  }
+
+  if (!class(targetFactor) %in% c('character', 'numeric', 'factor')) {
+    stop('Target Factor must be of character, numeric or factor type')
+  }
+
+  if (!class(selectedIndices) %in% c('numeric', 'logical', 'character', 'integer')) {
+    stop('Selected indices must be of numeric, logical or character type')
+  }
+
+  if (!is.null(testId) && !(is(testId, 'character') && length(testId) == 1)) {
+    stop('Test Identifier must be a character of length 1')
+  }
+
+  if (is(selectedIndices, 'numeric')) {
+    if (any(selectedIndices > length(targetFactor))) {
+      stop('All numeric indices must be lower or equal than the size of the factor')
+    }
+    inOut <- ifelse(1:length(targetFactor) %in% selectedIndices, 'In', 'Out')
+  } else if (is(selectedIndices, 'logical')) {
+    if (length(selectedIndices) != length(targetFactor)) {
+      stop('Logical indices must be of the same length than the factor')
+    }
+    inOut <- ifelse(selectedIndices, 'In', 'Out')
+  } else if (is(selectedIndices, 'character')) {
+    if (length(setdiff(selectedIndices, names(targetFactor))) > 0) {
+      stop('Names of character indices must be included in names of the target factor')
+    }
+    inOut <- ifelse(names(targetFactor) %in% selectedIndices, 'In', 'Out')
+  } else {
+    stop('Indices must be  of type numeric, logical or character')
+  }
+  inOut <- factor(inOut, levels=c('In', 'Out'))
+  
+  if (is(targetFactor, 'character') || is(targetFactor, 'numeric')) {
+    targetFactor <- as.factor(targetFactor)
+  }
+
+  sigTable <- table(targetFactor, inOut)
+  sigTest <- chisq.test(sigTable)
+
+  results <- list()
+  if (!is.null(testId)) {
+    results$Id <- testId
+  }
+  for (l in levels(targetFactor)) {
+    results[[paste(l, 'In', sep='_')]] <- sigTable[l, 'In']
+  }
+  for (l in levels(targetFactor)) {
+    results[[paste(l, 'Out', sep='_')]] <- sigTable[l, 'Out']
+  }
+  results$PValue <- sigTest$p.value
+  results$Method <- sigTest$method
+  for (l in levels(targetFactor)) {
+    results[[paste('OR', l, sep='_')]] <- oddsRatioLevel(sigTable, l)
+  }
+  for (l in levels(targetFactor)) {
+    results[[paste('P', l, sep='_')]] <- sigTable[l, 'In'] / sum(sigTable[, 'In'])
+  }
+
+  return(results)
+}
