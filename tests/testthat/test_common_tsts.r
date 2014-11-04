@@ -107,3 +107,209 @@ test_that('tids450kTestAgainstList works correctly on example',
             expect_equal(foo['two', 'OR'], Inf)
           })
 
+#
+# categoricalTest tests
+#
+test_that('categoricalTest fails on incorrect or missing arguments',
+          {
+            expect_error(categoricalTest())
+            expect_error(categoricalTest('one'))
+            expect_error(categoricalTest(NA, NA))
+            expect_error(categoricalTest(NULL, NULL))
+            expect_error(categoricalTest(matrix(0, nrow=2, ncol=2), 1:3))
+            expect_error(categoricalTest(letters[1:5], matrix(1, nrow=3, ncol=4)))
+            expect_error(categoricalTest(letters[1:5], NA))
+          })
+
+test_that('categoricalTest (factor, numeric) fails when indices are wrong',
+          {
+            mockFactor <- factor(letters[1:10])
+            mockIndices <- c(1, 2, 3, 4, 11)
+            expect_error(categoricalTest(mockFactor, mockIndices))
+          })
+
+test_that('categoricalTest (factor, logical) fails when logical indices are wrong',
+          {
+            mockFactor <- factor(letters[1:10])
+            expect_error(categoricalTest(mockFactor, rep(TRUE, 3)))
+            expect_error(categoricalTest(mockFactor, rep(TRUE, 12)))
+            mockLogical <- rep(TRUE, 10)
+            mockLogical[7] <- NA
+            expect_error(categoricalTest(mockFactor, mockLogical))
+          })
+
+test_that('categoricalTest (factor, character) fails when character indices are wrong',
+          {
+            mockFactor <- factor(letters[1:10])
+            mockIndices <- c('n1', 'n2', 'n3')
+            expect_error(categoricalTest(mockFactor, mockIndices))
+            names(mockFactor) <- paste0('n', 1:10)
+            mockIndices <- c('n1', 'n2', 'n12')
+            expect_error(categoricalTest(mockFactor, mockIndices))
+          })
+
+test_that('categoricalTest (character, numeric) fails when indices are wrong',
+          {
+            mockText <- letters[1:10]
+            mockIndices <- c(1, 2, 3, 4, 11)
+            expect_error(categoricalTest(mockText, mockIndices))
+          })
+
+test_that('categoricalTest (character, logical) fails when logical indices are wrong',
+          {
+            mockText <- letters[1:10]
+            expect_error(categoricalTest(mockText, rep(TRUE, 3)))
+            expect_error(categoricalTest(mockText, rep(TRUE, 12)))
+            mockLogical <- rep(TRUE, 10)
+            mockLogical[7] <- NA
+            expect_error(categoricalTest(mockText, mockLogical))
+          })
+
+test_that('categoricalTest (character, character) fails when character indices are wrong',
+          {
+            mockText <- letters[1:10]
+            mockIndices <- c('n1', 'n2', 'n3')
+            expect_error(categoricalTest(mockText, mockIndices))
+            names(mockText) <- paste0('n', 1:10)
+            mockIndices <- c('n1', 'n2', 'n12')
+            expect_error(categoricalTest(mockText, mockIndices))
+          })
+
+test_that('categoricalTest fails when id is not a single string',
+          {
+            mockFactor <- factor(c('A', 'A', 'B', 'B', 'C', 'C', 'C', 'C'))
+            mockIndices <- 2:6
+            expect_error(categoricalTest(mockFactor, mockIndices, 42))
+            expect_error(categoricalTest(mockFactor, mockIndices, list()))
+            expect_error(categoricalTest(mockFactor, mockIndices, matrix(0, nrow=2, ncol=2)))
+            expect_error(categoricalTest(mockFactor, mockIndices, c('foo', 'bar')))
+          })
+
+test_that('categoricalTest works correctly on (factor, numeric) signature',
+          {
+            mockFactor <- factor(c('A', 'A', 'B', 'B', 'C', 'C', 'C', 'C'))
+            mockIndices <- 2:6
+            foo <- categoricalTest(mockFactor, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equal(foo$A_In, 1)
+            expect_equal(foo$B_In, 2)
+            expect_equal(foo$C_In, 2)
+            expect_equal(foo$A_Out, 1)
+            expect_equal(foo$B_Out, 0)
+            expect_equal(foo$C_Out, 2)
+            expect_equal(foo$PValue, 0.449329, tolerance=0.0001)
+            expect_equivalent(foo$OR_A, 0.5)
+            expect_equivalent(foo$OR_B, Inf)
+            expect_equivalent(foo$OR_C, 1 / 3)
+            expect_equal(foo$P_A, 0.2)
+            expect_equal(foo$P_B, 0.4)
+            expect_equal(foo$P_C, 0.4)
+          })
+
+test_that('categoricalTest works correctly on (factor, logical) signature',
+          {
+            mockFactor <- factor(c('A', 'A', 'B', 'B', 'C', 'C', 'C', 'C'))
+            mockIndices <- c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
+            foo <- categoricalTest(mockFactor, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equal(foo$A_In, 1)
+            expect_equal(foo$B_In, 2)
+            expect_equal(foo$C_In, 2)
+            expect_equal(foo$A_Out, 1)
+            expect_equal(foo$B_Out, 0)
+            expect_equal(foo$C_Out, 2)
+            expect_equal(foo$PValue, 0.449329, tolerance=0.0001)
+            expect_equivalent(foo$OR_A, 0.5)
+            expect_equivalent(foo$OR_B, Inf)
+            expect_equivalent(foo$OR_C, 1 / 3)
+            expect_equal(foo$P_A, 0.2)
+            expect_equal(foo$P_B, 0.4)
+            expect_equal(foo$P_C, 0.4)
+          })
+
+test_that('categoricalTest works correctly on (factor, character) signature',
+          {
+            mockFactor <- factor(c('A', 'A', 'B', 'B', 'C', 'C', 'C', 'C'))
+            names(mockFactor) <- paste0('n', 1:8)
+            mockIndices <- paste0('n', 2:6)
+            foo <- categoricalTest(mockFactor, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equal(foo$A_In, 1)
+            expect_equal(foo$B_In, 2)
+            expect_equal(foo$C_In, 2)
+            expect_equal(foo$A_Out, 1)
+            expect_equal(foo$B_Out, 0)
+            expect_equal(foo$C_Out, 2)
+            expect_equal(foo$PValue, 0.449329, tolerance=0.0001)
+            expect_equivalent(foo$OR_A, 0.5)
+            expect_equivalent(foo$OR_B, Inf)
+            expect_equivalent(foo$OR_C, 1 / 3)
+            expect_equal(foo$P_A, 0.2)
+            expect_equal(foo$P_B, 0.4)
+            expect_equal(foo$P_C, 0.4)
+          })
+
+test_that('categoricalTest works correctly on (character, numeric) signature',
+          {
+            mockFactor <- c('A', 'A', 'B', 'B', 'C', 'C', 'C', 'C')
+            mockIndices <- 2:6
+            foo <- categoricalTest(mockFactor, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equal(foo$A_In, 1)
+            expect_equal(foo$B_In, 2)
+            expect_equal(foo$C_In, 2)
+            expect_equal(foo$A_Out, 1)
+            expect_equal(foo$B_Out, 0)
+            expect_equal(foo$C_Out, 2)
+            expect_equal(foo$PValue, 0.449329, tolerance=0.0001)
+            expect_equivalent(foo$OR_A, 0.5)
+            expect_equivalent(foo$OR_B, Inf)
+            expect_equivalent(foo$OR_C, 1 / 3)
+            expect_equal(foo$P_A, 0.2)
+            expect_equal(foo$P_B, 0.4)
+            expect_equal(foo$P_C, 0.4)
+          })
+
+test_that('categoricalTest works correctly on (character, logical) signature',
+          {
+            mockFactor <- c('A', 'A', 'B', 'B', 'C', 'C', 'C', 'C')
+            mockIndices <- c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
+            foo <- categoricalTest(mockFactor, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equal(foo$A_In, 1)
+            expect_equal(foo$B_In, 2)
+            expect_equal(foo$C_In, 2)
+            expect_equal(foo$A_Out, 1)
+            expect_equal(foo$B_Out, 0)
+            expect_equal(foo$C_Out, 2)
+            expect_equal(foo$PValue, 0.449329, tolerance=0.0001)
+            expect_equivalent(foo$OR_A, 0.5)
+            expect_equivalent(foo$OR_B, Inf)
+            expect_equivalent(foo$OR_C, 1 / 3)
+            expect_equal(foo$P_A, 0.2)
+            expect_equal(foo$P_B, 0.4)
+            expect_equal(foo$P_C, 0.4)
+          })
+
+test_that('categoricalTest works correctly on (character, character) signature',
+          {
+            mockFactor <- c('A', 'A', 'B', 'B', 'C', 'C', 'C', 'C')
+            names(mockFactor) <- paste0('n', 1:8)
+            mockIndices <- paste0('n', 2:6)
+            foo <- categoricalTest(mockFactor, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equal(foo$A_In, 1)
+            expect_equal(foo$B_In, 2)
+            expect_equal(foo$C_In, 2)
+            expect_equal(foo$A_Out, 1)
+            expect_equal(foo$B_Out, 0)
+            expect_equal(foo$C_Out, 2)
+            expect_equal(foo$PValue, 0.449329, tolerance=0.0001)
+            expect_equivalent(foo$OR_A, 0.5)
+            expect_equivalent(foo$OR_B, Inf)
+            expect_equivalent(foo$OR_C, 1 / 3)
+            expect_equal(foo$P_A, 0.2)
+            expect_equal(foo$P_B, 0.4)
+            expect_equal(foo$P_C, 0.4)
+          })
+
