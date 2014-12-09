@@ -77,6 +77,9 @@ rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList, ...)
                                    function(xx) as.data.frame(xx[setdiff(names(xx), 'Id')],
                                                               row.names=xx$Id)))
 
+  results$QValue <- p.adjust(results$PValue, method='fdr')
+  results$Bonferroni <- p.adjust(results$PValue, method='bonferroni')
+
   return(results)
 }
 
