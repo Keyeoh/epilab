@@ -31,11 +31,17 @@ batchPlot <- function(pdata, sv, nvars=NULL, qvars=NULL, alpha=0.05) {
   getScore <- function(comb, pdata, sv, alpha) {
     varData <- pdata[, as.character(comb$varname)]
     svData <- sv[, as.character(comb$svname)]
-    if (comb$type == 'n') {
+    if (all(is.na(varData))) {
+      score <- NA
+    } else if (length(unique(varData)) == 1) {
+      score <- NA
+    } else if (comb$type == 'n') {
       fit <- aov(svData ~ varData)
       afit <- anova(fit)
       pvalue <- afit$'Pr(>F)'[1]
-      if (pvalue < alpha) {
+      if (is.na(pvalue)) {
+        score <- NA
+      } else if (pvalue < alpha) {
         score <- 1 
       } else {
         score <- 0
@@ -57,7 +63,7 @@ batchPlot <- function(pdata, sv, nvars=NULL, qvars=NULL, alpha=0.05) {
 
   if (is.null(nvars)) {
     pdataClasses <- sapply(pdata, class)
-    nvars <- names(pdata)[pdataClasses == 'character' || pdataClasses == 'factor']
+    nvars <- names(pdata)[pdataClasses == 'character' | pdataClasses == 'factor']
   }
 
   if (is.null(qvars)) {
