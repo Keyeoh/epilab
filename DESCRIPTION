@@ -15,22 +15,25 @@ Description: Compilation of data, functions and other stuff intended to be used
     might be splitted to take into account the different aspects of the lab
     workflows.
 Depends:
+    FDb.InfiniumMethylation.hg19,
+    ggplot2,
     methods
 Imports:
     AnnotationDbi,
     Biostrings,
     BSgenome.Hsapiens.UCSC.hg19,
-    FDb.InfiniumMethylation.hg19,
+    plyr,
     functional,
     GenomicFeatures,
     GenomicRanges,
-    ggplot2,
+    gridExtra,
     IlluminaHumanMethylation450k.db,
     IRanges,
     matrixStats,
     org.Hs.eg.db,
     reshape2,
     rtracklayer,
+    scales,
     TxDb.Hsapiens.UCSC.hg19.knownGene
 Suggests:
     testthat,

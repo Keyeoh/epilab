@@ -23,15 +23,21 @@ zeroDetectionP <- matrix(c(0, 0, 0, 0, 0,
 rownames(zeroDetectionP) <- paste0('F', 1:5)
 colnames(zeroDetectionP) <- paste0('S', 1:5)
 
-emptyMethylSet <- MethylSet()
-
+mockPdata <- AnnotatedDataFrame(data.frame(foo=1:5))
+mockFdata <- AnnotatedDataFrame(data.frame(bar=1:5))
 mockMethylSet <- MethylSet(Meth=matrix(1:5, nrow=5, ncol=5), 
-                           Unmeth=matrix(1:5, nrow=5, ncol=5, byrow=TRUE))
+                           Unmeth=matrix(1:5, nrow=5, ncol=5, byrow=TRUE),
+                           phenoData=mockPdata)
+featureData(mockMethylSet) <- mockFdata
 featureNames(mockMethylSet) <- paste0('F', 1:5)
 sampleNames(mockMethylSet) <- paste0('S', 1:5)
 
+mockPdataPlus <- AnnotatedDataFrame(data.frame(foo=1:6))
+mockFdataPlus <- AnnotatedDataFrame(data.frame(bar=1:5))
 mockMethylSetPlus <- MethylSet(Meth=matrix(1:6, nrow=5, ncol=6), 
-                               Unmeth=matrix(1:6, nrow=5, ncol=6, byrow=TRUE))
+                               Unmeth=matrix(1:6, nrow=5, ncol=6, byrow=TRUE),
+                               phenoData=mockPdataPlus)
+featureData(mockMethylSetPlus) <- mockFdataPlus
 featureNames(mockMethylSetPlus) <- paste0('F', 1:5)
 sampleNames(mockMethylSetPlus) <- paste0('S', 1:6)
 
@@ -55,12 +61,6 @@ colnames(mockGenomicSet) <- paste0('S', 1:5)
 #
 # FilterCommand tests
 #
-test_that('FilterCommand derived classes refuse to run on empty objects',
-          {
-            foo <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
-            expect_error(execute(foo, emptyMethylSet))
-          })
-          
 test_that('FilterCommand fails on objects without dimensions',
           {
             foo <- kOverAFilterCommand(mockDetectionP, byRow=TRUE, k=2, a=0.07)
@@ -91,7 +91,6 @@ test_that('MatrixFilterCommand accessors work well on derived classes',
             expect_equal(getMatrix(foo), mockDetectionP)
             setMatrix(foo) <- zeroDetectionP
             expect_equal(getMatrix(foo), zeroDetectionP)
-            expect_error(setMatrix(foo) <- emptyMethylSet)
             expect_error(setMatrix(foo) <- 42)
             expect_error(setMatrix(foo) <- 'foobar')
             expect_error(setMatrix(foo) <- TRUE)
@@ -150,9 +149,7 @@ test_that('KOverAFilterCommand execution breaks on wrong data types',
 test_that('KOverAFilterCommand fails on empty example',
           {
             expect_error(execute(koveracmd1, emptyGenomicSet))
-            expect_error(execute(koveracmd2, emptyMethylSet))
             expect_error(execute(koveracmd3, emptyGenomicSet))
-            expect_error(execute(koveracmd4, emptyMethylSet))
           })
 
 test_that('KOverAFilterCommand execution works correctly on examples',
@@ -222,7 +219,6 @@ test_that('VarFilterCommand execution breaks on wrong data types',
 
 test_that('VarFilterCommand fails on empty example',
           {
-            expect_error(execute(varcmd1, emptyMethylSet))
             expect_error(execute(varcmd2, emptyGenomicSet))
           })
 
