@@ -57,7 +57,7 @@ test_that('getSymbolsFromEntrezIds works on empty input',
 test_that('getSymbolsFromEntrezIds works correctly on example',
           {
             foo <- getSymbolsFromEntrezIds(mockEntrez)
-            expect_equivalent(foo, c('R3HDM2', 'LOC729041', 'FANCA', 'ROBO2', 'LMNA', 'TRIM47', 'BIN1'))
+            expect_equivalent(foo, c('R3HDM2', 'FAAHP1', 'FANCA', 'ROBO2', 'LMNA', 'TRIM47', 'BIN1'))
           })
 
 #
@@ -110,7 +110,7 @@ test_that('getProbeGeneRelationship works correctly on example',
             expect_equal(foo$probeId, c('cg00079477', 'cg03046843', 'cg07648498', 'cg12302110',
                                         'cg23922289', 'cg26708970', 'cg27405400'))
             expect_equal(foo$geneId, c('22864', '729041', '2175', '6092', '4000', '91107', '274'))
-            expect_equal(foo$geneSymbol, c('R3HDM2', 'LOC729041', 'FANCA', 'ROBO2', 'LMNA', 
+            expect_equal(foo$geneSymbol, c('R3HDM2', 'FAAHP1', 'FANCA', 'ROBO2', 'LMNA', 
                                            'TRIM47', 'BIN1'))
             foo <- getProbeGeneRelationship(mockTids, 'ucsc19', 20000)
             expect_equal(foo$probeId, c('cg00079477', 'cg03046843', 'cg07648498', 'cg07648498', 
@@ -118,7 +118,7 @@ test_that('getProbeGeneRelationship works correctly on example',
                                         'cg26708970', 'cg27405400'))
             expect_equal(foo$geneId, c('22864', '729041', '2175', '84501', '6092', '10444', '54662', 
                                        '4000', '91107', '274'))
-            expect_equal(foo$geneSymbol, c('R3HDM2', 'LOC729041', 'FANCA', 'SPIRE2', 'ROBO2', 
+            expect_equal(foo$geneSymbol, c('R3HDM2', 'FAAHP1', 'FANCA', 'SPIRE2', 'ROBO2', 
                                            'ZER1', 'TBC1D13', 'LMNA', 'TRIM47', 'BIN1'))
           })
 

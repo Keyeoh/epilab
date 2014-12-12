@@ -14,7 +14,6 @@
 #' covering all the sequences in 'seqinfo(x)' and (c) the "averaged" metadata columns specified
 #' in 'mcolnames'.
 #'
-#' @importFrom GenomicRanges seqlengths
 #' @export
 #' @encoding ISO-8859-2
 #'
