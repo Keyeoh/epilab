@@ -3,6 +3,7 @@ context('General testing framework tests')
 #
 # rangeTestAgainstList tests
 #
+
 test_that('rangeTestAgainstList fails on incorrect or missing arguments',
           {
             expect_error(rangeTestAgainstList())
@@ -57,6 +58,7 @@ test_that('rangesTestAgainstList works correctly on example',
 #
 # tids450kTestAgainstList tests
 #
+
 test_that('tids450kTestAgainstList fails on incorrect or missing arguments',
           {
             expect_error(tids450kTestAgainstList())
@@ -110,6 +112,7 @@ test_that('tids450kTestAgainstList works correctly on example',
 #
 # categoricalTest tests
 #
+
 test_that('categoricalTest fails on incorrect or missing arguments',
           {
             expect_error(categoricalTest())
@@ -312,4 +315,99 @@ test_that('categoricalTest works correctly on (character, character) signature',
             expect_equal(foo$P_B, 0.4)
             expect_equal(foo$P_C, 0.4)
           })
+
+#
+# continuousTest tests
+#
+
+test_that('continuousTest fails on incorrect or missing arguments',
+          {
+            expect_error(continuousTest())
+            expect_error(continuousTest('one'))
+            expect_error(continuousTest(NA, NA))
+            expect_error(continuousTest(NULL, NULL))
+            expect_error(continuousTest(matrix(0, nrow=2, ncol=2), 1:3))
+            expect_error(continuousTest(letters[1:5], matrix(1, nrow=3, ncol=4)))
+            expect_error(continuousTest(letters[1:5], NA))
+            expect_error(continuousTest(factor(1, 10), 1:5))
+            expect_error(continuousTest(letters[1:7], 1:5))
+          })
+
+test_that('continuousTest (indexed by numeric) fails when indices are wrong',
+          {
+            mockVar <- 1:10
+            mockIndices <- c(1, 2, 3, 4, 11)
+            expect_error(continuousTest(mockVar, mockIndices))
+          })
+
+test_that('continuousTest (indexed by logical) fails when logical indices are wrong',
+          {
+            mockVar <- 1:10
+            expect_error(continuousTest(mockVar, rep(TRUE, 3)))
+            expect_error(continuousTest(mockVar, rep(TRUE, 12)))
+            mockLogical <- rep(TRUE, 10)
+            mockLogical[7] <- NA
+            expect_error(continuousTest(mockVar, mockLogical))
+          })
+
+test_that('continuousTest (indexed by character) fails when character indices are wrong',
+          {
+            mockVar <- 1:10
+            mockIndices <- c('n1', 'n2', 'n3')
+            expect_error(continuousTest(mockVar, mockIndices))
+            names(mockVar) <- paste0('n', 1:10)
+            mockIndices <- c('n1', 'n2', 'n12')
+            expect_error(continuousTest(mockVar, mockIndices))
+          })
+
+test_that('continuousTest fails when id is not a single string',
+          {
+            mockVar <- 1:10
+            mockIndices <- 2:6
+            expect_error(continuousTest(mockVar, mockIndices, 42))
+            expect_error(continuousTest(mockVar, mockIndices, list()))
+            expect_error(continuousTest(mockVar, mockIndices, matrix(0, nrow=2, ncol=2)))
+            expect_error(continuousTest(mockVar, mockIndices, c('foo', 'bar')))
+          })
+
+test_that('continuousTest works correctly on numeric indexing',
+          {
+            mockVar <- 1:10
+            mockIndices <- 2:6
+            foo <- continuousTest(mockVar, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equivalent(foo$Median_In, 4)
+            expect_equivalent(foo$Median_Out, 8)
+            expect_equal(foo$PValue, 0.1507937, tolerance=0.0001)
+            expect_equal(foo$AC, 0.1653926, tolerance=0.0001)
+            expect_equal(foo$D, -0.6)
+          })
+
+test_that('continuousTest works correctly on logical indexing',
+          {
+            mockVar <- 1:10
+            mockIndices <- c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)
+            foo <- continuousTest(mockVar, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equivalent(foo$Median_In, 4)
+            expect_equivalent(foo$Median_Out, 8)
+            expect_equal(foo$PValue, 0.1507937, tolerance=0.0001)
+            expect_equal(foo$AC, 0.1653926, tolerance=0.0001)
+            expect_equal(foo$D, -0.6)
+          })
+
+test_that('continuousTest works correctly on character indexing',
+          {
+            mockVar <- 1:10
+            names(mockVar) <- paste0('n', 1:10)
+            mockIndices <- paste0('n', 2:6)
+            foo <- continuousTest(mockVar, mockIndices, testId='foo')
+            expect_equal(foo$Id, 'foo')
+            expect_equivalent(foo$Median_In, 4)
+            expect_equivalent(foo$Median_Out, 8)
+            expect_equal(foo$PValue, 0.1507937, tolerance=0.0001)
+            expect_equal(foo$AC, 0.1653926, tolerance=0.0001)
+            expect_equal(foo$D, -0.6)
+          })
+
 

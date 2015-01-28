@@ -188,3 +188,80 @@ categoricalTest <- function(targetFactor, selectedIndices, testId=NULL) {
 
   return(results)
 }
+
+#'
+#' General continuous testing.
+#'
+#' This function is a general building block for the common practice of testing if a given subset
+#' of elements is differentially enriched or impovered with respect to a given numerical variable. 
+#' It simply splits the numerical variable according to the indices provided, performs a statistical
+#' test and returns information about the test results and effect sizes.
+#'
+#' @param targetVar A numerical vector representing the values the universe variable takes.
+#' @param selectedIndices A numeric, logical or character vector indicating the elements of the 
+#' factor that resemble the subset currently being tested.
+#' @param testId A character element identifying the current test.
+#' @return A list containing information about the result.
+#'
+#' @importFrom effsize cliff.delta.default cliff.delta
+#' @export
+#'
+continuousTest <- function(targetVar, selectedIndices, testId=NULL) {
+ 
+  if (any(is.na(selectedIndices))) {
+    stop('Indices must not contain NA')
+  }
+
+  if (!class(targetVar) %in% c('numeric', 'integer')) {
+    stop('Target Variable must be of numeric type')
+  }
+
+  if (!class(selectedIndices) %in% c('numeric', 'logical', 'character', 'integer')) {
+    stop('Selected indices must be of numeric, logical or character type')
+  }
+
+  if (!is.null(testId) && !(is(testId, 'character') && length(testId) == 1)) {
+    stop('Test Identifier must be a character of length 1')
+  }
+
+  if (is(selectedIndices, 'numeric')) {
+    if (any(selectedIndices > length(targetVar))) {
+      stop('All numeric indices must be lower or equal than the size of the factor')
+    }
+    inOut <- ifelse(1:length(targetVar) %in% selectedIndices, 'In', 'Out')
+  } else if (is(selectedIndices, 'logical')) {
+    if (length(selectedIndices) != length(targetVar)) {
+      stop('Logical indices must be of the same length than the factor')
+    }
+    inOut <- ifelse(selectedIndices, 'In', 'Out')
+  } else if (is(selectedIndices, 'character')) {
+    if (length(setdiff(selectedIndices, names(targetVar))) > 0) {
+      stop('Names of character indices must be included in names of the target factor')
+    }
+    inOut <- ifelse(names(targetVar) %in% selectedIndices, 'In', 'Out')
+  } else {
+    stop('Indices must be  of type numeric, logical or character')
+  }
+  inOut <- factor(inOut, levels=c('In', 'Out'))
+  targetVar <- as.numeric(targetVar)
+  
+  sigTest <- wilcox.test(targetVar ~ inOut)
+
+  results <- list()
+  if (!is.null(testId)) {
+    results$Id <- testId
+  }
+  medians <- tapply(targetVar, inOut, median)
+  results$Median_In <- medians['In']
+  results$Median_Out <- medians['Out']
+  means <- tapply(targetVar, inOut, mean)
+  results$Mean_In <- means['In']
+  results$Mean_Out <- means['Out']
+  results$PValue <- sigTest$p.value
+  results$Method <- sigTest$method
+  results$AC <- camblorAC(targetVar[inOut == 'In'], targetVar[inOut == 'Out']) 
+  results$D <- cliff.delta(targetVar[inOut == 'In'], targetVar[inOut == 'Out'])$estimate 
+
+  return(results)
+}
+
