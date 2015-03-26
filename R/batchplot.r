@@ -68,7 +68,7 @@ batchPlot <- function(pdata, sv, nvars=NULL, qvars=NULL, alpha=0.05) {
 
   if (is.null(qvars)) {
     pdataClasses <- sapply(pdata, class)
-    qvars <- names(pdata)[sapply(pdata, class) == 'numeric']
+    qvars <- names(pdata)[pdataClasses == 'numeric' | pdataClasses == 'integer']
   }
 
   ncombs <- expand.grid(varname=nvars, svname=colnames(sv))
