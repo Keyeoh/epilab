@@ -261,6 +261,7 @@ setMethod('getDiscardDirection', 'CPGICommand',
 #' input regions.
 #'
 #' @importFrom functional Curry
+#' @import GenomicRanges
 #' @param command A CPGICommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
 #'
@@ -308,8 +309,8 @@ gapCommand <- function(colName) {
     raw.table <- getTable(q)
 
     # Be careful with the 0-based data!
-    gr <- with(raw.table, GRanges(chrom, IRanges(chromStart + 1, chromEnd),
-                                  type=type))
+    gr <- GRanges(raw.table$chrom, IRanges(raw.table$chromStart + 1, raw.table$chromEnd),
+                                  type=raw.table$type)
     telomeres <- gr[gr$type == 'telomere']
     centromeres <- gr[gr$type == 'centromere']
 
@@ -395,7 +396,7 @@ genomicRegionCommand <- function(colName) {
 #' Again, this command is better suited for very small input regions.
 #'
 #' @importFrom GenomicRanges reduce
-#' @importFrom GenomicFeatures fiveUTRsByTranscript
+#' @import GenomicFeatures
 #' @importFrom IRanges unlist
 #' @param command A GenomicRegionCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
@@ -431,13 +432,13 @@ dGenomicRegionCommand <- function(colName) {
 .executeDGenomicRegionCommand <- function(command, object) {
   object <- callNextMethod()
 
-  futr <- reduce(unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
-  tutr <- reduce(unlist(threeUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
+  futr <- unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene))
+  tutr <- unlist(threeUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene))
   exons <- unlist(exonsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, by='tx'))
-  exons1 <- reduce(exons[exons$exon_rank == 1])
-  exons.no1 <- reduce(exons[exons$exon_rank != 1])
+  exons1 <- exons[exons$exon_rank == 1]
+  exons.no1 <- exons[exons$exon_rank != 1]
   tss2000 <- flank(exons1, 2000)
-  introns <- reduce(unlist(intronsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
+  introns <- unlist(intronsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene))
 
   mcols(object)[[command@colName]] <- 'Intergenic' 
   mcols(object)[[command@colName]][countOverlaps(object, introns) > 0] <- 'Intron'
@@ -460,7 +461,7 @@ dGenomicRegionCommand <- function(colName) {
 #' transcript level.
 #'
 #' @importFrom GenomicRanges reduce
-#' @importFrom GenomicFeatures fiveUTRsByTranscript
+#' @import GenomicFeatures
 #' @importFrom IRanges unlist
 #' @param command A GenomicRegionCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
@@ -500,7 +501,7 @@ nearestGeneCommand <- function(colName) {
   names(transcriptsWithNames) <- mget(names(rawTranscriptList), org.Hs.egSYMBOL, ifnotfound=NA)
   transcriptsWithNames <- unlist(transcriptsWithNames)
   
-  overlapDistances <- distanceToNearest(object, resize(transcriptsWithoutNames, 1), keep.sign=TRUE)
+  overlapDistances <- distanceToNearest(object, resize(transcriptsWithoutNames, 1))
   absoluteDistanceToTSS <- elementMetadata(overlapDistances)$distance
   prec <- precede(object, resize(transcriptsWithoutNames, 1))
   foll <- follow(object, resize(transcriptsWithoutNames, 1))

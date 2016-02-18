@@ -56,6 +56,7 @@ getSymbolsFromEntrezIds <- function(entrezIds) {
 #' @importFrom IlluminaHumanMethylation450k.db IlluminaHumanMethylation450kENTREZID
 #' @importFrom FDb.InfiniumMethylation.hg19 get450k
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene TxDb.Hsapiens.UCSC.hg19.knownGene
+#' @import AnnotationDbi
 #'
 getProbeGeneRelationship <- function(tids, method=c('illumina', 'ucsc19'), promoterSize=2000) {
   method <- match.arg(method)

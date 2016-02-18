@@ -24,6 +24,7 @@ Imports:
     BSgenome.Hsapiens.UCSC.hg19,
     effsize,
     functional,
+    GenomeInfoDb,
     GenomicFeatures,
     GenomicRanges,
     gridExtra,
@@ -31,9 +32,11 @@ Imports:
     IRanges,
     matrixStats,
     org.Hs.eg.db,
+    parallel,
     plyr,
     reshape2,
     rtracklayer,
+    S4Vectors,
     scales,
     TxDb.Hsapiens.UCSC.hg19.knownGene
 Suggests:

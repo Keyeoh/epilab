@@ -14,6 +14,7 @@
 #' @param \dots Parameters to be passed down to mclapply.
 #' @return A data.frame containing the results from all the tests.
 #'
+#' @import parallel
 #' @export
 #'
 rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList, ...) {

@@ -14,6 +14,10 @@
 #' covering all the sequences in 'seqinfo(x)' and (c) the "averaged" metadata columns specified
 #' in 'mcolnames'.
 #'
+#' @import IRanges
+#' @import GenomicRanges
+#' @import GenomeInfoDb
+#' @import S4Vectors
 #' @export
 #' @encoding ISO-8859-2
 #'
@@ -99,6 +103,7 @@ generateCircosFromRanges <- function(ranges, ids=names(ranges), values=NULL) {
 #' @param type Character value indicating the annotation to use.
 #' @return The same GRanges with the seqlengths field updated for the given annotation.
 #'
+#' @import GenomicRanges
 #' @export
 #'
 updateSeqLengthsFromBSGenome <- function(ranges, type=c('hg19')) {
