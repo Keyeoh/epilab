@@ -7,7 +7,7 @@
 #'
 setClass('AnnotationCommand', representation(colName='character'))
 
-#' 
+#'
 #' getColName generic
 #'
 #' Generic definition of the getColName getter methods.
@@ -28,7 +28,7 @@ setMethod('getColName', 'AnnotationCommand',
             return(object@colName)
           })
 
-#' 
+#'
 #' setColName generic
 #'
 #' Generic definition of the setColName setter methods.
@@ -38,7 +38,7 @@ setMethod('getColName', 'AnnotationCommand',
 #'
 setGeneric('setColName<-', function(object, value) standardGeneric('setColName<-'))
 
-#' 
+#'
 #' AnnotationCommand base implementation of setColName
 #'
 #' Getter method for colName slot for all AnnotationCommand objects.
@@ -53,7 +53,7 @@ setReplaceMethod('setColName', 'AnnotationCommand',
             return(object)
           })
 
-#' 
+#'
 #' Execute generic
 #'
 #' Generic definition of the execute interface for a command on an object. An abstraction for
@@ -68,7 +68,7 @@ setGeneric('execute', function(command, object) standardGeneric('execute'))
 #'
 #' AnnotationCommand base implementation of execute
 #'
-#' Implementation of the logic that is common to all AnnotationCommands. For 
+#' Implementation of the logic that is common to all AnnotationCommands. For
 #' example, error management and input control. For now, it only prevents the command from being
 #' executed on an empty object.
 #'
@@ -80,26 +80,27 @@ setMethod('execute', c('AnnotationCommand', 'GRanges'),
             if(length(object) == 0) {
               stop('Cannot execute annotation command on empty GRanges command.')
             } else {
+              print("Execute genérico")
               return(object)
             }
           })
 
-#' 
+#'
 #' Density of CpG AnnotationCommand
-#' 
+#'
 #' This AnnotationCommand adds a column for the density of CpG around a given genomic region. The
 #' size of the region is variable and controlled by the user.
-#' 
+#'
 #' @export
 #' @slot windowSize Size of the window (centered on the probe) for which the density is computed.
-#' 
+#'
 setClass('DensCpGCommand',
          representation(windowSize='numeric'),
          prototype(windowSize=2000),
          contains='AnnotationCommand',
          validity=function(object) {
            return(object@windowSize >= 2)
-         } 
+         }
          )
 
 #'
@@ -110,12 +111,12 @@ setClass('DensCpGCommand',
 #' @param colName Prefix used in order to generate the column name for the annotation.
 #' @param windowSize Size of the window centered on the input genomic region.
 #' @export
-#' 
+#'
 densCpGCommand <- function(colName, windowSize=2000) {
   return(new('DensCpGCommand', colName=colName, windowSize=windowSize))
 }
 
-#' 
+#'
 #' getWindowSize generic
 #'
 #' Generic definition of the getWindowSize getter methods.
@@ -139,10 +140,10 @@ setMethod('getWindowSize', 'DensCpGCommand',
 #'
 #' DensCpG implementation of execute
 #'
-#' DensCpGCommand computes the density of CpG in a neighbourhood of the genomic input regions. 
-#' First, it resizes the input regions to the value of the windowSize slot. Be careful, however, 
+#' DensCpGCommand computes the density of CpG in a neighbourhood of the genomic input regions.
+#' First, it resizes the input regions to the value of the windowSize slot. Be careful, however,
 #' that in the case that the windowSize is smaller than the size of the input region the latter is
-#' going to be narrowed by this action. For now, this is enough, because our input regions are 
+#' going to be narrowed by this action. For now, this is enough, because our input regions are
 #' mostly GRanges objects containing methylation probes from Illumina microarrays. But it should be
 #' fixed in order to use it for annotating NGS peaks, for example.
 #'
@@ -153,6 +154,7 @@ setMethod('getWindowSize', 'DensCpGCommand',
 #'
 setMethod('execute', c('DensCpGCommand', 'GRanges'),
           function(command, object) {
+            print("Isa al ataquerl!")
             object <- callNextMethod()
             rois <- resize(object, command@windowSize, fix='center')
             seqs <- getSeq(BSgenome.Hsapiens.UCSC.hg19, rois)
@@ -161,15 +163,15 @@ setMethod('execute', c('DensCpGCommand', 'GRanges'),
             return(object)
           })
 
-#' 
+#'
 #' CPGI Status AnnotationCommand
-#' 
+#'
 #' This AnnotationCommand adds a column for the CpG Island status.
-#' 
+#'
 #' @export
 #' @slot discardDirection Logical value controlling whether the upstream(north)-downstream(south)
 #' status of a CpG island-related region is important or not.
-#' 
+#'
 setClass('CPGICommand',
          representation(discardDirection='logical'),
          prototype(discardDirection=FALSE),
@@ -184,12 +186,12 @@ setClass('CPGICommand',
 #' @param discardDirection Logical value controlling whether the upstream(north)-downstream(south)
 #' status of a CpG island-related region is important or not.
 #' @export
-#' 
+#'
 cpgiCommand <- function(colName, discardDirection=FALSE) {
   return(new('CPGICommand', colName=colName, discardDirection=discardDirection))
 }
 
-#' 
+#'
 #' getDiscardDirection generic
 #'
 #' Generic definition of the getDiscardDirection getter methods.
@@ -210,7 +212,7 @@ setMethod('getDiscardDirection', 'CPGICommand',
             return(object@discardDirection)
           })
 
-# 
+#
 # Internal CPGICommand implementation of execute
 #
 .executeCPGICommand <- function(command, object) {
@@ -222,7 +224,7 @@ setMethod('getDiscardDirection', 'CPGICommand',
   # NOTE: The ordering of the regions is important, as there are overlapping
   # regions between the different types.
   cpgi.regions <- list('CGI-N-Shelf'=flank(shift(hg19.islands, -2000), 2000),
-                       'CGI-S-Shelf'=flank(shift(hg19.islands, 2000), 2000, 
+                       'CGI-S-Shelf'=flank(shift(hg19.islands, 2000), 2000,
                                            start=FALSE),
                        'CGI-N-Shore'=flank(hg19.islands, 2000),
                        'CGI-S-Shore'=flank(hg19.islands, 2000, start=FALSE),
@@ -233,7 +235,7 @@ setMethod('getDiscardDirection', 'CPGICommand',
   # Function that adds information about a region
   local.add.region.indices <- function(cpgi, region.kv, ranged.annot) {
     cpgi[countOverlaps(ranged.annot, region.kv$value) > 0] <- region.kv$key
-    return(cpgi) 
+    return(cpgi)
   }
   add.region.indices <- Curry(local.add.region.indices,
                               ranged.annot=object)
@@ -242,10 +244,10 @@ setMethod('getDiscardDirection', 'CPGICommand',
   cpgiStatus[is.na(cpgiStatus)] <- 'Non-CGI'
 
   if (command@discardDirection) {
-    cpgiStatus[grep('Shore', cpgiStatus)] <- 'CGI-Shore'  
-    cpgiStatus[grep('Shelf', cpgiStatus)] <- 'CGI-Shelf'  
-  } 
-  
+    cpgiStatus[grep('Shore', cpgiStatus)] <- 'CGI-Shore'
+    cpgiStatus[grep('Shelf', cpgiStatus)] <- 'CGI-Shelf'
+  }
+
   mcols(object)[[command@colName]] <- cpgiStatus
 
   return(object)
@@ -254,8 +256,8 @@ setMethod('getDiscardDirection', 'CPGICommand',
 #'
 #' CPGICommand implementation of execute
 #'
-#' CPGICommand uses the CpG island definitions of Irizarry et al. in order to label the input 
-#' genomic regions according to their island status. Shores are defined as both 2kbp regions 
+#' CPGICommand uses the CpG island definitions of Irizarry et al. in order to label the input
+#' genomic regions according to their island status. Shores are defined as both 2kbp regions
 #' flanking the island, and Shelves as the two external 2kbp regions flanking the Shores. As in the
 #' DensCpGCommand, this command is best suited for the annotation of very short (methylation probes)
 #' input regions.
@@ -273,20 +275,20 @@ setMethod('execute', c('CPGICommand', 'GRanges'), .executeCPGICommand)
 #' This AnnotationCommand adds a column for the distances to centromeres and telomeres.
 #'
 #' @export
-#' 
+#'
 setClass('GapCommand', contains='AnnotationCommand')
 
 #'
 #' GapCommand constructor
-#' 
+#'
 #' This function builds a GapCommand with a given column name.
 #'
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
-#' 
+#'
 gapCommand <- function(colName) {
   return(new('GapCommand', colName=colName))
-} 
+}
 
 #
 # Internal GapCommand implementation of execute.
@@ -323,11 +325,11 @@ gapCommand <- function(colName) {
     return(object)
 }
 
-#' 
+#'
 #' GapCommand implementation of execute
-#' 
-#' GapCommand uses rtracklayer for connecting to the UCSC database and get the information 
-#' associated with the Gap track, which contains information about centromeres and telomeres. 
+#'
+#' GapCommand uses rtracklayer for connecting to the UCSC database and get the information
+#' associated with the Gap track, which contains information about centromeres and telomeres.
 #' Distance to the nearest telomere and centromere is then computed for the input regions.
 #'
 #' @importFrom rtracklayer browserSession ucscTableQuery getTable
@@ -338,61 +340,59 @@ setMethod('execute', c('GapCommand', 'GRanges'), .executeGapCommand)
 
 #'
 #' Genomic Region AnnotationCommand
-#' 
+#'
 #' This AnnotationCommand adds a column containing the genomic region for a given probe location.
 #'
 #' @export
-#' 
-setClass('GenomicRegionCommand', contains='AnnotationCommand')
+#'
+setClass('GenRegCommand', contains='AnnotationCommand')
+
+#
+# Internal GenRegCommand implementation of execute
+#
+.executeGenRegCommand <- function(command, object) {
+  object <- callNextMethod()
+  futr <- unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene))
+  exons <- unlist(exonsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, by='tx'))
+  exons1 <- exons[exons$exon_rank == 1]
+  exons.no1 <- exons[exons$exon_rank != 1]
+  tss2000 <- flank(exons1, 2000)
+  introns <- unlist(intronsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene))
+  mcols(object)[[paste0(command@colName, 'Prom')]] <-
+    (countOverlaps(object, futr) > 0 |
+     countOverlaps(object, exons1) > 0 |
+     countOverlaps(object, tss2000) > 0)
+  mcols(object)[[paste0(command@colName, 'Intra')]] <-
+    (countOverlaps(object, exons.no1) > 0 |
+     countOverlaps(object, introns) > 0)
+  mcols(object)[[paste0(command@colName, 'Inter')]] <-
+    !(mcols(object)[[paste0(command@colName, 'Intra')]] |
+      mcols(object)[[paste0(command@colName, 'Prom')]])
+  return(object)
+}
 
 #'
-#' GenomicRegionCommand constructor
+#' GenRegCommand constructor
 #'
-#' This function builds a GenomicRegionCommand with a given column name.
+#' This function builds a GenRegCommand with a given column name.
 #'
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
-#' 
-genomicRegionCommand <- function(colName) {
-    return(new('GenomicRegionCommand', colName=colName))
+#'
+genRegCommand <- function(colName) {
+  return(new('GenRegCommand', colName = colName))
 }
 
-#
-# Internal GenomicRegionCommand implementation of execute
-#
-.executeGenomicRegionCommand <- function(command, object) {
-  object <- callNextMethod()
-  futr <- 
-    reduce(unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
-  exons <- unlist(exonsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, by='tx'))
-  exons1 <- reduce(exons[exons$exon_rank == 1])
-  exons.no1 <- reduce(exons[exons$exon_rank != 1])
-  tss2000 <- flank(exons1, 2000)
-  introns <- 
-    reduce(unlist(intronsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
-  mcols(object)[[paste0(command@colName, 'Prom')]] <- 
-    (countOverlaps(object, futr) > 0 | 
-     countOverlaps(object, exons1) > 0 | 
-     countOverlaps(object, tss2000) > 0)
-  mcols(object)[[paste0(command@colName, 'Intra')]] <- 
-    (countOverlaps(object, exons.no1) > 0 |
-     countOverlaps(object, introns) > 0)
-  mcols(object)[[paste0(command@colName, 'Inter')]] <- 
-    !(mcols(object)[[paste0(command@colName, 'Intra')]] | 
-      mcols(object)[[paste0(command@colName, 'Prom')]])
-  return(object) 
-}
-
-#' 
-#' GenomicRegionCommand implementation of execute
+#'
+#' GenRegCommand implementation of execute
 #'
 #' GenomicRegionCommand tries to label the input genomic regions according to their relative
 #' position with respect to the TSS. We define the Promoter region as the union of a 2kbp region
-#' upstream the TSS, the first exon and the 5'UTR. Intragenic region is defined as the union of 
-#' the remaining exons and introns, those regions inside a gene which are not assigned to the 
+#' upstream the TSS, the first exon and the 5'UTR. Intragenic region is defined as the union of
+#' the remaining exons and introns, those regions inside a gene which are not assigned to the
 #' previous definition of Promoter region. Finally, Intergenic region is assigned when neither of
 #' the former labels can be applied. This process is always executed at a transcript level, so
-#' it is possible for an input region to be at Promoter and Intragenic regions at the same time. 
+#' it is possible for an input region to be at Promoter and Intragenic regions at the same time.
 #' Again, this command is better suited for very small input regions.
 #'
 #' @importFrom GenomicRanges reduce
@@ -400,18 +400,19 @@ genomicRegionCommand <- function(colName) {
 #' @importFrom IRanges unlist
 #' @param command A GenomicRegionCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
+#' @rdname .executeGenomicRegionCommand-defunct
 #'
-setMethod('execute', c('GenomicRegionCommand', 'GRanges'), .executeGenomicRegionCommand)
+setMethod('execute', c('GenRegCommand', 'GRanges'), .executeGenRegCommand)
 
 #'
 #' Disjoint Genomic Region AnnotationCommand
-#' 
+#'
 #' This AnnotationCommand adds a column containing the genomic region for a given probe location. It
 #' is different from the GenomicRegionCommand in that it generates disjoint categories and is more
 #' specific.
 #'
 #' @export
-#' 
+#'
 setClass('DGenomicRegionCommand', contains='AnnotationCommand')
 
 #'
@@ -421,7 +422,7 @@ setClass('DGenomicRegionCommand', contains='AnnotationCommand')
 #'
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
-#' 
+#'
 dGenomicRegionCommand <- function(colName) {
     return(new('DGenomicRegionCommand', colName=colName))
 }
@@ -440,7 +441,7 @@ dGenomicRegionCommand <- function(colName) {
   tss2000 <- flank(exons1, 2000)
   introns <- unlist(intronsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene))
 
-  mcols(object)[[command@colName]] <- 'Intergenic' 
+  mcols(object)[[command@colName]] <- 'Intergenic'
   mcols(object)[[command@colName]][countOverlaps(object, introns) > 0] <- 'Intron'
   mcols(object)[[command@colName]][countOverlaps(object, exons.no1) > 0] <- 'Exon'
   mcols(object)[[command@colName]][countOverlaps(object, exons1) > 0] <- 'FirstExon'
@@ -448,16 +449,16 @@ dGenomicRegionCommand <- function(colName) {
   mcols(object)[[command@colName]][countOverlaps(object, futr) > 0] <- '5UTR'
   mcols(object)[[command@colName]][countOverlaps(object, tss2000) > 0] <- 'Promoter'
 
-  return(object) 
+  return(object)
 }
 
-#' 
+#'
 #' DGenomicRegionCommand implementation of execute
 #'
 #' DGenomicRegionCommand tries to label the input genomic regions according to their relative
 #' position with respect to the TSS. Regions defined include the Promoter region (2kbp upstream the
-#' TSS), 5'UTR, First Exon, a different Exon, an Intron and the 3'UTR. Finally, Intergenic region is 
-#' assigned when neither of the former labels can be applied. This process is always executed at a 
+#' TSS), 5'UTR, First Exon, a different Exon, an Intron and the 3'UTR. Finally, Intergenic region is
+#' assigned when neither of the former labels can be applied. This process is always executed at a
 #' transcript level.
 #'
 #' @importFrom GenomicRanges reduce
@@ -468,58 +469,77 @@ dGenomicRegionCommand <- function(colName) {
 #'
 setMethod('execute', c('DGenomicRegionCommand', 'GRanges'), .executeDGenomicRegionCommand)
 
+
 #'
 #' Nearest gene AnnotationCommand
 #'
-#' This AnnotationCommand adds columns with information regarding the nearest TSS and gene.
+#' This AnnotationCommand adds columns with information regarding the nearest TSS, TX and gene.
 #'
 #' @export
-#' 
-setClass('NearestGeneCommand', contains='AnnotationCommand')
+#'
+setClass('NearestGenCommand', representation(what = 'character'), contains='AnnotationCommand')
 
 #'
-#' NearestGeneCommand constructor
+#' nearestTSSGeneCommand constructor
 #'
-#' This function builds a NearestGeneCommand with a given column name.
+#' This function builds a NearestGenCommand with a given column name and the type of nearest (TSS)
 #'
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
-#' 
-nearestGeneCommand <- function(colName) {
-  return(new('NearestGeneCommand', colName=colName))
+#'
+nearestTSSGeneCommand <- function(colName) {
+  return(new('NearestGenCommand', colName=colName, what = 'tss'))
 }
 
-#
-# Internal NearestGeneCommand implementation of execute
-#
-.executeNearestGeneCommand <- function(command, object) {
-  object <- callNextMethod()
-  
-  rawTranscriptList <- reduce(transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, 'gene'))
-  transcriptsWithoutNames <- unlist(rawTranscriptList)
-  transcriptsWithNames <- rawTranscriptList
-  names(transcriptsWithNames) <- mget(names(rawTranscriptList), org.Hs.egSYMBOL, ifnotfound=NA)
-  transcriptsWithNames <- unlist(transcriptsWithNames)
-  
-  overlapDistances <- distanceToNearest(object, resize(transcriptsWithoutNames, 1))
-  absoluteDistanceToTSS <- elementMetadata(overlapDistances)$distance
-  prec <- precede(object, resize(transcriptsWithoutNames, 1))
-  foll <- follow(object, resize(transcriptsWithoutNames, 1))
-  
-  mcols(object)[[paste0(command@colName, 'DTSS')]] <- 
-    ifelse(subjectHits(overlapDistances) == foll, absoluteDistanceToTSS, -absoluteDistanceToTSS)
-  mcols(object)[[paste0(command@colName, 'GeneSymbol')]] <- 
-    names(transcriptsWithNames)[subjectHits(overlapDistances)]
-  mcols(object)[[paste0(command@colName, 'GeneId')]] <- 
-    as.numeric(names(transcriptsWithoutNames)[subjectHits(overlapDistances)])
+nearestTXGeneCommand <- function(colName) {
+  return(new('NearestGenCommand', colName=colName, what = 'transcript'))
+}
 
+nearestGenCommand <- function(colName) {
+  return(new('NearestGenCommand', colName=colName, what = 'gene'))
+}
+
+
+#
+# Internal NearestGenCommand implementation of execute
+#
+#' @rdname .executeNearestGenCommand-defunct
+.executeNearestGenCommand <- function(command, object) {
+  object <- callNextMethod()
+
+  if (!is(object, "GenomicRanges")) {
+    stop("This function expects a GenomicRanges object as the first argument")
+  }
+
+  grl = transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, "gene")
+  gene_id_to_gene_symbol = mget(names(grl), org.Hs.egSYMBOL, ifnotfound = NA)
+  if (tolower(command@what) == "gene") {
+    gr <- unlist(reduce(grl))
+  }
+  else if (tolower(command@what) == "transcript") {
+    gr <- unlist(grl)
+  }
+  else if (tolower(command@what) == "tss") {
+    gr <- unique(resize(unlist(grl), 1, fix = "start"))
+  }
+  object_nearest = as(distanceToNearest(object, gr), "data.frame")
+  rownames(object_nearest) = names(object)[object_nearest$queryHits]
+  foll = follow(object, resize(gr, 1))
+
+  mcols(object)[[paste0(command@colName, 'Distance')]] = ifelse(object_nearest$subjectHits == foll, object_nearest$distance, -object_nearest$distance)
+  mcols(object)[[paste0(command@colName, 'GeneSymbol')]] = unlist(gene_id_to_gene_symbol[names(gr[object_nearest$subjectHits])])
+  mcols(object)[[paste0(command@colName, 'GeneId')]] = names(gr[object_nearest$subjectHits])
+
+  if (tolower(command@what) %in% c("transcript", "tss")) {
+    mcols(object)[[paste0(command@colName, 'Transcript')]] = gr$tx_name[object_nearest$subjectHits]
+  }
   return(object)
 }
 
 #'
-#' NearestGeneCommand implementation of execute
+#' NearestGenCommand implementation of execute
 #'
-#' NearestGeneCommand labels each input genomic region with information regarding to the nearest
+#' NearestGenCommand labels each input genomic region with information regarding to the nearest
 #' gene. Gene information is obtained from the TxDb.Hsapiens.UCSC.hg19.knownGene transcripts
 #' database. A gene region is defined as the union of all its transcript regions. The gene symbol
 #' is obtained from the org.Hs.eg.db package.
@@ -527,20 +547,24 @@ nearestGeneCommand <- function(colName) {
 #' @importFrom AnnotationDbi mget
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @importFrom org.Hs.eg.db org.Hs.egSYMBOL
-#' @param command A NearestGeneCommand.
+#' @param command A NearestGenCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
+#' @rdname NearestGenCommand-defunct
 #'
-setMethod('execute', c('NearestGeneCommand', 'GRanges'), .executeNearestGeneCommand)
+setMethod('execute', c('NearestGenCommand', 'GRanges'), .executeNearestGenCommand)
 
-#' 
+
+
+
+#'
 #' AnnotationCommandList
-#' 
-#' This AnnotationCommand contains a list of several AnnotationCommands, and 
+#'
+#' This AnnotationCommand contains a list of several AnnotationCommands, and
 #' executes them in order
-#' 
+#'
 #' @export
 #' @slot commandList A list containing AnnotationCommand objects.
-#' 
+#'
 setClass('AnnotationCommandList',
          representation(commandList='list'),
          prototype(commandList=list()),
@@ -561,7 +585,7 @@ setClass('AnnotationCommandList',
 #'
 #' AnnotationCommandList constructor
 #'
-#' This function builds an AnnotationCommandList from a list of 
+#' This function builds an AnnotationCommandList from a list of
 #' AnnotationCommand commands
 #'
 #' @export
@@ -572,7 +596,7 @@ annotationCommandList <- function(...) {
   return(new('AnnotationCommandList', colName='', commandList=commandList))
 }
 
-#' 
+#'
 #' getCommandList generic
 #'
 #' Generic definition of the getCommandList getter methods.
@@ -605,7 +629,7 @@ setMethod('getCommandList', 'AnnotationCommandList',
 #'
 #' AnnotationCommandList implementation of execute
 #'
-#' An AnnotationCommandList is just a container for several AnnotationCommand objects. When 
+#' An AnnotationCommandList is just a container for several AnnotationCommand objects. When
 #' executed, the objects in the internal list are executed in the same order they were provided to
 #' the constructor. The colName slot of AnnotationCommandList has to be empty, because it has no
 #' useful meaning at the moment.
