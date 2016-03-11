@@ -1,34 +1,34 @@
-#' Defunct functions in epilab
+#' Defunct functions in epilab package
+#'
+#' The functions or variables listed here are no longer part of R as they are no
+#'  longer needed.
+#'
+#' @rdname epilab-defunct
+#' @name epilab-defunct
+#' @docType Package
+#' @section Details:
+#' \tabular{rl}{
+#'   \code{GenomicRegionCommand} \tab have been replaced by \code{\link{GenRegCommand}}\cr
+#'   \code{genomicRegionCommand} \tab have been replaced by \code{\link{genRegCommand}}\cr
+#'   \code{NearestGeneCommand} \tab have been replaced by \code{\link{NearestGenCommand}}\cr
+#'   \code{nearestGeneCommand} \tab have been replaced by \code{\link{nearestGenCommand}, \link{nearestTSSGeneCommand} and \link{nearestTXGeneCommand}}\cr
+#' }
+#'
+
 
 #'
-#' Genomic Region AnnotationCommand
-#'
-#' This AnnotationCommand adds a column containing the genomic region for a given probe location.
 #'
 #' @export
-#' @rdname GenomicRegionCommand-defunct
+#' @rdname epilab-defunct
 #'
 setClass('GenomicRegionCommand', contains='AnnotationCommand')
 
 #'
-#' Genomic Region AnnotationCommand
-#'
-#' This class is not valid from now
-#'
-#' @export
-#' @rdname GenomicRegionCommand-defunct
-setValidity('GenomicRegionCommand', function(object) {
-  # .Defunct('GenRegCommand', package = 'epilab')
-  TRUE
-})
-
-#
-# Internal GenomicRegionCommand implementation of execute
-#
-#' @rdname .executeGenomicRegionCommand-defunct
+#' @aliases uh
+#' @rdname epilab-defunct
 #'
 .executeGenomicRegionCommand <- function(command, object) {
-  # .Defunct(package = 'epilab')
+  .Defunct('.executeGenRegCommand', package = 'epilab')
   object <- callNextMethod()
   futr <-
     reduce(unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene)))
@@ -52,71 +52,49 @@ setValidity('GenomicRegionCommand', function(object) {
 }
 
 #'
-#' GenomicRegionCommand implementation of execute
-#'
-#' GenomicRegionCommand tries to label the input genomic regions according to their relative
-#' position with respect to the TSS. We define the Promoter region as the union of a 2kbp region
-#' upstream the TSS, the first exon and the 5'UTR. Intragenic region is defined as the union of
-#' the remaining exons and introns, those regions inside a gene which are not assigned to the
-#' previous definition of Promoter region. Finally, Intergenic region is assigned when neither of
-#' the former labels can be applied. This process is always executed at a transcript level, so
-#' it is possible for an input region to be at Promoter and Intragenic regions at the same time.
-#' Again, this command is better suited for very small input regions.
 #'
 #' @importFrom GenomicRanges reduce
 #' @import GenomicFeatures
 #' @importFrom IRanges unlist
-#' @param command A GenomicRegionCommand.
-#' @param object A GRanges object containing the genomic regions to annotate.
-#' @rdname .executeGenomicRegionCommand-defunct
+#' @rdname epilab-defunct
 #'
 setMethod('execute', c('GenomicRegionCommand', 'GRanges'), .executeGenomicRegionCommand)
 
 #'
-#' GenomicRegionCommand constructor
 #'
-#' This function builds a GenomicRegionCommand with a given column name.
-#'
+#' @rdname epilab-defunct
 #' @export
-#' @param colName Prefix used in order to generate the column name for the annotation.
-#' @rdname .genomicRegionCommand-defunct
+#' @aliases  genomicRegionCommand
 #'
 genomicRegionCommand <- function(colName) {
-  # .Defunct('genRegCommand', package = 'epilab')
+  .Defunct('genRegCommand', package = 'epilab')
   return(new('GenomicRegionCommand', colName=colName))
 }
 
 
 #'
-#' Nearest gene AnnotationCommand
 #'
-#' This AnnotationCommand adds columns with information regarding the nearest TSS and gene.
-#'
+#' @rdname epilab-defunct
 #' @export
-#' @rdname NearestGeneCommand-defunct
 #'
 setClass('NearestGeneCommand', contains='AnnotationCommand')
 
 #'
-#' NearestGeneCommand constructor
 #'
-#' This function builds a NearestGeneCommand with a given column name.
-#'
+#' @rdname epilab-defunct
 #' @export
-#' @param colName Prefix used in order to generate the column name for the annotation.
-#' @rdname nearestGeneCommand-defunct
 #'
 nearestGeneCommand <- function(colName) {
-  # .Defunct('nearestGenCommand', package = 'epilab')
+  .Defunct('nearestGenCommand', package = 'epilab')
   return(new('NearestGeneCommand', colName=colName))
 }
 
-#
-# Internal NearestGeneCommand implementation of execute
-#
-#' @rdname .executeNearestGeneCommand-defunct
+#'
+#'
+#' @rdname epilab-defunct
+#'
 .executeNearestGeneCommand <- function(command, object) {
-  # .Defunct('.executeNearestGenCommand', package = 'epilab')
+  .Defunct('.executeNearestTSSGeneCommand', package = 'epilab')
   object <- callNextMethod()
 
   rawTranscriptList <- reduce(transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, 'gene'))
@@ -141,18 +119,10 @@ nearestGeneCommand <- function(colName) {
 }
 
 #'
-#' NearestGeneCommand implementation of execute
-#'
-#' NearestGeneCommand labels each input genomic region with information regarding to the nearest
-#' gene. Gene information is obtained from the TxDb.Hsapiens.UCSC.hg19.knownGene transcripts
-#' database. A gene region is defined as the union of all its transcript regions. The gene symbol
-#' is obtained from the org.Hs.eg.db package.
 #'
 #' @importFrom AnnotationDbi mget
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @importFrom org.Hs.eg.db org.Hs.egSYMBOL
-#' @param command A NearestGeneCommand.
-#' @param object A GRanges object containing the genomic regions to annotate.
-#' @rdname NearestGeneCommand-defunct
+#' @rdname epilab-defunct
 #'
 setMethod('execute', c('NearestGeneCommand', 'GRanges'), .executeNearestGeneCommand)

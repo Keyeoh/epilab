@@ -80,7 +80,7 @@ setMethod('execute', c('AnnotationCommand', 'GRanges'),
             if(length(object) == 0) {
               stop('Cannot execute annotation command on empty GRanges command.')
             } else {
-              print("Execute genérico")
+              print(class(command))
               return(object)
             }
           })
@@ -154,7 +154,6 @@ setMethod('getWindowSize', 'DensCpGCommand',
 #'
 setMethod('execute', c('DensCpGCommand', 'GRanges'),
           function(command, object) {
-            print("Isa al ataquerl!")
             object <- callNextMethod()
             rois <- resize(object, command@windowSize, fix='center')
             seqs <- getSeq(BSgenome.Hsapiens.UCSC.hg19, rois)
@@ -295,7 +294,8 @@ gapCommand <- function(colName) {
 #
 .executeGapCommand <- function(command, object) {
     .distance <- function(x) {
-      as.data.frame(x)[[3]]
+      if(length(x) > 0) {
+        as.data.frame(x)[[3]] }
     }
 
     object <- callNextMethod()
@@ -400,7 +400,6 @@ genRegCommand <- function(colName) {
 #' @importFrom IRanges unlist
 #' @param command A GenomicRegionCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
-#' @rdname .executeGenomicRegionCommand-defunct
 #'
 setMethod('execute', c('GenRegCommand', 'GRanges'), .executeGenRegCommand)
 
@@ -491,10 +490,26 @@ nearestTSSGeneCommand <- function(colName) {
   return(new('NearestGenCommand', colName=colName, what = 'tss'))
 }
 
+#'
+#' nearestTXGeneCommand constructor
+#'
+#' This function builds a NearestGenCommand with a given column name and the type of nearest (transcript)
+#'
+#' @export
+#' @param colName Prefix used in order to generate the column name for the annotation.
+#'
 nearestTXGeneCommand <- function(colName) {
   return(new('NearestGenCommand', colName=colName, what = 'transcript'))
 }
 
+#'
+#' nearestGenCommand constructor
+#'
+#' This function builds a NearestGenCommand with a given column name and the type of nearest (gene)
+#'
+#' @export
+#' @param colName Prefix used in order to generate the column name for the annotation.
+#'
 nearestGenCommand <- function(colName) {
   return(new('NearestGenCommand', colName=colName, what = 'gene'))
 }
@@ -503,7 +518,6 @@ nearestGenCommand <- function(colName) {
 #
 # Internal NearestGenCommand implementation of execute
 #
-#' @rdname .executeNearestGenCommand-defunct
 .executeNearestGenCommand <- function(command, object) {
   object <- callNextMethod()
 
@@ -513,6 +527,8 @@ nearestGenCommand <- function(colName) {
 
   grl = transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, "gene")
   gene_id_to_gene_symbol = mget(names(grl), org.Hs.egSYMBOL, ifnotfound = NA)
+  # names(grl) = as.numeric(names(grl))
+
   if (tolower(command@what) == "gene") {
     gr <- unlist(reduce(grl))
   }
@@ -528,7 +544,7 @@ nearestGenCommand <- function(colName) {
 
   mcols(object)[[paste0(command@colName, 'Distance')]] = ifelse(object_nearest$subjectHits == foll, object_nearest$distance, -object_nearest$distance)
   mcols(object)[[paste0(command@colName, 'GeneSymbol')]] = unlist(gene_id_to_gene_symbol[names(gr[object_nearest$subjectHits])])
-  mcols(object)[[paste0(command@colName, 'GeneId')]] = names(gr[object_nearest$subjectHits])
+  mcols(object)[[paste0(command@colName, 'GeneId')]] = as.numeric(names(gr[object_nearest$subjectHits]))
 
   if (tolower(command@what) %in% c("transcript", "tss")) {
     mcols(object)[[paste0(command@colName, 'Transcript')]] = gr$tx_name[object_nearest$subjectHits]
@@ -549,7 +565,6 @@ nearestGenCommand <- function(colName) {
 #' @importFrom org.Hs.eg.db org.Hs.egSYMBOL
 #' @param command A NearestGenCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
-#' @rdname NearestGenCommand-defunct
 #'
 setMethod('execute', c('NearestGenCommand', 'GRanges'), .executeNearestGenCommand)
 
