@@ -153,39 +153,12 @@ test_that('GapCommand execution fails on empty example',
 #
 test_that('GenomicRegionCommand gets its slots right',
           {
-            foo <- genomicRegionCommand('bar')
-            expect_equal(getColName(foo), 'bar')
+            expect_error(genomicRegionCommand('bar'))
           })
 
 test_that('GenomicRegionCommand refuses wrong data types',
           {
             expect_error(genomicRegionCommand(2032))
-          })
-
-cmd <- genomicRegionCommand('foo')
-
-test_that('GenomicRegionCommand execution breaks on wrong data types',
-          {
-            expect_error(execute(mockRanges, cmd))
-          })
-
-test_that('GenomicRegionCommand execution works correctly on example',
-          {
-            bar <- execute(cmd, mockRanges)
-            expect_equivalent(bar$fooProm,
-                              c(FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE,
-                                FALSE, FALSE, TRUE, FALSE, TRUE))
-            expect_equivalent(bar$fooIntra,
-                              c(FALSE, FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE,
-                                TRUE, FALSE, FALSE, FALSE, TRUE))
-            expect_equivalent(bar$fooInter,
-                              c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE,
-                                FALSE, TRUE, FALSE, TRUE, FALSE))
-          })
-
-test_that('GenomicRegionCommand execution fails on empty example',
-          {
-            expect_error(execute(cmd, emptyRanges))
           })
 
 #
@@ -353,29 +326,6 @@ test_that('NearestGeneCommand refuses wrong data types',
             expect_error(nearestGeneCommand(2032))
           })
 
-# cmd <- nearestGeneCommand('foo')
-#
-# test_that('NearestGeneCommand execution breaks on wrong data types',
-#           {
-#             expect_error(execute(mockRanges, cmd))
-#           })
-#
-# test_that('NearestGeneCommand execution works correctly on example',
-#           {
-#             bar <- execute(cmd, mockRanges)
-#             expect_equivalent(bar$fooGeneSymbol, c('FOXC1', 'FSD1L', 'TOLLIP', 'RICTOR', 'ANKIB1',
-#                                                    'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX4'))
-#             expect_equivalent(bar$fooGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761,
-#                                                441317, 54862, 8535))
-#             expect_equivalent(bar$fooDTSS, c(-86928, -529, 18325, 376, 33694, -961, 194514, 27042,
-#                                              352, -20281))
-#           })
-#
-# test_that('NearestGeneCommand execution fails on empty example',
-#           {
-#             expect_error(execute(cmd, emptyRanges))
-#           })
-
 #
 # AnnotationCommandList tests
 #
@@ -396,7 +346,7 @@ test_that('AnnotationCommandList refuses wrong data types',
 cmd <- annotationCommandList(densCpGCommand('dcpg'),
                              cpgiCommand('cpgi'),
                              gapCommand('gap'),
-                             genomicRegionCommand('genreg'),
+                             genRegCommand('genreg'),
                              nearestTSSGeneCommand('ng')
                              )
 
@@ -433,7 +383,7 @@ test_that('AnnotationCommandList execution works correctly on example',
                                                   'CNPY3', 'SLC12A7', 'BIRC7', 'LINC00473', 'GAK'))
             expect_equivalent(bar$ngGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761,
                                               441317, 54862, 8535, 10695, 10723, 79444, 90632, 2580))
-            expect_equivalent(bar$ngDTSS, c(-86928, -529, 11406, 376, 33694, -961, -545, 27042, 352,
+            expect_equivalent(bar$ngDistance, c(-86928, -529, 11406, 376, 33694, -961, -545, 27042, 352,
                                             -20281, -3415, -10642, -314, -17271, -249))
           })
 

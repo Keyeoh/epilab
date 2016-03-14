@@ -527,7 +527,6 @@ nearestGenCommand <- function(colName) {
 
   grl = transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, "gene")
   gene_id_to_gene_symbol = mget(names(grl), org.Hs.egSYMBOL, ifnotfound = NA)
-  # names(grl) = as.numeric(names(grl))
 
   if (tolower(command@what) == "gene") {
     gr <- unlist(reduce(grl))

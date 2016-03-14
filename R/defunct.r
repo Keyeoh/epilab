@@ -3,10 +3,11 @@
 #' The functions or variables listed here are no longer part of R as they are no
 #'  longer needed.
 #'
-#' @rdname epilab-defunct
 #' @name epilab-defunct
-#' @docType Package
-#' @section Details:
+#' @rdname epilab-defunct
+#' @aliases {epilab-defunct,GenomicRegionCommand,genomicRegionCommand,.executeGenomicRegionCommand,.executeNearestGeneCommand}
+#' @docType package
+#' @section details:
 #' \tabular{rl}{
 #'   \code{GenomicRegionCommand} \tab have been replaced by \code{\link{GenRegCommand}}\cr
 #'   \code{genomicRegionCommand} \tab have been replaced by \code{\link{genRegCommand}}\cr
@@ -16,16 +17,15 @@
 #'
 
 
+
+
 #'
 #'
 #' @export
-#' @rdname epilab-defunct
 #'
 setClass('GenomicRegionCommand', contains='AnnotationCommand')
 
 #'
-#' @aliases uh
-#' @rdname epilab-defunct
 #'
 .executeGenomicRegionCommand <- function(command, object) {
   .Defunct('.executeGenRegCommand', package = 'epilab')
@@ -56,15 +56,12 @@ setClass('GenomicRegionCommand', contains='AnnotationCommand')
 #' @importFrom GenomicRanges reduce
 #' @import GenomicFeatures
 #' @importFrom IRanges unlist
-#' @rdname epilab-defunct
 #'
 setMethod('execute', c('GenomicRegionCommand', 'GRanges'), .executeGenomicRegionCommand)
 
 #'
 #'
-#' @rdname epilab-defunct
 #' @export
-#' @aliases  genomicRegionCommand
 #'
 genomicRegionCommand <- function(colName) {
   .Defunct('genRegCommand', package = 'epilab')
@@ -74,14 +71,12 @@ genomicRegionCommand <- function(colName) {
 
 #'
 #'
-#' @rdname epilab-defunct
 #' @export
 #'
 setClass('NearestGeneCommand', contains='AnnotationCommand')
 
 #'
 #'
-#' @rdname epilab-defunct
 #' @export
 #'
 nearestGeneCommand <- function(colName) {
@@ -91,7 +86,6 @@ nearestGeneCommand <- function(colName) {
 
 #'
 #'
-#' @rdname epilab-defunct
 #'
 .executeNearestGeneCommand <- function(command, object) {
   .Defunct('.executeNearestTSSGeneCommand', package = 'epilab')
@@ -123,6 +117,5 @@ nearestGeneCommand <- function(colName) {
 #' @importFrom AnnotationDbi mget
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @importFrom org.Hs.eg.db org.Hs.egSYMBOL
-#' @rdname epilab-defunct
 #'
 setMethod('execute', c('NearestGeneCommand', 'GRanges'), .executeNearestGeneCommand)
