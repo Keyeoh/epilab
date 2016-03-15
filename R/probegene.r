@@ -3,7 +3,7 @@
 #'
 #' This function takes as input a given set of Illumina 450k target IDs and produces a list of gene
 #' Entrez IDs, according to some parameters governing the getProbeGeneRelationship inner function.
-#' 
+#'
 #' @param tids A character vector containing the input Target IDs.
 #' @param ... Parameters to be passed to getProbeGeneRelationship.
 #' @return A character vector containing the gene identifier.
@@ -22,7 +22,7 @@ getGeneEntrezIds <- function(tids, ...) {
 #'
 #' This function takes as input a set of Entrez IDs and generates a list of gene symbols using the
 #' annotation information from the org.Hs.eg.db Bioconductor package.
-#' 
+#'
 #' @param entrezIds A character vector containing the Entrez IDs.
 #' @export
 #' @importFrom org.Hs.eg.db org.Hs.egSYMBOL
@@ -40,14 +40,14 @@ getSymbolsFromEntrezIds <- function(entrezIds) {
 #' Get relationship between probes and genes
 #'
 #' This function computes the overlapping between Illumina450k probes and a set of genes determined
-#' by a given method. The 'illumina' method just uses the annotation information in the 
-#' IlluminaHumanMethylation450k.db package, while the 'ucsc19' method uses the information from 
+#' by a given method. The 'illumina' method just uses the annotation information in the
+#' IlluminaHumanMethylation450k.db package, while the 'ucsc19' method uses the information from
 #' UCSC hg19 genome version and computes the overlaps at a transcript level. There is also the
 #' possibility to define a given promoter size to also compute the overlapping with these special
-#' regions. The function uses the getSymbolsFromEntrezIds function from this package in order to 
+#' regions. The function uses the getSymbolsFromEntrezIds function from this package in order to
 #' get the genes' names. This function returns a data.frame with all the overlaps corresponding
 #' to the input target Id's.
-#' 
+#'
 #' @param tids A character vector containing the input target ID's.
 #' @param method Gene overlap computing method.
 #' @param promoterSize Size to add to transcripts' upstream promoter regions.
@@ -60,7 +60,6 @@ getSymbolsFromEntrezIds <- function(entrezIds) {
 #'
 getProbeGeneRelationship <- function(tids, method=c('illumina', 'ucsc19'), promoterSize=2000) {
   method <- match.arg(method)
-
   if (!is.character(tids)) {
     stop('Target IDs should be defined as a character vector.')
   }
@@ -83,9 +82,9 @@ getProbeGeneRelationship <- function(tids, method=c('illumina', 'ucsc19'), promo
   } else if (method == 'ucsc19') {
     transcriptsByGene <- transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, 'gene')
     transcriptRanges <- unlist(transcriptsByGene)
-    
+
     ranges450k <- get450k()
-    transcriptPromoterRanges <- resize(transcriptRanges, 
+    transcriptPromoterRanges <- resize(transcriptRanges,
                                        width(transcriptRanges) + promoterSize,
                                        fix='end')
     overlaps <- findOverlaps(ranges450k[tids], transcriptPromoterRanges)
