@@ -512,8 +512,8 @@ nearestTXGeneCommand <- function(colName) {
 #'
 nearestGeneCommand <- function(colName) {
   warning('New function behaviour. Now the function returns the nearest gene. \
-           Use nearestTSSGeneCommand for obtaining the nearest TSS and TX for \
-           de nearest transcript')
+           Use nearestTSSGeneCommand for obtaining the nearest TSS and nearestTXGeneCommand for \
+           the nearest transcript')
   return(new('NearestGeneCommand', colName=colName, what = 'gene'))
 }
 
