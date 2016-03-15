@@ -544,12 +544,17 @@ nearestGeneCommand <- function(colName) {
   rownames(object_nearest) = names(object)[object_nearest$queryHits]
   foll = follow(object, resize(gr, 1))
 
-  mcols(object)[[paste0(command@colName, 'Distance')]] = ifelse(object_nearest$subjectHits == foll, object_nearest$distance, -object_nearest$distance)
-  mcols(object)[[paste0(command@colName, 'GeneSymbol')]] = unlist(gene_id_to_gene_symbol[names(gr[object_nearest$subjectHits])])
-  mcols(object)[[paste0(command@colName, 'GeneId')]] = as.numeric(names(gr[object_nearest$subjectHits]))
+  mcols(object)[[paste0(command@colName, 'Distance')]] =
+    ifelse(object_nearest$subjectHits == foll,
+           object_nearest$distance, -object_nearest$distance)
+  mcols(object)[[paste0(command@colName, 'GeneSymbol')]] =
+    unlist(gene_id_to_gene_symbol[names(gr[object_nearest$subjectHits])])
+  mcols(object)[[paste0(command@colName, 'GeneId')]] =
+    as.numeric(names(gr[object_nearest$subjectHits]))
 
   if (tolower(command@what) %in% c("transcript", "tss")) {
-    mcols(object)[[paste0(command@colName, 'Transcript')]] = gr$tx_name[object_nearest$subjectHits]
+    mcols(object)[[paste0(command@colName, 'Transcript')]] =
+      gr$tx_name[object_nearest$subjectHits]
   }
   return(object)
 }

@@ -385,8 +385,8 @@ test_that('AnnotationCommandList execution works correctly on example',
                                                   'CNPY3', 'SLC12A7', 'BIRC7', 'LINC00473', 'GAK'))
             expect_equivalent(bar$ngGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761,
                                               441317, 54862, 8535, 10695, 10723, 79444, 90632, 2580))
-            expect_equivalent(bar$ngDistance, c(-86928, -529, 11406, 376, 33694, -961, -545, 27042, 352,
-                                            -20281, -3415, -10642, -314, -17271, -249))
+            expect_equivalent(bar$ngDistance, c(-86928, -529, 11406, 376, 33694, -961, -545, 27042,
+                                                352, -20281, -3415, -10642, -314, -17271, -249))
           })
 
 test_that('AnnotationCommandList execution fails on empty example',
