@@ -345,12 +345,12 @@ setMethod('execute', c('GapCommand', 'GRanges'), .executeGapCommand)
 #'
 #' @export
 #'
-setClass('GenRegCommand', contains='AnnotationCommand')
+setClass('GenomicRegionCommand', contains='AnnotationCommand')
 
 #
 # Internal GenRegCommand implementation of execute
 #
-.executeGenRegCommand <- function(command, object) {
+.executeGenomicRegionCommand <- function(command, object) {
   object <- callNextMethod()
   futr <- unlist(fiveUTRsByTranscript(TxDb.Hsapiens.UCSC.hg19.knownGene))
   exons <- unlist(exonsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, by='tx'))
@@ -379,12 +379,12 @@ setClass('GenRegCommand', contains='AnnotationCommand')
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
 #'
-genRegCommand <- function(colName) {
-  return(new('GenRegCommand', colName = colName))
+genomicRegionCommand <- function(colName) {
+  return(new('GenomicRegionCommand', colName = colName))
 }
 
 #'
-#' GenRegCommand implementation of execute
+#' GenomicRegionCommand implementation of execute
 #'
 #' GenomicRegionCommand tries to label the input genomic regions according to their relative
 #' position with respect to the TSS. We define the Promoter region as the union of a 2kbp region
@@ -401,7 +401,7 @@ genRegCommand <- function(colName) {
 #' @param command A GenomicRegionCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
 #'
-setMethod('execute', c('GenRegCommand', 'GRanges'), .executeGenRegCommand)
+setMethod('execute', c('GenomicRegionCommand', 'GRanges'), .executeGenomicRegionCommand)
 
 #'
 #' Disjoint Genomic Region AnnotationCommand
@@ -476,49 +476,52 @@ setMethod('execute', c('DGenomicRegionCommand', 'GRanges'), .executeDGenomicRegi
 #'
 #' @export
 #'
-setClass('NearestGenCommand', representation(what = 'character'), contains='AnnotationCommand')
+setClass('NearestGeneCommand', representation(what = 'character'), contains='AnnotationCommand')
 
 #'
 #' nearestTSSGeneCommand constructor
 #'
-#' This function builds a NearestGenCommand with a given column name and the type of nearest (TSS)
+#' This function builds a NearestGeneCommand with a given column name and the type of nearest (TSS)
 #'
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
 #'
 nearestTSSGeneCommand <- function(colName) {
-  return(new('NearestGenCommand', colName=colName, what = 'tss'))
+  return(new('NearestGeneCommand', colName=colName, what = 'tss'))
 }
 
 #'
 #' nearestTXGeneCommand constructor
 #'
-#' This function builds a NearestGenCommand with a given column name and the type of nearest (transcript)
+#' This function builds a NearestGeneCommand with a given column name and the type of nearest (transcript)
 #'
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
 #'
 nearestTXGeneCommand <- function(colName) {
-  return(new('NearestGenCommand', colName=colName, what = 'transcript'))
+  return(new('NearestGeneCommand', colName=colName, what = 'transcript'))
 }
 
 #'
-#' nearestGenCommand constructor
+#' nearestGeneCommand constructor
 #'
-#' This function builds a NearestGenCommand with a given column name and the type of nearest (gene)
+#' This function builds a NearestGeneCommand with a given column name and the type of nearest (gene)
 #'
 #' @export
 #' @param colName Prefix used in order to generate the column name for the annotation.
 #'
-nearestGenCommand <- function(colName) {
-  return(new('NearestGenCommand', colName=colName, what = 'gene'))
+nearestGeneCommand <- function(colName) {
+  warning('New function behaviour. Now the function returns the nearest gene. \
+           Use nearestTSSGeneCommand for obtaining the nearest TSS and TX for \
+           de nearest transcript')
+  return(new('NearestGeneCommand', colName=colName, what = 'gene'))
 }
 
 
 #
-# Internal NearestGenCommand implementation of execute
+# Internal NearestGeneCommand implementation of execute
 #
-.executeNearestGenCommand <- function(command, object) {
+.executeNearestGeneCommand <- function(command, object) {
   object <- callNextMethod()
 
   if (!is(object, "GenomicRanges")) {
@@ -552,9 +555,9 @@ nearestGenCommand <- function(colName) {
 }
 
 #'
-#' NearestGenCommand implementation of execute
+#' NearestGeneCommand implementation of execute
 #'
-#' NearestGenCommand labels each input genomic region with information regarding to the nearest
+#' NearestGeneCommand labels each input genomic region with information regarding to the nearest
 #' gene. Gene information is obtained from the TxDb.Hsapiens.UCSC.hg19.knownGene transcripts
 #' database. A gene region is defined as the union of all its transcript regions. The gene symbol
 #' is obtained from the org.Hs.eg.db package.
@@ -562,10 +565,10 @@ nearestGenCommand <- function(colName) {
 #' @importFrom AnnotationDbi mget
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @importFrom org.Hs.eg.db org.Hs.egSYMBOL
-#' @param command A NearestGenCommand.
+#' @param command A NearestGeneCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
 #'
-setMethod('execute', c('NearestGenCommand', 'GRanges'), .executeNearestGenCommand)
+setMethod('execute', c('NearestGeneCommand', 'GRanges'), .executeNearestGeneCommand)
 
 
 
