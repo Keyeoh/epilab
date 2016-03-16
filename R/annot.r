@@ -80,7 +80,6 @@ setMethod('execute', c('AnnotationCommand', 'GRanges'),
             if(length(object) == 0) {
               stop('Cannot execute annotation command on empty GRanges command.')
             } else {
-              print(class(command))
               return(object)
             }
           })
