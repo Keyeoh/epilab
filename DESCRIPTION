@@ -1,19 +1,20 @@
 Package: epilab
 Type: Package
 Title: EpiLab Functions for workflow implementation
-Version: 0.5-0
-Date: 2014-03-25
-Authors@R: c(person('Gustavo', 'Fernandez Bayon', role=c('aut', 'cre'),
-    email='fernandezgustavo@uniovi.es'))
-Author: Gustavo Fernandez Bayon
-Maintainer: Gustavo Fernandez Bayon <fernandezgustavo@uniovi.es>
+Version: 0.5-1
+Date: 2016-03-15
+Authors@R: c(
+  person('Gustavo', 'Fernandez Bayon', role=c('aut', 'cre'), email='fernandezgustavo@uniovi.es'),
+  person('Isabel', 'Cobo Sanchez', role = c('aut'), email = 'icobo@carrerasresearch.org')
+  )
+Author: Gustavo Fernandez Bayon, Isabel Cobo Sanchez
+Maintainer: Gustavo Fernandez Bayon <fernandezgustavo@uniovi.es>,
+  Isabel Cobo Sanchez <icobo@carrerasresearch.org>
 Description: Compilation of data, functions and other stuff intended to be used
     inside the EpiLab for the implementation of data processing workflows. Most
     of the functions are related to the analysis of Illumina 450k microarrays.
-    For now, the number of functions and methods is so low that I have decide
-    to keep everything inside only one package. In the future, this package
-    might be splitted to take into account the different aspects of the lab
-    workflows.
+    In the future, this package might be splitted to take into account the different aspects 
+    of the lab workflows.
 Depends:
     FDb.InfiniumMethylation.hg19,
     ggplot2,
