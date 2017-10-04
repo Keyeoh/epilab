@@ -19,10 +19,7 @@ test_that('getGeneEntrezIds fails on invalid tids input',
 
 test_that('getGeneEntrezIds works correctly on example',
           {
-            foo <- getGeneEntrezIds(mockTids, 'illumina', 2000)
-            expect_equal(foo, c('2175', '4000', '274'))
-            foo <- getGeneEntrezIds(mockTids, 'illumina', 20000)
-            expect_equal(foo, c('2175', '4000', '274'))
+            expect_error(getGeneEntrezIds(mockTids, 'illumina', 2000))
             foo <- getGeneEntrezIds(mockTids, 'ucsc19', 2000)
             expect_equal(foo, c('22864', '729041', '2175', '6092', '4000', '91107', '274'))
             foo <- getGeneEntrezIds(mockTids, 'ucsc19', 20000)
@@ -65,10 +62,7 @@ test_that('getSymbolsFromEntrezIds works correctly on example',
 #
 test_that('getProbeGeneRelationship works on empty input',
           {
-            foo <- getProbeGeneRelationship(character(0), 'illumina', 2000)
-            expect_equal(foo$probeId, character(0))
-            expect_equal(foo$geneId, character(0))
-            expect_equal(foo$geneSymbol, character(0))
+            expect_error(getProbeGeneRelationship(character(0), 'illumina', 2000))
             foo <- getProbeGeneRelationship(character(0), 'ucsc19', 3456)
             expect_equal(foo$probeId, character(0))
             expect_equal(foo$geneId, character(0))
@@ -98,14 +92,7 @@ test_that('getProbeGeneRelationship fails on unknown method',
 
 test_that('getProbeGeneRelationship works correctly on example',
           {
-            foo <- getProbeGeneRelationship(mockTids, 'illumina', 2000)
-            expect_equal(foo$probeId, c('cg07648498', 'cg23922289', 'cg27405400'))
-            expect_equal(foo$geneId, c('2175', '4000', '274'))
-            expect_equal(foo$geneSymbol, c('FANCA', 'LMNA', 'BIN1'))
-            foo <- getProbeGeneRelationship(mockTids, 'illumina', 20000)
-            expect_equal(foo$probeId, c('cg07648498', 'cg23922289', 'cg27405400'))
-            expect_equal(foo$geneId, c('2175', '4000', '274'))
-            expect_equal(foo$geneSymbol, c('FANCA', 'LMNA', 'BIN1'))
+            expect_error(getProbeGeneRelationship(mockTids, 'illumina', 2000))
             foo <- getProbeGeneRelationship(mockTids, 'ucsc19', 2000)
             expect_equal(foo$probeId, c('cg00079477', 'cg03046843', 'cg07648498', 'cg12302110',
                                         'cg23922289', 'cg26708970', 'cg27405400'))

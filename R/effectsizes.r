@@ -9,7 +9,7 @@
 #'
 #' @param x First sample
 #' @param y Second sample
-#'
+#' @export
 cliffDelta <- function(x, y) {
   .Deprecated(msg=paste0('This implementation is very inefficient. As of March, 2014, a package ',
                          'named effsize has been added to CRAN, including a Cliff Delta efficient ',
