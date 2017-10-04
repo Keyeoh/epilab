@@ -1,5 +1,7 @@
 language: r
 cache: packages
 sudo: false
-r: bioc-release
+r: 
+	- 3.2.2
+	- bioc-release
 
