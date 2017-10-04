@@ -1,7 +1,7 @@
 Package: epilab
 Type: Package
 Title: EpiLab Functions for workflow implementation
-Version: 0.5-1
+Version: 0.5.2
 Date: 2016-03-15
 Authors@R: c(
   person('Gustavo', 'Fernandez Bayon', role=c('aut', 'cre'), email='fernandezgustavo@uniovi.es'),
@@ -29,7 +29,6 @@ Imports:
     GenomicFeatures,
     GenomicRanges,
     gridExtra,
-    IlluminaHumanMethylation450k.db,
     IRanges,
     matrixStats,
     org.Hs.eg.db,

@@ -53,7 +53,6 @@ getSymbolsFromEntrezIds <- function(entrezIds) {
 #' @param promoterSize Size to add to transcripts' upstream promoter regions.
 #' @return A data.frame containing four columns: targetId, txId, geneId and geneSymbol.
 #' @export
-#' @importFrom IlluminaHumanMethylation450k.db IlluminaHumanMethylation450kENTREZID
 #' @importFrom FDb.InfiniumMethylation.hg19 get450k
 #' @importFrom TxDb.Hsapiens.UCSC.hg19.knownGene TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @import AnnotationDbi
@@ -69,16 +68,7 @@ getProbeGeneRelationship <- function(tids, method=c('illumina', 'ucsc19'), promo
   }
 
   if (method == 'illumina') {
-    .Deprecated(msg='The Illumina Annotation package has been marked as deprecated in BioC')
-
-    multipleGeneIds <- toggleProbes(IlluminaHumanMethylation450kENTREZID, 'all')
-    idTable <- toTable(multipleGeneIds)
-    subtableWithTids <- idTable[idTable$probe_id %in% tids, ]
-
-    probeGene <- data.frame(probeId=subtableWithTids$probe_id,
-                            geneId=subtableWithTids$gene_id,
-                            stringsAsFactors=FALSE)
-    probeGene$geneSymbol <- getSymbolsFromEntrezIds(probeGene$geneId)
+    .Defunct(msg = 'The Illumina Annotation method is no more')
   } else if (method == 'ucsc19') {
     transcriptsByGene <- transcriptsBy(TxDb.Hsapiens.UCSC.hg19.knownGene, 'gene')
     transcriptRanges <- unlist(transcriptsByGene)
