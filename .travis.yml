@@ -1,7 +1,5 @@
 language: r
 cache: packages
 sudo: false
-r: 
- - oldrel
- - bioc-release
+r: 3.2.2
 
