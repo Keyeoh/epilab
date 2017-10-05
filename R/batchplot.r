@@ -24,6 +24,7 @@
 #' @importFrom gridExtra grid.arrange
 #' @importFrom ggplot2 ggplot aes scale_fill_manual geom_tile xlab ylab ggtitle theme 
 #' @importFrom ggplot2 scale_fill_gradient2 ggplotGrob
+#' @importFrom stats aov anova
 #' @export
 #'
 batchPlot <- function(pdata, sv, nvars=NULL, qvars=NULL, alpha=0.05) {

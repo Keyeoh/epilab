@@ -37,6 +37,7 @@ cliffDelta <- function(x, y) {
 #' @param y Second sample.
 #' @param n Number of points to use for the densities estimation.
 #' @export
+#' @importFrom stats density
 #'
 camblorAC <- function(x, y, n=512) {
   

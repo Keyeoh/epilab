@@ -261,6 +261,7 @@ setMethod('getDiscardDirection', 'CPGICommand',
 #' input regions.
 #'
 #' @importFrom functional Curry
+#' @importFrom utils data
 #' @import GenomicRanges
 #' @param command A CPGICommand.
 #' @param object A GRanges object containing the genomic regions to annotate.

@@ -168,7 +168,7 @@ generateCircosDensityFromRanges <- function(ranges, ids=names(ranges), wsize=1e6
 #' @param filename Name of the file to write the information to.
 #'
 #' @export
-#'
+#' @importFrom utils write.table
 writeCircos <- function(circosData, filename) {
   write.table(circosData, file=filename, quote=FALSE, sep='\t', row.names=FALSE, col.names=FALSE)
 }

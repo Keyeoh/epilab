@@ -15,6 +15,7 @@
 #' @return A data.frame containing the results from all the tests.
 #'
 #' @import parallel
+#' @importFrom stats fisher.test p.adjust
 #' @export
 #'
 rangeTestAgainstList <- function(selectedRange, backgroundRange, rangeList, ...) {
@@ -122,6 +123,7 @@ tids450kTestAgainstList <- function(targetIds, rangeList, ...) {
 #' @return A list containing information about the result.
 #'
 #' @export
+#' @importFrom stats chisq.test
 #'
 categoricalTest <- function(targetFactor, selectedIndices, testId=NULL) {
  
@@ -205,6 +207,7 @@ categoricalTest <- function(targetFactor, selectedIndices, testId=NULL) {
 #' @return A list containing information about the result.
 #'
 #' @importFrom effsize cliff.delta.default cliff.delta
+#' @importFrom stats wilcox.test
 #' @export
 #'
 continuousTest <- function(targetVar, selectedIndices, testId=NULL) {
