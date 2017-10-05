@@ -13,8 +13,7 @@ Maintainer: Gustavo Fernandez Bayon <fernandezgustavo@uniovi.es>,
 Description: Compilation of data, functions and other stuff intended to be used
     inside the EpiLab for the implementation of data processing workflows. Most
     of the functions are related to the analysis of Illumina 450k microarrays.
-    In the future, this package might be splitted to take into account the different aspects 
-    of the lab workflows.
+    In the future, this package might be splitted to take into account the different aspects of the lab workflows. TOTORO LEGACY VERSION: I'm playing with this branch in order to make it installable from the totoro machine.
 Depends:
     FDb.InfiniumMethylation.hg19,
     ggplot2,
