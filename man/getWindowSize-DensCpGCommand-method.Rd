@@ -13,4 +13,3 @@
 \description{
 Getter method for windowSize slot for all AnnotationCommand objects.
 }
-

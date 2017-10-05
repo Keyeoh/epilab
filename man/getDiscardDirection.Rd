@@ -12,4 +12,3 @@ getDiscardDirection(object)
 \description{
 Generic definition of the getDiscardDirection getter methods.
 }
-

@@ -13,4 +13,3 @@
 \description{
 Getter method for a slot for all KOverAFilterCommand objects.
 }
-

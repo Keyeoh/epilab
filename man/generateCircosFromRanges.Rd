@@ -18,4 +18,3 @@ This function is just a wrapper in order to generate data in the format that CIR
 allows to generate data from the whole GRanges object, or from a subset of it. It also accepts
 a numerical vector of values to use as scores of the generated track information.
 }
-

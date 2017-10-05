@@ -16,4 +16,4 @@ A function for adding keys to a data.frame.
 This is a factory that returns a function that adds all key values to a data.frame, but for a
 given and fixed character vector representing an input file.
 }
-
+\keyword{internal}

@@ -12,4 +12,3 @@ genomicRegionCommand(colName)
 \description{
 This function builds a GenRegCommand with a given column name.
 }
-

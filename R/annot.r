@@ -22,7 +22,7 @@ setGeneric('getColName', function(object) standardGeneric('getColName'))
 #' Getter method for colName slot for all AnnotationCommand objects.
 #'
 #' @param object An AnnotationCommand object.
-#'
+#' @exportMethod getColName
 setMethod('getColName', 'AnnotationCommand',
           function(object) {
             return(object@colName)
@@ -130,7 +130,7 @@ setGeneric('getWindowSize', function(object) standardGeneric('getWindowSize'))
 #' Getter method for windowSize slot for all AnnotationCommand objects.
 #'
 #' @param object An DensCpGCommand object.
-#'
+#' @exportMethod getWindowSize
 setMethod('getWindowSize', 'DensCpGCommand',
           function(object) {
             return(object@windowSize)
@@ -204,7 +204,7 @@ setGeneric('getDiscardDirection', function(object) standardGeneric('getDiscardDi
 #' Getter method for discardDirection slot for all CPGICommand objects.
 #'
 #' @param object An CPGICommand object.
-#'
+#' @exportMethod getDiscardDirection
 setMethod('getDiscardDirection', 'CPGICommand',
           function(object) {
             return(object@discardDirection)
@@ -301,6 +301,8 @@ gapCommand <- function(colName) {
 
     # Get gap table
     s <- browserSession()
+    genome(s) = 'hg19'
+    
     track.name <- 'gap'
     table.name <- 'gap'
 
@@ -630,7 +632,7 @@ setGeneric('getCommandList', function(object) standardGeneric('getCommandList'))
 #' Getter method for commandList slot for all AnnotationCommandList objects.
 #'
 #' @param object An AnnotationCommandList object.
-#'
+#' @exportMethod getCommandList
 setMethod('getCommandList', 'AnnotationCommandList',
           function(object) {
             return(object@commandList)

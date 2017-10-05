@@ -26,4 +26,3 @@ a simple proportionality test based on a 2x2 contingency table. This is similar 
 testing (GO-like), but a lower level and intended for being used as a building block for more
 complex testing procedures. Currently, Fisher test is the only choice.
 }
-

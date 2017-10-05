@@ -1,5 +1,7 @@
 context('AnnotationCommand tests')
 
+library(epilab)
+
 #
 # Mock objects for testing
 #
@@ -235,20 +237,17 @@ test_that('NearestGeneCommand execution breaks on wrong data types',
             expect_error(execute(mockRanges, cmd))
           })
 
-test_that('NearestGeneCommand execution works correctly on example',
-          {
-            bar <- execute(cmd, mockRanges)
-            expect_equivalent(bar$fooGeneSymbol, c('FOXC1', 'FSD1L', 'TOLLIP', 'RICTOR', 'ANKIB1',
-                                                   'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX4',
-                                                   'PTCRA', 'SLC12A7', 'BIRC7', 'LINC00602', 'GAK'))
-            expect_equivalent(bar$fooGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761,
-                                               441317, 54862, 8535,
-                                               171558, 10723, 79444, 441177, 2580))
-#             expect_equivalent(bar$fooDTSS, c(-86928, -529, 18325, 376, 33694, -961, 194514, 27042,
-#                                              352, -20281))
-            expect_equivalent(bar$fooDistance, c(-86928, -529, 0, 0, 0, -961, 0, 8782, 0, -20281,
-                                                 0, -10642, -314, 15695, 0))
-          })
+test_that('NearestGeneCommand execution works correctly on example', {
+  bar <- execute(cmd, mockRanges)
+  expect_equivalent(bar$fooGeneSymbol, c("FOXC1", "SLC44A1", "TOLLIP", "RICTOR", "ANKIB1", 
+                                         "DLX5", "ATP8A2", "FAM90A7P", "CC2D1A", "CBX2", "PTCRA", "SLC12A7", 
+                                         "YTHDF1", "T", "GAK"))
+  expect_equivalent(bar$fooGeneId, c(2296, 23446, 54472, 253260, 54467, 1749, 51761, 441317, 54862, 
+                                     84733, 171558, 10723, 54915, 6862, 2580))
+
+  expect_equivalent(bar$fooDistance, c(-86928L, 9001L, 0L, 0L, 0L, -961L, 0L, 8782L, 0L, 72045L, 0L, 
+                                       -10642L, -19421L, 152345L, 0L))
+})
 
 test_that('NearestGeneCommand execution fails on empty example',
           {
@@ -274,17 +273,16 @@ test_that('NearestGeneCommand execution breaks on wrong data types',
             expect_error(execute(mockRanges, cmd))
           })
 
-test_that('NearestGeneCommand execution works correctly on example',
-          {
-            bar <- execute(cmd, mockRanges)
-            expect_equivalent(bar$fooGeneSymbol, c('FOXC1', 'FSD1L', 'TOLLIP', 'RICTOR', 'ANKIB1',
-                                                   'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX4',
-                                                   'CNPY3', 'SLC12A7', 'BIRC7', 'LINC00473', 'GAK'))
-            expect_equivalent(bar$fooGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761,
-                                               441317, 54862, 8535, 10695, 10723, 79444, 90632, 2580))
-            expect_equivalent(bar$fooDistance, c(-86928, -529, 11406, 376, 33694, -961, -545, 27042,
-                                                 352, -20281, -3415, -10642, -314, -17271, -249))
-          })
+test_that('NearestGeneCommand execution works correctly on example', {
+  bar <- execute(cmd, mockRanges)
+  expect_equivalent(bar$fooGeneSymbol, c("FOXC1", "SLC44A1", "TOLLIP-AS1", "OSMR", "ANKIB1", 
+                                         "DLX5", "ATP8A2", "FAM90A7P", "CC2D1A", "CBX2", "CNPY3", "SLC12A7", 
+                                         "YTHDF1", "T", "GAK"))
+  expect_equivalent(bar$fooGeneId, c(2296, 23446, 255512, 9180, 54467, 1749, 51761, 441317, 54862, 
+                                     84733, 10695, 10723, 54915, 6862, 2580))
+  expect_equivalent(bar$fooDistance, c(-86928L, 92026L, -18371L, 156474L, 33694L, -961L, -545L, 27042L, 
+                                       -6670L, 81517L, -3415L, -10642L, -19421L, 162564L, -249L))
+})
 
 test_that('NearestGeneCommand execution fails on empty example',
           {
@@ -310,18 +308,17 @@ test_that('NearestGeneCommand execution breaks on wrong data types',
             expect_error(execute(mockRanges, cmd))
           })
 
-test_that('NearestGeneCommand execution works correctly on example',
-          {
-            bar <- execute(cmd, mockRanges)
-            expect_equivalent(bar$fooGeneSymbol, c('FOXC1', 'FSD1L', 'TOLLIP', 'RICTOR', 'ANKIB1',
-                                                   'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX4',
-                                                   'PTCRA', 'SLC12A7', 'BIRC7', 'LINC00602', 'GAK'))
-            expect_equivalent(bar$fooGeneId, c(2296, 83856, 54472, 253260, 54467, 1749, 51761,
-                                               441317, 54862, 8535, 171558, 10723, 79444, 441177,
-                                               2580))
-            expect_equivalent(bar$fooDistance, c(-86928, -529, 0, 0, 0, -961, 0, 8782, 0, -20281, 0,
-                                                 -10642, -314, 15695, 0))
-          })
+test_that('NearestGeneCommand execution works correctly on example', {
+  bar <- execute(cmd, mockRanges)
+  expect_equivalent(bar$fooGeneSymbol, c('FOXC1', 'SLC44A1', 'TOLLIP', 'RICTOR', 'ANKIB1',
+                                         'DLX5', 'ATP8A2', 'FAM90A7P', 'CC2D1A', 'CBX2',
+                                         'PTCRA', 'SLC12A7', 'YTHDF1', 'T', 'GAK'))
+  expect_equivalent(bar$fooGeneId, c(2296, 23446, 54472, 253260, 54467, 1749, 51761,
+                                     441317, 54862, 84733, 171558, 10723, 54915, 6862,
+                                     2580))
+  expect_equivalent(bar$fooDistance, c(-86928, 9001, 0, 0, 0, -961, 0, 8782, 0, 72045, 0,
+                                       -10642, -19421, -152345, 0))
+})
 
 test_that('NearestGeneCommand execution fails on empty example',
           {

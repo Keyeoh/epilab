@@ -7,4 +7,3 @@
 \description{
 This AnnotationCommand adds columns with information regarding the nearest TSS, TX and gene.
 }
-

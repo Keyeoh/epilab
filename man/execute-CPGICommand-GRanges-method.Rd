@@ -19,4 +19,3 @@ flanking the island, and Shelves as the two external 2kbp regions flanking the S
 DensCpGCommand, this command is best suited for the annotation of very short (methylation probes)
 input regions.
 }
-

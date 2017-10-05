@@ -18,4 +18,3 @@ parametric effect size estimation, like Cohen's d, would make no sense. This nai
 is quite computationally expensive, so it should be used with caution, as it could lead to memory
 shortage problems.
 }
-

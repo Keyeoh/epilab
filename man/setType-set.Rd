@@ -14,4 +14,3 @@ setType(object) <- value
 \description{
 Generic definition of the setType setter methods.
 }
-

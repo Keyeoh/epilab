@@ -14,4 +14,3 @@ to keep everything inside only one package. In the future, this package
 might be splitted to take into account the different aspects of the lab
 workflows.
 }
-

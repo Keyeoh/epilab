@@ -12,4 +12,3 @@ getCommandList(object)
 \description{
 Generic definition of the getCommandList getter methods.
 }
-

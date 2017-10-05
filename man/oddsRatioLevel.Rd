@@ -18,4 +18,3 @@ function does exactly that. It just collapses a bigger matrix onto a 2x2 matrix,
 variable representing the pertenence of the data to the given level. The it computes the odds
 ratio in the traditional way.
 }
-

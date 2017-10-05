@@ -12,4 +12,3 @@ getWindowSize(object)
 \description{
 Generic definition of the getWindowSize getter methods.
 }
-

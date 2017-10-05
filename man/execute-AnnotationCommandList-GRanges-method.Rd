@@ -18,4 +18,3 @@ executed, the objects in the internal list are executed in the same order they w
 the constructor. The colName slot of AnnotationCommandList has to be empty, because it has no
 useful meaning at the moment.
 }
-

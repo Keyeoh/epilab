@@ -7,4 +7,3 @@
 \description{
 Abstract class that serves as interface for all the filtering commands.
 }
-

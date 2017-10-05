@@ -7,4 +7,3 @@
 \description{
 This AnnotationCommand adds a column for the distances to centromeres and telomeres.
 }
-

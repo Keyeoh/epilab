@@ -22,4 +22,3 @@ would indicate that the two distributions are the same, hence there would be no 
 value of 0 would indicate no intersection between distributions, and amount to a greater effect
 size. It is an unsigned metric, so no information about the direction of the effect is provided.
 }
-

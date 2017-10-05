@@ -6,7 +6,8 @@
 #' @param x An indexable object.
 #' @param i Integer value indicating a position.
 #' @return The i'th element of x.
-#'
+#' @export
+#' @keywords internal
 whichOne <- function(x, i) {
   if (i <= 0) {
     stop('Index must be positive.')
@@ -22,7 +23,8 @@ whichOne <- function(x, i) {
 #'
 #' @param x An indexable object.
 #' @return The first element of x.
-#'
+#' @export
+#' @keywords internal
 first <- function(x) whichOne(x, 1)
 
 #'
@@ -32,7 +34,8 @@ first <- function(x) whichOne(x, 1)
 #'
 #' @param x An indexable object.
 #' @return The second element of x.
-#'
+#' @export
+#' @keywords internal
 second <- function(x) whichOne(x, 2)
 
 #'
@@ -42,7 +45,8 @@ second <- function(x) whichOne(x, 2)
 #'
 #' @param x An object with a match.length attribute.
 #' @return The value of the match.length attribute.
-#'
+#' @export
+#' @keywords internal
 matchLength <- function(x) {
   mLength <- attr(x, 'match.length')
   if (is.null(mLength)) {
@@ -59,7 +63,8 @@ matchLength <- function(x) {
 #'
 #' @param x An object with a match.length attribute.
 #' @return The value of the second element of the match.length attribute.
-#'
+#' @export
+#' @keywords internal
 secondLength <- function(x) second(matchLength(x))
 
 #'
@@ -73,7 +78,8 @@ secondLength <- function(x) second(matchLength(x))
 #' @param key A character value representing the value we are looking for.
 #' @param txts A character vector containing the lines of a text file.
 #' @return A character vector with all the values corresponding to the input key.
-#'
+#' @export
+#' @keywords internal
 getValuesForKey <- function(key, txts) {
   if (!is.character(key) || !length(key) == 1) {
     stop('Key must be a length 1 character.')
@@ -93,7 +99,8 @@ getValuesForKey <- function(key, txts) {
 #'
 #' @param txtLines A character vector containing the lines of a text file.
 #' @return A data.frame with a single column containing all the identifiers.
-#'
+#' @export
+#' @keywords internal
 createFilesData <- function(txtLines) {
   stemMatches <- regexec('([a-zA-Z0-9]+).broadPeak.gz\t', txtLines)
   stemPositions <- sapply(stemMatches, second)
@@ -111,7 +118,8 @@ createFilesData <- function(txtLines) {
 #'
 #' @param txtLines A character vector containing the lines of a text file.
 #' @return A character vector containing all the keys found in the input.
-#'
+#' @export
+#' @keywords internal
 getAllKeys <- function(txtLines) {
   if (!is.character(txtLines)) {
     stop('Input text lines must be a character vector.')
@@ -134,7 +142,8 @@ getAllKeys <- function(txtLines) {
 #' @param aKey The key it is going to search for.
 #' @param refLines A character vector representation of the input file.
 #' @return A new data.frame with the new column added.
-#'
+#' @export
+#' @keywords internal
 addKey <- function(aDataFrame, aKey, refLines) {
   aDataFrame[[aKey]] <- getValuesForKey(aKey, refLines)
   return(aDataFrame)
@@ -148,7 +157,8 @@ addKey <- function(aDataFrame, aKey, refLines) {
 #'
 #' @param refLines A character vector representation of the input file.
 #' @return A function for adding keys to a data.frame.
-#'
+#' @export
+#' @keywords internal
 addKeyFactory <- function(refLines) {
   if (!is.character(refLines)) {
     stop('Input must be a character vector.')
@@ -165,7 +175,8 @@ addKeyFactory <- function(refLines) {
 #' @param keys A character vector with all the keys it is going to search for.
 #' @param txtLines A character vector representation of the input file.
 #' @return A new data.frame with the new columns added.
-#'
+#' @export
+#' @keywords internal
 addAllKeys <- function(initData, keys, txtLines) {
   return(Reduce(addKeyFactory(txtLines), keys, init=initData))
 }

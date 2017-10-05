@@ -13,4 +13,3 @@ annotationCommandList(...)
 This function builds an AnnotationCommandList from a list of
 AnnotationCommand commands
 }
-

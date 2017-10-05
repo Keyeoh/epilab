@@ -17,4 +17,3 @@ Chen YA, Lemire M, Choufani S, Butcher DT, Grafodatskaya D,
   probes and polymorphic CpGs in the Illumina Infinium HumanMethylation450 
   microarray. Epigenetics. 2013 Jan 11;8(2)
 }
-

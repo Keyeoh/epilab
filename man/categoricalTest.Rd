@@ -24,4 +24,3 @@ of elements is differentially enriched or impovered with respect to a given fact
 a contingency matrix, performs a statistical test and returns information about the test results
 and effect sizes.
 }
-

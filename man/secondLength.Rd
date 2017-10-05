@@ -15,4 +15,4 @@ The value of the second element of the match.length attribute.
 \description{
 Just a closure for returning the second element of a match.length attribute of an object.
 }
-
+\keyword{internal}

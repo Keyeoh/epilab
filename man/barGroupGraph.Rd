@@ -16,4 +16,3 @@ This low-level function builds a basic bar graph from an input list. Each elemen
 corresponds to a bar in the graph, which is then segmented according to the factor defined by the
 element.
 }
-

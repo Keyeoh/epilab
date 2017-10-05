@@ -27,4 +27,3 @@ regions. The function uses the getSymbolsFromEntrezIds function from this packag
 get the genes' names. This function returns a data.frame with all the overlaps corresponding
 to the input target Id's.
 }
-

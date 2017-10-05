@@ -12,4 +12,3 @@ getK(object)
 \description{
 Generic definition of the getK getter methods.
 }
-

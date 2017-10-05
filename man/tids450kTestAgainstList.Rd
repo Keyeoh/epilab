@@ -22,4 +22,3 @@ This function is a wrapper for the rangeTestAgainstList, specifically designed t
 Illumina450k Target IDs. It internally transforms the ids into both selected and background
 GRanges objects and then call the main workhorse function.
 }
-

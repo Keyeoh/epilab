@@ -17,4 +17,3 @@ GapCommand uses rtracklayer for connecting to the UCSC database and get the info
 associated with the Gap track, which contains information about centromeres and telomeres.
 Distance to the nearest telomere and centromere is then computed for the input regions.
 }
-

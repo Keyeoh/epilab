@@ -14,4 +14,3 @@ setThreshold(object) <- value
 \description{
 Generic definition of the setThreshold setter methods.
 }
-

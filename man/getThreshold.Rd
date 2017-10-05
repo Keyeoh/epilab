@@ -12,4 +12,3 @@ getThreshold(object)
 \description{
 Generic definition of the getThreshold getter methods.
 }
-

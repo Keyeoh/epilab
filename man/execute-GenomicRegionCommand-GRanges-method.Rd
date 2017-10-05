@@ -22,4 +22,3 @@ the former labels can be applied. This process is always executed at a transcrip
 it is possible for an input region to be at Promoter and Intragenic regions at the same time.
 Again, this command is better suited for very small input regions.
 }
-

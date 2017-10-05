@@ -15,4 +15,3 @@
 \description{
 Getter method for type slot for all VarFilterCommand objects.
 }
-

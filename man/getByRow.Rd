@@ -12,4 +12,3 @@ getByRow(object)
 \description{
 Generic definition of the getByRow getter methods.
 }
-

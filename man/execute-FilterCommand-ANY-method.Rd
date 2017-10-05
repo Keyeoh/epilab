@@ -17,4 +17,3 @@ Implementation of the logic that is common to all FilterCommands. For
 example, error management and input control. For now, it only prevents the command from being
 executed on an empty object.
 }
-

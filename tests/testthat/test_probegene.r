@@ -1,5 +1,7 @@
 context('Probe-Gene relationship tests')
 
+library(epilab)
+
 # 
 # A mock list of target ids
 #

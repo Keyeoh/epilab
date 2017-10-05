@@ -1,5 +1,7 @@
 context('Circos tests')
 
+library(epilab)
+
 #
 # Mock objects for testing
 #

@@ -1,5 +1,7 @@
 context('Effectsizes tests')
 
+library(epilab)
+
 #
 # cliffDelta tests
 #

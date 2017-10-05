@@ -12,4 +12,3 @@ getMatrix(object)
 \description{
 Generic definition of the getMatrix getter methods.
 }
-

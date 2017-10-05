@@ -18,4 +18,3 @@ A character vector containing the gene identifier.
 This function takes as input a given set of Illumina 450k target IDs and produces a list of gene
 Entrez IDs, according to some parameters governing the getProbeGeneRelationship inner function.
 }
-

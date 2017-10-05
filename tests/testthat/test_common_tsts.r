@@ -1,5 +1,7 @@
 context('General testing framework tests')
 
+library(epilab)
+
 #
 # rangeTestAgainstList tests
 #

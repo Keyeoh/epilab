@@ -1,5 +1,7 @@
 context('Graphs tests')
 
+library(epilab)
+
 #
 # barGroupGraph tests
 #

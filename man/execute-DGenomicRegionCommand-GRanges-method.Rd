@@ -19,4 +19,3 @@ TSS), 5'UTR, First Exon, a different Exon, an Intron and the 3'UTR. Finally, Int
 assigned when neither of the former labels can be applied. This process is always executed at a
 transcript level.
 }
-

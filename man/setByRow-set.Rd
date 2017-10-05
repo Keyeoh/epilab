@@ -14,4 +14,3 @@ setByRow(object) <- value
 \description{
 Generic definition of the setByRow setter methods.
 }
-

@@ -1,5 +1,6 @@
 context('FilterCommand tests')
 
+library(epilab)
 library(minfi)
 
 #

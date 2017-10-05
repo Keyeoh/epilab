@@ -43,4 +43,4 @@ Suggests:
     testthat,
     minfi
 License: Artistic-2.0
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

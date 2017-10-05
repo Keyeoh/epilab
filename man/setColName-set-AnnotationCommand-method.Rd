@@ -15,4 +15,3 @@
 \description{
 Getter method for colName slot for all AnnotationCommand objects.
 }
-

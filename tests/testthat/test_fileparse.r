@@ -1,5 +1,7 @@
 context('Fileparse tests')
 
+library(epilab)
+
 #
 # whichOne() tests
 #

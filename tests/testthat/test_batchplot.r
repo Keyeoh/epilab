@@ -1,5 +1,7 @@
 context('BatchPlot tests')
 
+library(epilab)
+
 #
 # Mock objects for testing
 #

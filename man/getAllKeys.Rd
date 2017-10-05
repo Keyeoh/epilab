@@ -17,4 +17,4 @@ This function retrieves all the different keys that are present in the input rep
 the number of keys and their names may be variable, it is necessary first to know which keys are 
 present in the input in order to search for them afterwards.
 }
-
+\keyword{internal}

@@ -16,4 +16,3 @@ indicate the groups/bars, and the rows correspond to the different levels of the
 studied. It is similar to the barGroupGraph function, but aimed to be used when the data list is
 big.
 }
-

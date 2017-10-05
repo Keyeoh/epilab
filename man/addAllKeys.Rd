@@ -19,4 +19,4 @@ A new data.frame with the new columns added.
 \description{
 This function adds all the keys found in a file to a given data.frame.
 }
-
+\keyword{internal}

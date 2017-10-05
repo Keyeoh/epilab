@@ -16,4 +16,3 @@ This function computes the odds ratio for a 2x2 matrix. It is assumed that the t
 element count is located in the main diagonal. If that is not the case, the additional parameter
 changeRows can be used to reflect that situation.
 }
-

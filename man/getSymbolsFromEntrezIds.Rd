@@ -13,4 +13,3 @@ getSymbolsFromEntrezIds(entrezIds)
 This function takes as input a set of Entrez IDs and generates a list of gene symbols using the
 annotation information from the org.Hs.eg.db Bioconductor package.
 }
-

@@ -17,4 +17,4 @@ The i'th element of x.
 \description{
 This function just returns a given element of a vector.
 }
-
+\keyword{internal}

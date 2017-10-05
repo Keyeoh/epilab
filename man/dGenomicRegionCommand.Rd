@@ -12,4 +12,3 @@ dGenomicRegionCommand(colName)
 \description{
 This function builds a DGenomicRegionCommand with a given column name.
 }
-

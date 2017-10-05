@@ -13,4 +13,3 @@
 \description{
 Getter method for byRow slot for all AtomicFilterCommand objects.
 }
-

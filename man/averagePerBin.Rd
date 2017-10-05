@@ -26,4 +26,3 @@ http://permalink.gmane.org/gmane.science.biology.informatics.conductor/45929. It
 averaging the specified metadata columns in 'mcolnames' using a given binsize over an input
 ranges object.
 }
-
