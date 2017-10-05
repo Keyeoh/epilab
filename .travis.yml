@@ -1,17 +1,5 @@
 language: r
 cache: packages
 sudo: false
-r: 3.2
-bioc_packages:
-  - AnnotationDbi
-  - Biostrings
-  - BSgenome.Hsapiens.UCSC.hg19
-  - FDb.InfiniumMethylation.hg19
-  - GenomeInfoDb
-  - GenomicFeatures
-  - GenomicRanges
-  - IRanges
-  - org.Hs.eg.db
-  - rtracklayer
-  - S4Vectors
-  - TxDb.Hsapiens.UCSC.hg19.knownGene
+r: bioc-release
+
