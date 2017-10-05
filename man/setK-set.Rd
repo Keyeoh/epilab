@@ -14,3 +14,4 @@ setK(object) <- value
 \description{
 Generic definition of the setK setter methods.
 }
+

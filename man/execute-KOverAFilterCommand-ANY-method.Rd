@@ -22,3 +22,4 @@ the parameter a. Direction of filtering is controlled by the byRow parameter.
 In order to properly chain a list of commands (see FilterCommandList), the detection p-value
 matrix is projected according to the row and column names of the object which is being filtered.
 }
+

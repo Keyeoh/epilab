@@ -20,3 +20,4 @@ are compatible with those from the additional matrix.
 Dimensions do not have to be the same, but the row and column names of the input object should be 
 included into row and column names of the additional matrix.
 }
+

@@ -18,3 +18,4 @@ kOverAFilterCommandFromFraction(m, byRow = TRUE, fraction = 0.1, a = 0.01)
 \description{
 This function builds a KOverAFilterCommand from parameter a and a percentage of rows/columns.
 }
+

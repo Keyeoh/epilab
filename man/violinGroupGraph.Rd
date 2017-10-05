@@ -15,3 +15,4 @@ This function builds a basic violin plot from a data list. Each element of the l
 represented by a different violin and named after its list name. The elements of the list have to
 be numerical vectors.
 }
+

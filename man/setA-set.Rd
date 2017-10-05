@@ -14,3 +14,4 @@ setA(object) <- value
 \description{
 Generic definition of the setA setter methods.
 }
+

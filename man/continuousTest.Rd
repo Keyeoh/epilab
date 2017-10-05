@@ -23,3 +23,4 @@ of elements is differentially enriched or impovered with respect to a given nume
 It simply splits the numerical variable according to the indices provided, performs a statistical
 test and returns information about the test results and effect sizes.
 }
+

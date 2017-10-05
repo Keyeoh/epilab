@@ -14,3 +14,4 @@ This function builds a simple count bar plot from a named numeric vector. Each e
 vector represents the number of elements in a group (bar). The group is named after the name of
 the vector element.
 }
+

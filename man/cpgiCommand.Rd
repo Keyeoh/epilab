@@ -15,3 +15,4 @@ status of a CpG island-related region is important or not.}
 \description{
 This function builds a CPGICommand.
 }
+

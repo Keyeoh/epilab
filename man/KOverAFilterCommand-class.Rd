@@ -9,3 +9,4 @@ This FilterCommand filters out the rows/columns of the input object when there a
 elements over a value A in a given row/column. It is equivalent to the kOverA filter function in
 the package genefilter.
 }
+

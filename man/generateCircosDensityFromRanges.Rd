@@ -27,3 +27,4 @@ possible to execute the function over a subset of element identifiers, and to sp
 more metadata columns for averaging. It is useful for the display of genome-wide scale Circos
 diagrams, when we want to see the information with a fixed zoom level.
 }
+

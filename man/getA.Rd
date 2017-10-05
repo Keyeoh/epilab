@@ -12,3 +12,4 @@ getA(object)
 \description{
 Generic definition of the getA getter methods.
 }
+

@@ -19,3 +19,4 @@ This function fills the seqlength field of a given GRanges object with informati
 from several sources, mainly a BSgenome annotation package. This is just a convenience function
 for some of our workflows, and it currently supports only hg19 annotation package.
 }
+

@@ -18,3 +18,4 @@ gene. Gene information is obtained from the TxDb.Hsapiens.UCSC.hg19.knownGene tr
 database. A gene region is defined as the union of all its transcript regions. The gene symbol
 is obtained from the org.Hs.eg.db package.
 }
+

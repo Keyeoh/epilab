@@ -15,3 +15,4 @@ The first element of x.
 \description{
 Just a closure for returning the first element of a vector.
 }
+

@@ -15,3 +15,4 @@
 \description{
 Getter method for m slot for all MatrixFilterCommand objects.
 }
+

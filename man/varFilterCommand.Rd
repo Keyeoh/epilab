@@ -18,3 +18,4 @@ varFilterCommand(m, byRow = TRUE, type = "quantile", threshold = 0.25)
 \description{
 This function builds a VarFilterCommand from parameters type and threshold.
 }
+

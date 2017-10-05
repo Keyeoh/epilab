@@ -32,3 +32,4 @@ the possible batch effects present in the data. For now, association between a q
 variable and a surogate variable is measured by Pearson Correlation. For qualitative variables, 
 an analysis of variance is performed and a tick is shown for the significant combinations.
 }
+

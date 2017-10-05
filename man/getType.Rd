@@ -12,3 +12,4 @@ getType(object)
 \description{
 Generic definition of the getType getter methods.
 }
+

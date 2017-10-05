@@ -12,3 +12,4 @@ gapCommand(colName)
 \description{
 This function builds a GapCommand with a given column name.
 }
+

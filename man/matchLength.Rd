@@ -15,3 +15,4 @@ The value of the match.length attribute.
 \description{
 Just a closure for returning the match.length attribute of an object.
 }
+

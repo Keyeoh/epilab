@@ -18,3 +18,4 @@ line, there is an identifier followed by a variable set of key, value pairs enco
 necessary information. This function reads the information in a file and returns a data.frame
 with a column for each key.
 }
+

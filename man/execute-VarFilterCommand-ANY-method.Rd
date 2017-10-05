@@ -17,3 +17,4 @@ VarFilterCommand discards rows or columns according to their elements' variance.
 type of filtering, the threshold used can be absolute or expressed as a quantile of the whole
 set of variances. This is a useful filter for the implementation of non-specific filtering.
 }
+

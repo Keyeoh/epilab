@@ -20,3 +20,4 @@ going to be narrowed by this action. For now, this is enough, because our input 
 mostly GRanges objects containing methylation probes from Illumina microarrays. But it should be
 fixed in order to use it for annotating NGS peaks, for example.
 }
+

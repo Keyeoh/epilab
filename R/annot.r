@@ -396,7 +396,6 @@ genomicRegionCommand <- function(colName) {
 #'
 #' @importFrom GenomicRanges reduce
 #' @import GenomicFeatures
-#' @importFrom IRanges unlist
 #' @param command A GenomicRegionCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
 #'
@@ -461,7 +460,6 @@ dGenomicRegionCommand <- function(colName) {
 #'
 #' @importFrom GenomicRanges reduce
 #' @import GenomicFeatures
-#' @importFrom IRanges unlist
 #' @param command A GenomicRegionCommand.
 #' @param object A GRanges object containing the genomic regions to annotate.
 #'

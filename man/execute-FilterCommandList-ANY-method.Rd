@@ -17,3 +17,4 @@ A FilterCommandList is just a container for several AtomicFilterCommand objects.
 executed, the objects in the internal list are executed in the same order they were provided to
 the constructor.
 }
+

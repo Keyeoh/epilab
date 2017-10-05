@@ -14,3 +14,4 @@ densCpGCommand(colName, windowSize = 2000)
 \description{
 This function builds a DensCpGCommand with a given windowSize.
 }
+

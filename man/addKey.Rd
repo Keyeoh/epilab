@@ -20,3 +20,4 @@ A new data.frame with the new column added.
 This function adds a column to an existing data.frame. It names the column after the input key 
 and then populates it with all the values it can find in the input file.
 }
+

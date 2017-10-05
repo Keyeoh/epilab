@@ -12,3 +12,4 @@ nearestTXGeneCommand(colName)
 \description{
 This function builds a NearestGeneCommand with a given column name and the type of nearest (transcript)
 }
+

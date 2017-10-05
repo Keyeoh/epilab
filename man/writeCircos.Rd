@@ -15,3 +15,4 @@ writeCircos(circosData, filename)
 This is just a wrapper around write.table to ensure that CIRCOS data gets written to disk in good
 shape. Just a way of grouping the formatting options and isolating the side effects for testing.
 }
+

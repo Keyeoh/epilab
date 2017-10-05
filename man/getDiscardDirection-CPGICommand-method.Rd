@@ -13,3 +13,4 @@
 \description{
 Getter method for discardDirection slot for all CPGICommand objects.
 }
+

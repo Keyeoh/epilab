@@ -12,3 +12,4 @@ getColName(object)
 \description{
 Generic definition of the getColName getter methods.
 }
+

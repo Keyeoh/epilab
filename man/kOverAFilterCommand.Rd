@@ -18,3 +18,4 @@ kOverAFilterCommand(m, byRow = TRUE, k = ifelse(byRow, 5, 5000), a = 0.01)
 \description{
 This function builds a KOverAFilterCommand from parameters k and a.
 }
+

@@ -9,12 +9,12 @@ Authors@R: c(
   )
 Author: Gustavo Fernandez Bayon, Isabel Cobo Sanchez
 Maintainer: Gustavo Fernandez Bayon <fernandezgustavo@uniovi.es>,
-  Isabel Cobo Sanchez <icobo@carrerasresearch.org>
+    Isabel Cobo Sanchez <icobo@carrerasresearch.org>
 Description: Compilation of data, functions and other stuff intended to be used
     inside the EpiLab for the implementation of data processing workflows. Most
-    of the functions are related to the analysis of Illumina 450k microarrays.
-    In the future, this package might be splitted to take into account the different aspects 
-    of the lab workflows.
+    of the functions are related to the analysis of Illumina 450k microarrays. In
+    the future, this package might be splitted to take into account the different
+    aspects of the lab workflows.
 Depends:
     FDb.InfiniumMethylation.hg19,
     ggplot2,
@@ -43,4 +43,4 @@ Suggests:
     testthat,
     minfi
 License: Artistic-2.0
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1

@@ -14,3 +14,4 @@ setColName(object) <- value
 \description{
 Generic definition of the setColName setter methods.
 }
+

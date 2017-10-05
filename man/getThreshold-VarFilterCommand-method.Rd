@@ -13,3 +13,4 @@
 \description{
 Getter method for threshold slot for all VarFilterCommand objects.
 }
+

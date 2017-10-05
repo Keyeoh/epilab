@@ -14,3 +14,4 @@ setMatrix(object) <- value
 \description{
 Generic definition of the setMatrix setter methods.
 }
+

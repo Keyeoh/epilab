@@ -12,3 +12,4 @@ filterCommandList(...)
 \description{
 This function builds a FilterCommandList from a list of AtomicFilterCommands.
 }
+

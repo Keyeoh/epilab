@@ -15,3 +15,4 @@ The second element of x.
 \description{
 Just a closure for returning the second element of a vector.
 }
+

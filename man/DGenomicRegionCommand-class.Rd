@@ -9,3 +9,4 @@ This AnnotationCommand adds a column containing the genomic region for a given p
 is different from the GenomicRegionCommand in that it generates disjoint categories and is more
 specific.
 }
+

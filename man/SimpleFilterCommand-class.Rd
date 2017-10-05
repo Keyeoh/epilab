@@ -8,3 +8,4 @@
 Abstract class that serves as interface for all the simple filtering commands that only use 
 information from the object to be filtered.
 }
+
