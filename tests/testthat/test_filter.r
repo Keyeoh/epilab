@@ -24,21 +24,21 @@ zeroDetectionP <- matrix(c(0, 0, 0, 0, 0,
 rownames(zeroDetectionP) <- paste0('F', 1:5)
 colnames(zeroDetectionP) <- paste0('S', 1:5)
 
-mockPdata <- AnnotatedDataFrame(data.frame(foo=1:5))
-mockFdata <- AnnotatedDataFrame(data.frame(bar=1:5))
+mockPdata <- data.frame(foo=1:5)
+mockFdata <- data.frame(bar=1:5)
 mockMethylSet <- MethylSet(Meth=matrix(1:5, nrow=5, ncol=5), 
                            Unmeth=matrix(1:5, nrow=5, ncol=5, byrow=TRUE),
-                           phenoData=mockPdata)
-featureData(mockMethylSet) <- mockFdata
+                           colData=mockPdata)
+rowData(mockMethylSet) <- mockFdata
 featureNames(mockMethylSet) <- paste0('F', 1:5)
 sampleNames(mockMethylSet) <- paste0('S', 1:5)
 
-mockPdataPlus <- AnnotatedDataFrame(data.frame(foo=1:6))
-mockFdataPlus <- AnnotatedDataFrame(data.frame(bar=1:5))
+mockPdataPlus <- data.frame(foo=1:6)
+mockFdataPlus <- data.frame(bar=1:5)
 mockMethylSetPlus <- MethylSet(Meth=matrix(1:6, nrow=5, ncol=6), 
                                Unmeth=matrix(1:6, nrow=5, ncol=6, byrow=TRUE),
-                               phenoData=mockPdataPlus)
-featureData(mockMethylSetPlus) <- mockFdataPlus
+                               colData=mockPdataPlus)
+rowData(mockMethylSetPlus) <- mockFdataPlus
 featureNames(mockMethylSetPlus) <- paste0('F', 1:5)
 sampleNames(mockMethylSetPlus) <- paste0('S', 1:6)
 
@@ -53,9 +53,14 @@ seqlengths(mockRanges) <- c(1000, 2000, 3000, 4000, 5000)
 
 emptyGenomicSet <- GenomicMethylSet()
 
-mockGenomicSet <- GenomicMethylSet(mockRanges, getMeth(mockMethylSet), getUnmeth(mockMethylSet), 
-                                   pData(mockMethylSet), annotation(mockMethylSet), 
-                                   preprocessMethod(mockMethylSet))
+mockGenomicSet <- GenomicMethylSet(
+  gr = mockRanges, 
+  Meth = getMeth(mockMethylSet), 
+  Unmeth = getUnmeth(mockMethylSet), 
+  colData = pData(mockMethylSet), 
+  annotation = annotation(mockMethylSet), 
+  preprocessMethod = preprocessMethod(mockMethylSet)
+)
 rownames(mockGenomicSet) <- paste0('F', 1:5)
 colnames(mockGenomicSet) <- paste0('S', 1:5)
 
@@ -158,18 +163,18 @@ test_that('KOverAFilterCommand execution works correctly on examples',
             bar1 <- execute(koveracmd1, mockMethylSet)
             expect_equal(featureNames(bar1), c('F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
-            expect_equal(nrow(bar1), c(Features=4))
-            expect_equal(ncol(bar1), c(Samples=5))
+            expect_equal(nrow(bar1), 4)
+            expect_equal(ncol(bar1), 5)
             bar2 <- execute(koveracmd2, mockMethylSet)
             expect_equal(featureNames(bar2), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
-            expect_equal(nrow(bar2), c(Features=3))
-            expect_equal(ncol(bar2), c(Samples=5))
+            expect_equal(nrow(bar2), 3)
+            expect_equal(ncol(bar2), 5)
             bar3 <- execute(koveracmd3, mockMethylSet)
             expect_equal(featureNames(bar3), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar3), c('S3', 'S4'))
-            expect_equal(nrow(bar3), c(Features=5))
-            expect_equal(ncol(bar3), c(Samples=2))
+            expect_equal(nrow(bar3), 5)
+            expect_equal(ncol(bar3), 2)
             bar4 <- execute(koveracmd4, mockGenomicSet)
             expect_equal(rownames(bar4), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(colnames(bar4), character(0))
@@ -233,8 +238,8 @@ test_that('VarFilterCommand execution works correctly on examples',
             bar2 <- execute(varcmd2, mockMethylSet)
             expect_equal(featureNames(bar2), c('F1', 'F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar2), c('S2', 'S3', 'S4'))
-            expect_equal(nrow(bar2), c(Features=5))
-            expect_equal(ncol(bar2), c(Samples=3))
+            expect_equal(nrow(bar2), 5)
+            expect_equal(ncol(bar2), 3)
           })
 
 test_that('VarFilterCommand fails on different dimension names',
@@ -273,13 +278,13 @@ test_that('FilterCommandList execution works correctly on example',
             bar1 <- execute(cmdl1, mockMethylSet)
             expect_equal(featureNames(bar1), c('F2', 'F3', 'F4', 'F5'))
             expect_equal(sampleNames(bar1), c('S1', 'S2', 'S3', 'S4', 'S5'))
-            expect_equal(nrow(bar1), c(Features=4))
-            expect_equal(ncol(bar1), c(Samples=5))
+            expect_equal(nrow(bar1), 4)
+            expect_equal(ncol(bar1), 5)
             bar2 <- execute(cmdl2, mockMethylSet)
             expect_equal(featureNames(bar2), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar2), c('S1', 'S2', 'S3', 'S4', 'S5'))
-            expect_equal(nrow(bar2), c(Features=3))
-            expect_equal(ncol(bar2), c(Samples=5))
+            expect_equal(nrow(bar2), 3)
+            expect_equal(ncol(bar2), 5)
             bar3 <- execute(cmdl3, mockGenomicSet)
             expect_equal(rownames(bar3), c('F2', 'F3', 'F4'))
             expect_equal(colnames(bar3), c('S1', 'S3', 'S4'))
@@ -288,7 +293,7 @@ test_that('FilterCommandList execution works correctly on example',
             bar4 <- execute(cmdl4, mockMethylSet)
             expect_equal(featureNames(bar4), c('F2', 'F3', 'F4'))
             expect_equal(sampleNames(bar4), c('S1', 'S3', 'S4'))
-            expect_equal(nrow(bar4), c(Features=3))
-            expect_equal(ncol(bar4), c(Samples=3))
+            expect_equal(nrow(bar4), 3)
+            expect_equal(ncol(bar4), 3)
           })
 
